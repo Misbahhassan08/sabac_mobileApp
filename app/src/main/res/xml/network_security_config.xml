@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">https://sabac-server-382170497486.us-central1.run.app/</domain>
+        <domain includeSubdomains="true">mexemai.com</domain>
+    </domain-config>
+</network-security-config>

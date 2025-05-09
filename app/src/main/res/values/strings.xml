@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="date_input_title">28/23/24</string>
+    <string name="Base_url">abc-123</string>
+</resources>

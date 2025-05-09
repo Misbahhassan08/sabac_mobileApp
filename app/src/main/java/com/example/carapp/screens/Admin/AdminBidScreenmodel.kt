@@ -1,0 +1,137 @@
+package com.example.carapp.screens.Admin
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.carapp.Apis.TestApi
+import com.example.carapp.screens.getToken
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONObject
+import java.io.IOException
+
+class BidViewModel : ViewModel() {
+
+    private val _cars = MutableStateFlow<List<Car>>(emptyList())
+    val cars: StateFlow<List<Car>> = _cars
+
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+    private val _notifications = MutableStateFlow<List<NotificationItem>>(emptyList())
+    val notifications: StateFlow<List<NotificationItem>> = _notifications
+
+    fun fetchNotifications(context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = getToken(context)
+                val client = OkHttpClient()
+
+                val request = Request.Builder()
+                    .url(TestApi.Bid_notification_for_seller)
+                    .get()
+                    .apply {
+                        token?.let { addHeader("Authorization", "Bearer $it") }
+                    }
+                    .build()
+
+                val response = client.newCall(request).execute()
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body?.string()
+                    Log.d("FetchNotificationsB", "Response: $jsonResponse")
+                    val notificationsList = Gson().fromJson(jsonResponse, Array<NotificationItem>::class.java).toList()
+                    _notifications.value = notificationsList
+                    Log.d("FetchNotificationsB", "Parsed Notifications: $notificationsList")
+
+                    if (notificationsList.isNotEmpty()) {
+                        markNotificationsAsRead(context, notificationsList.map { it.id })
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
+    private fun markNotificationsAsRead(context: Context, notificationIds: List<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = getToken(context)
+                val client = OkHttpClient()
+
+                val jsonBody = Gson().toJson(mapOf("notification_ids" to notificationIds))
+
+                val requestBody = jsonBody.toRequestBody("application/json".toMediaTypeOrNull())
+
+                val request = Request.Builder()
+                    .url(TestApi.mark_bid_notifications_as_read)
+                    .post(requestBody)
+                    .apply {
+                        token?.let { addHeader("Authorization", "Bearer $it") }
+                    }
+                    .build()
+
+                val response = client.newCall(request).execute()
+                if (response.isSuccessful) {
+                    Log.d("Notification", "Notifications marked as read: $notificationIds")
+                } else {
+                    Log.e("Notification", "Failed to mark notifications as read: ${response.code}")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun removeNotification(notification: NotificationItem) {
+        _notifications.value = _notifications.value - notification
+    }
+
+}
+
+
+data class Car(
+    val salerCarId: Int,
+    val name: String,
+    val company: String,
+    val year: String,
+    val engineSize: String,
+    val mileage: String,
+    val optionType: String,
+    val paint_condition: String,
+    val specs: String,
+    val inspectionDate: String,
+    val inspectionTime: String,
+    val createdAt: String,
+    val updatedAt: String,
+    val status: String,
+    val isInspected: Boolean,
+    val isBooked: Boolean,
+    val isManual: Boolean,
+    val isSold: Boolean,
+    val photos: List<String>?,
+    val imageBitmaps: List<Bitmap> = emptyList(),
+    val sellerName: String,
+    val phoneNumber: String
+)
+
+data class NotificationItem(
+    val category: String,
+    val message: String,
+    val id: String,
+    val bid_id: String
+)
