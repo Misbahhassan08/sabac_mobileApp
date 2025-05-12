@@ -1,5 +1,9 @@
 package com.example.carapp.screens.Admin
 
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -47,10 +51,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import com.example.carapp.Apis.TestApi
+import com.example.carapp.screens.Inspector.updateCarStatu
 import com.example.carapp.screens.RejectBid
+import com.example.carapp.screens.getToken
 import com.example.carapp.screens.sendBidid
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONObject
+import java.io.IOException
 
 @Composable
 fun BiddingScreen(
@@ -134,6 +150,20 @@ fun NotificationCardB(notification: com.example.carapp.screens.Admin.Notificatio
                 Button(
                     onClick = {
                         sendBidid(notification.bid_id, context)
+                        updateCarStatusB(
+                            context,
+                            notification.id,
+//                            slot.car.salerCarId.toString(),
+                            "sold",
+                            onSuccess = {
+                                Handler(Looper.getMainLooper()).post {
+//                                    navController.navigate("report/${slot.car.salerCarId}")
+                                }
+                            },
+                            onFailure = { errorMessage ->
+                                Log.e("API_ERROR", "Failed to update status: $errorMessage")
+                            }
+                        )
                         onDismiss()
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -167,6 +197,43 @@ fun NotificationCardB(notification: com.example.carapp.screens.Admin.Notificatio
     }
 }
 
+
+
+fun updateCarStatusB(context: Context, carId: String, status: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+    val url = "${TestApi.update_status}$carId/"
+    Log.d("API_DEBUG", "Request URL: $url")
+
+    val token = getToken(context)
+    Log.d("API_DEBUG", "Token: $token")
+    val client = OkHttpClient()
+    val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+
+    val jsonBody = JSONObject().apply {
+        put("status", status)
+    }.toString()
+
+    val requestBody = jsonBody.toRequestBody(jsonMediaType)
+
+    val request = Request.Builder()
+        .url(url)
+        .patch(requestBody)
+        .apply { token?.let { addHeader("Authorization", "Bearer $it") } }
+        .build()
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            onFailure(e.message ?: "Unknown error")
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            if (response.isSuccessful) {
+                onSuccess()
+            } else {
+                onFailure(response.message)
+            }
+        }
+    })
+}
 
 
 

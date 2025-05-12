@@ -4,8 +4,8 @@ object TestApi{
   // Bucket URL
   const val Bucket_Upload = "https://mexemai.com/bucket/upload"
   // BASE URL
-//    const val Base_url = "http://192.168.1.17:7000"
-    const val Base_url = "https://sabac-server-530056698.us-central1.run.app"
+    const val Base_url = "http://192.168.1.17:7000"
+//    const val Base_url = "https://sabac-server-530056698.us-central1.run.app"
 
     //GUEST API
     const val post_guest_details = "$Base_url/post_guest_details/"

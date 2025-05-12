@@ -131,6 +131,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -181,75 +182,6 @@ import kotlinx.serialization.json.jsonObject
 
 val cardColor = Color(0xFFEAECEE)
 val redcolor = Color(0xFFE52020)
-
-
-/*fun saveAndLogFormData(
-    selectedOption: String,
-    inputFields: Map<String, FieldState>,
-    context: Context,
-    imageUrls: List<String> = emptyList(),
-    primaryPhone: String? = null,
-    secondaryPhone: String? = null
-) {
-    // Get existing JSON data from SharedPreferences
-    val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-    val existingJsonString = prefs.getString("saved_form_data", "{}") ?: "{}"
-
-    try {
-        // Parse existing JSON
-        val existingJson = Json.parseToJsonElement(existingJsonString).jsonObject
-
-        // Create a mutable map from existing JSON
-        val mergedData = existingJson.toMutableMap()
-
-        // Update with new values if they're not null
-        primaryPhone?.let { mergedData["primaryPhone"] = JsonPrimitive(it) }
-        secondaryPhone?.let { mergedData["secondaryPhone"] = JsonPrimitive(it) }
-
-        // Ensure selectedOption is up to date
-        mergedData["selectedOption"] = JsonPrimitive(selectedOption)
-
-        // Add/update input fields
-        inputFields.forEach { (fieldName, fieldState) ->
-            mergedData[fieldName] = JsonPrimitive(fieldState.value.value)
-        }
-
-        // Add/update image URLs if available
-        if (imageUrls.isNotEmpty()) {
-            mergedData["imageUrls"] =
-                kotlinx.serialization.json.JsonArray(imageUrls.map { JsonPrimitive(it) })
-        }
-
-        // Convert back to JSON string
-        val jsonString = Json { prettyPrint = true }.encodeToString(mergedData)
-
-        // Log the merged data
-        Log.d("FORM_DATA", "Merged form data:\n$jsonString")
-
-        // Save back to SharedPreferences
-        prefs.edit().putString("saved_form_data", jsonString).apply()
-
-    } catch (e: Exception) {
-        Log.e("FORM_DATA", "Error merging JSON data", e)
-        // Fallback to creating new JSON if merge fails
-        val formDataJson = buildJsonObject {
-            put("selectedOption", selectedOption)
-            inputFields.forEach { (fieldName, fieldState) ->
-                put(fieldName, fieldState.value.value)
-            }
-            primaryPhone?.let { put("primaryPhone", it) }
-            secondaryPhone?.let { put("secondaryPhone", it) }
-            if (imageUrls.isNotEmpty()) {
-                put("imageUrls",
-                    kotlinx.serialization.json.JsonArray(imageUrls.map { JsonPrimitive(it) })
-                )
-            }
-        }
-        val jsonString = Json { prettyPrint = true }.encodeToString(formDataJson)
-        prefs.edit().putString("saved_form_data", jsonString).apply()
-    }
-}*/
-
 
 fun saveAndLogFormData(
     selectedOption: String,
@@ -611,60 +543,6 @@ fun CarSellScreen(navController: NavController) {
                                 .padding(horizontal = 16.dp)
                                 .padding(bottom = 16.dp)
                         ) {
-                           /* Button(
-                                onClick = {
-                                    Log.d("FORM_SUBMIT", "Button pressed - starting validation")
-
-                                    if (selectedOption == "Self") {
-                                        Log.d("FORM_SUBMIT", "Self option selected")
-
-                                        // Reset all errors first
-                                        imagesError.value = false
-                                        inputFields.forEach { (_, fieldState) ->
-                                            fieldState.error.value = false
-                                        }
-
-                                        // Validate all fields
-                                        var hasErrors = false
-                                        Log.d("FORM_VALIDATION", "Starting validation")
-
-                                        // Check images
-                                        if (selectedImages.isEmpty()) {
-                                            Log.d("FORM_VALIDATION", "Images validation failed")
-                                            imagesError.value = true
-                                            hasErrors = true
-                                        }
-
-                                        // Check all input fields
-                                        inputFields.forEach { (fieldName, fieldState) ->
-                                            val config = dropdownOptions[fieldName]
-                                            if (config?.isRequired == true && fieldState.value.value.isBlank()) {
-                                                Log.d("FORM_VALIDATION", "$fieldName validation failed")
-                                                fieldState.error.value = true
-                                                fieldState.errorMessage.value = "This field is required"
-                                                hasErrors = true
-                                            }
-                                        }
-
-                                        if (!hasErrors) {
-                                            Log.d("FORM_SUBMIT", "All validations passed")
-
-                                            saveAndLogFormData(
-                                                selectedOption = selectedOption,
-                                                inputFields = inputFields,
-                                                context = context
-                                            )
-
-                                        }
-                                    }
-                                },
-                                modifier = Modifier.fillMaxWidth(1.0f),
-                                colors = ButtonDefaults.buttonColors(containerColor = redcolor),
-                                shape = RoundedCornerShape(8.dp),
-                                enabled = true
-                            ) {
-                                Text("Book Inspection", fontSize = 16.sp)
-                            }*/
                             Button(
                                 onClick = {
                                     Log.d("FORM_SUBMIT", "Button pressed - starting validation")
@@ -755,85 +633,6 @@ fun CarSellScreen(navController: NavController) {
                             ) {
                                 Text("Book Inspection", fontSize = 16.sp)
                             }
-//                            Button(
-//                                onClick = {
-//                                    Log.d("FORM_SUBMIT", "Button pressed - starting validation")
-//
-//                                    if (selectedOption == "Self") {
-//                                        Log.d("FORM_SUBMIT", "Self option selected")
-//
-//                                        // Reset all errors first (keeping only input field errors)
-//                                        inputFields.forEach { (_, fieldState) ->
-//                                            fieldState.error.value = false
-//                                        }
-//
-//                                        // Validate only input fields (no image validation)
-//                                        var hasErrors = false
-//                                        Log.d("FORM_VALIDATION", "Starting validation (without image check)")
-//
-//                                        inputFields.forEach { (fieldName, fieldState) ->
-//                                            val config = dropdownOptions[fieldName]
-//                                            if (config?.isRequired == true && fieldState.value.value.isBlank()) {
-//                                                Log.d("FORM_VALIDATION", "$fieldName validation failed")
-//                                                fieldState.error.value = true
-//                                                fieldState.errorMessage.value = "This field is required"
-//                                                hasErrors = true
-//                                            }
-//                                        }
-//
-//                                        if (!hasErrors) {
-//                                            Log.d("FORM_SUBMIT", "All validations passed (images not validated)")
-//
-//                                            // Get all images from AssetHelper
-//                                            val imageFiles = AssetHelper.getTempAssets(context)
-//                                            Log.d("IMAGE_DEBUG", "Found ${imageFiles.size} images in temp assets")
-//
-//                                            if (imageFiles.isNotEmpty()) {
-//                                                // Upload images and get URLs
-//                                                viewModel.uploadImages(imageFiles.map { it.absolutePath }) { uploadResults ->
-//                                                    val imageUrls = uploadResults.mapNotNull { result ->
-//                                                        result.second?.get("url")?.asString?.also { url ->
-//                                                            //Log.d("IMAGE_URL", "Uploaded URL: $url")
-//                                                        }
-//                                                    }
-//
-//                                                    // Save data with image URLs
-//                                                    saveAndLogFormData(
-//                                                        selectedOption = selectedOption,
-//                                                        inputFields = inputFields,
-//                                                        context = context,
-//                                                        imageUrls = imageUrls
-//                                                    )
-//
-//                                                    // Clear temp assets after saving URLs
-//                                                    AssetHelper.clearTempAssets(context)
-//
-//                                                    Toast.makeText(
-//                                                        context,
-//                                                        "Submitted with ${imageUrls.size} image(s)",
-//                                                        Toast.LENGTH_SHORT
-//                                                    ).show()
-//                                                }
-//                                            } else {
-//                                                // Save data without images
-//                                                saveAndLogFormData(
-//                                                    selectedOption = selectedOption,
-//                                                    inputFields = inputFields,
-//                                                    context = context,
-//                                                    imageUrls = emptyList()
-//                                                )
-//                                                Toast.makeText(context, "Form submitted without images", Toast.LENGTH_SHORT).show()
-//                                            }
-//                                        }
-//                                    }
-//                                },
-//                                modifier = Modifier.fillMaxWidth(1.0f),
-//                                colors = ButtonDefaults.buttonColors(containerColor = redcolor),
-//                                shape = RoundedCornerShape(8.dp),
-//                                enabled = true
-//                            ) {
-//                                Text("Book Inspection", fontSize = 16.sp)
-//                            }
                         }
                     }
                 }
@@ -1066,7 +865,7 @@ fun InputFieldWithDropdown(
 
 
 // ALL PERFECT THIS BELOW
-@Composable
+/*@Composable
 fun CompanyDetailsCard(
     inputFields: Map<String, FieldState>,
     iconMapping: Map<String, Int>,
@@ -1430,8 +1229,464 @@ fun CompanyDetailsCard(
             }
         }
     }
-}
+}*/
+@Composable
+fun CompanyDetailsCard(
+    inputFields: Map<String, FieldState>,
+    iconMapping: Map<String, Int>,
+    dropdownOptions: Map<String, DropdownConfig>,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
 
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize()
+                .background(cardColor)
+        ) {
+            // Header row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = !expanded }
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    "Car Details",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp
+                )
+                Icon(
+                    imageVector = if (expanded) Icons.Default.KeyboardArrowUp
+                    else Icons.Default.KeyboardArrowDown,
+                    contentDescription = if (expanded) "Collapse" else "Expand",
+                    tint = Color.Gray
+                )
+            }
+
+            if (expanded) {
+                Divider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    thickness = 1.dp,
+                    color = Color.LightGray
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    // Company Field
+                    val companyField = inputFields["Company"] ?: return@Column
+                    val companyConfig = dropdownOptions["Company"] ?: return@Column
+                    var companyExpanded by remember { mutableStateOf(false) }
+                    val showCompanyError = companyField.error.value
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        // Label row
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Company",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = if (showCompanyError) MaterialTheme.colorScheme.error else Color.Gray,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            if (companyConfig.isRequired) {
+                                Text(
+                                    text = " *",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                            }
+                        }
+
+                        // Text field with dropdown
+                        /*Box(modifier = Modifier.fillMaxWidth()) {
+                            OutlinedTextField(
+                                value = companyField.value.value,
+                                onValueChange = { },
+                                placeholder = { Text("Select company") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { companyExpanded = true },
+                                shape = RoundedCornerShape(8.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error
+                                    else Color(0xFF1976D2),
+                                    unfocusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error
+                                    else Color.Gray,
+                                    errorBorderColor = MaterialTheme.colorScheme.error
+                                ),
+                                isError = showCompanyError,
+                                supportingText = {
+                                    if (showCompanyError) {
+                                        Text(
+                                            text = companyField.errorMessage.value.ifEmpty { "This field is required" },
+                                            color = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(
+                                            id = iconMapping["Company"] ?: R.drawable.company
+                                        ),
+                                        contentDescription = "Company",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = if (companyExpanded) Icons.Default.KeyboardArrowUp
+                                        else Icons.Default.ArrowDropDown,
+                                        contentDescription = if (companyExpanded) "Collapse" else "Expand",
+                                        modifier = Modifier.clickable { companyExpanded = !companyExpanded }
+                                    )
+                                },
+                                readOnly = true
+                            )
+
+                            DropdownMenu(
+                                expanded = companyExpanded,
+                                onDismissRequest = { companyExpanded = false },
+                                modifier = Modifier
+                                    .fillMaxWidth() // Makes dropdown match text field width
+                            ) {
+                                companyConfig.options.forEachIndexed { index, item ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        DropdownMenuItem(
+                                            text = { Text(item) },
+                                            onClick = {
+                                                companyField.value.value = item
+                                                companyExpanded = false
+                                                companyField.error.value = false
+                                            },
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                        if (index < companyConfig.options.size - 1) {
+                                            Divider(
+                                                modifier = Modifier.padding(horizontal = 8.dp),
+                                                thickness = 0.5.dp,
+                                                color = Color.LightGray
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }*/
+                        // Inside the Column for "Company"
+
+
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                        ) {
+                            OutlinedTextField(
+                                value = companyField.value.value,
+                                onValueChange = { },
+                                placeholder = { Text("Select company") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .onGloballyPositioned { coordinates ->
+                                        textFieldSize = coordinates.size
+                                    }
+                                    .clickable { companyExpanded = !companyExpanded },
+                                shape = RoundedCornerShape(8.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error else Color(0xFF1976D2),
+                                    unfocusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error else Color.Gray,
+                                    errorBorderColor = MaterialTheme.colorScheme.error
+                                ),
+                                isError = showCompanyError,
+                                readOnly = true,
+                                supportingText = {
+                                    if (showCompanyError) {
+                                        Text(
+                                            text = companyField.errorMessage.value.ifEmpty { "This field is required" },
+                                            color = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(
+                                            id = iconMapping["Company"] ?: R.drawable.company
+                                        ),
+                                        contentDescription = "Company",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = if (companyExpanded) Icons.Default.KeyboardArrowUp
+                                        else Icons.Default.ArrowDropDown,
+                                        contentDescription = if (companyExpanded) "Collapse" else "Expand"
+                                    )
+                                }
+                            )
+                            DropdownMenu(
+                                expanded = companyExpanded,
+                                onDismissRequest = { companyExpanded = false },
+                                modifier = Modifier
+                                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                            ) {
+                                companyConfig.options.forEachIndexed { index, item ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        DropdownMenuItem(
+                                            text = { Text(item) },
+                                            onClick = {
+                                                companyField.value.value = item
+                                                companyExpanded = false
+                                                companyField.error.value = false
+                                            }
+                                        )
+                                        if (index < companyConfig.options.size - 1) {
+                                            Divider(
+                                                modifier = Modifier.padding(horizontal = 8.dp),
+                                                thickness = 0.5.dp,
+                                                color = Color.LightGray
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    CompanyIconSelector(
+                        selectedCompany = companyField.value.value,
+                        onCompanySelected = { company ->
+                            companyField.value.value = company
+                            companyField.error.value = false
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    // Car Name Field - same pattern as Company field
+                    val carNameField = inputFields["Car Name"] ?: return@Column
+                    val carNameConfig = dropdownOptions["Car Name"] ?: return@Column
+                    var carNameExpanded by remember { mutableStateOf(false) }
+                    val showCarNameError = carNameField.error.value
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Car Name",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = if (showCarNameError) MaterialTheme.colorScheme.error else Color.Gray,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            if (carNameConfig.isRequired) {
+                                Text(
+                                    text = " *",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                            }
+                        }
+
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            OutlinedTextField(
+                                value = carNameField.value.value,
+                                onValueChange = { },
+                                placeholder = { Text("Select car name") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { carNameExpanded = true }
+                                    .onGloballyPositioned { coordinates ->
+                                        textFieldSize = coordinates.size
+                                    }
+                                    .clickable { companyExpanded = !companyExpanded },
+                                shape = RoundedCornerShape(8.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = if (showCarNameError) MaterialTheme.colorScheme.error
+                                    else Color(0xFF1976D2),
+                                    unfocusedBorderColor = if (showCarNameError) MaterialTheme.colorScheme.error
+                                    else Color.Gray,
+                                    errorBorderColor = MaterialTheme.colorScheme.error
+                                ),
+                                isError = showCarNameError,
+                                supportingText = {
+                                    if (showCarNameError) {
+                                        Text(
+                                            text = carNameField.errorMessage.value.ifEmpty { "This field is required" },
+                                            color = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = iconMapping["Car Name"] ?: R.drawable.car_icon),
+                                        contentDescription = "Car Name",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = if (carNameExpanded) Icons.Default.KeyboardArrowUp
+                                        else Icons.Default.ArrowDropDown,
+                                        contentDescription = if (carNameExpanded) "Collapse" else "Expand",
+                                        modifier = Modifier.clickable { carNameExpanded = !carNameExpanded }
+                                    )
+                                },
+                                readOnly = true
+                            )
+
+                            DropdownMenu(
+                                expanded = carNameExpanded,
+                                onDismissRequest = { carNameExpanded = false },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                carNameConfig.options.forEachIndexed { index, item ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        DropdownMenuItem(
+                                            text = { Text(item) },
+                                            onClick = {
+                                                carNameField.value.value = item
+                                                carNameExpanded = false
+                                                carNameField.error.value = false
+                                            },
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                        if (index < carNameConfig.options.size - 1) {
+                                            Divider(
+                                                modifier = Modifier.padding(horizontal = 8.dp),
+                                                thickness = 0.5.dp,
+                                                color = Color.LightGray
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Car Model Field - same pattern as other fields
+                    val carModelField = inputFields["Car Model"] ?: return@Column
+                    val carModelConfig = dropdownOptions["Car Model"] ?: return@Column
+                    var carModelExpanded by remember { mutableStateOf(false) }
+                    val showCarModelError = carModelField.error.value
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Car Model",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = if (showCarModelError) MaterialTheme.colorScheme.error else Color.Gray,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            if (carModelConfig.isRequired) {
+                                Text(
+                                    text = " *",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                            }
+                        }
+
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            OutlinedTextField(
+                                value = carModelField.value.value,
+                                onValueChange = {  },
+                                placeholder = { Text("Select car model") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { carModelExpanded = true }
+                                    .onGloballyPositioned { coordinates ->
+                                        textFieldSize = coordinates.size
+                                    }
+                                    .clickable { companyExpanded = !companyExpanded },
+                                shape = RoundedCornerShape(8.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = if (showCarModelError) MaterialTheme.colorScheme.error
+                                    else Color(0xFF1976D2),
+                                    unfocusedBorderColor = if (showCarModelError) MaterialTheme.colorScheme.error
+                                    else Color.Gray,
+                                    errorBorderColor = MaterialTheme.colorScheme.error
+                                ),
+                                isError = showCarModelError,
+                                supportingText = {
+                                    if (showCarModelError) {
+                                        Text(
+                                            text = carModelField.errorMessage.value.ifEmpty { "This field is required" },
+                                            color = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = iconMapping["Car Model"] ?: R.drawable.car_icon),
+                                        contentDescription = "Car Model",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = if (carModelExpanded) Icons.Default.KeyboardArrowUp
+                                        else Icons.Default.ArrowDropDown,
+                                        contentDescription = if (carModelExpanded) "Collapse" else "Expand",
+                                        modifier = Modifier.clickable { carModelExpanded = !carModelExpanded }
+                                    )
+                                },
+                                readOnly = true
+                            )
+
+                            DropdownMenu(
+                                expanded = carModelExpanded,
+                                onDismissRequest = { carModelExpanded = false },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                carModelConfig.options.forEachIndexed { index, item ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        DropdownMenuItem(
+                                            text = { Text(item) },
+                                            onClick = {
+                                                carModelField.value.value = item
+                                                carModelExpanded = false
+                                                carModelField.error.value = false
+                                            },
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                        if (index < carModelConfig.options.size - 1) {
+                                            Divider(
+                                                modifier = Modifier.padding(horizontal = 8.dp),
+                                                thickness = 0.5.dp,
+                                                color = Color.LightGray
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 // BELOW IS COMPLETED AS PER REQ
 @Composable
 fun CarDetailsCard(
@@ -1446,6 +1701,7 @@ fun CarDetailsCard(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White)
+            .clickable {  }
             .padding(horizontal = 16.dp, vertical = 8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(12.dp)

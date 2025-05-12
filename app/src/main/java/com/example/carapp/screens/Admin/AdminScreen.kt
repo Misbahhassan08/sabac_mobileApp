@@ -434,7 +434,6 @@ fun AdminScreen(
                             }
                         }
                     }
-
                     "ViewBidNotification" -> {
                         BiddingScreen(navController = navController)
                     }
