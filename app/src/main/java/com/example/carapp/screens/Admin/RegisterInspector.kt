@@ -1,5 +1,6 @@
 package com.example.carapp.screens.Admin
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -88,6 +89,7 @@ import com.example.carapp.R
 import com.example.carapp.screens.getToken
 import com.example.carapp.screens.redcolor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -97,7 +99,10 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 @Composable
-fun RegisterInspectorScreen(navController: NavController) {
+fun RegisterInspectorScreen(
+    navController: NavController,
+    onRegistrationSuccess: () -> Unit
+) {
     var firstname by remember { mutableStateOf("") }
     var lastname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
@@ -235,7 +240,7 @@ fun RegisterInspectorScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Button(
+            /*Button(
                 onClick = {
                     coroutineScope.launch {
                         isLoading = true
@@ -243,7 +248,11 @@ fun RegisterInspectorScreen(navController: NavController) {
                             context,navController,firstname, lastname, username, email, password, phonenumber, address
                         )
                         isLoading = false
-//                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Registered Successfully", Toast.LENGTH_LONG).show()
+                        navController.navigate("inspector_list_screen") {
+                            popUpTo("registration_screen") { inclusive = false }
+                            launchSingleTop = true
+                        }
                     }
                 },
                 modifier = Modifier
@@ -261,8 +270,72 @@ fun RegisterInspectorScreen(navController: NavController) {
                 } else {
                     Text("Register", fontSize = 16.sp)
                 }
+            }*/
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        isLoading = true
+                        val result = registerUsers(
+                            context, navController,
+                            firstname, lastname, username, email, password, phonenumber, address
+                        )
+                        isLoading = false
+                        Toast.makeText(context, "Inspector Registered Successfully", Toast.LENGTH_LONG).show()
+                        onRegistrationSuccess()
+
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().height(48.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(8.dp),
+                enabled = !isLoading
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                } else {
+                    Text("Register", fontSize = 16.sp)
+                }
             }
 
+          /*  Button(
+                onClick = {
+                    coroutineScope.launch {
+                        isLoading = true
+                        val success = registerUsers(
+                            context, navController,
+                            firstname, lastname, username, email, password, phonenumber, address
+                        )
+                        isLoading = false
+
+                        if (success) {
+                            Toast.makeText(context, "Registered Successfully", Toast.LENGTH_LONG).show()
+                            navController.navigate("inspector_list_screen") {
+                                popUpTo("registration_screen") { inclusive = true }
+                            }
+                        } else {
+                            Toast.makeText(context, "Registration Failed", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(8.dp),
+                enabled = !isLoading
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                } else {
+                    Text("Register", fontSize = 16.sp)
+                }
+            }*/
             Spacer(modifier = Modifier.height(10.dp))
 //            Row(modifier = Modifier.align(Alignment.Start)) {
 //                Text(text = "Already a user?", fontSize = 12.sp, fontWeight = FontWeight.Normal, color = Color.White)

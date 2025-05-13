@@ -100,7 +100,10 @@ import org.json.JSONObject
 
 
 @Composable
-fun RegisterAdminScreen(navController: NavController) {
+fun RegisterAdminScreen(
+    navController: NavController,
+    onRegistrationSuccess: () -> Unit
+) {
     var firstname by remember { mutableStateOf("") }
     var lastname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
@@ -258,11 +261,13 @@ fun RegisterAdminScreen(navController: NavController) {
                 onClick = {
                     coroutineScope.launch {
                         isLoading = true
-                        val response = registerUserA(
+                        val result = registerUserA(
                             context,navController,firstname, lastname, username, email, password, phonenumber, address
                         )
                         isLoading = false
 //                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Registered Successfully", Toast.LENGTH_LONG).show()
+                        onRegistrationSuccess()
                     }
                 },
                 modifier = Modifier

@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.carapp.screens.Admin.AdminReport
 import com.example.carapp.screens.Admin.AdminScreen
+import com.example.carapp.screens.Admin.InspectorListScreen
 import com.example.carapp.screens.BasicInfoScreen
 import com.example.carapp.screens.BasicScreen
 import com.example.carapp.screens.BookExpertVisit
@@ -106,6 +107,9 @@ fun App() {
         }
         composable("date") {
             CalenderDate()
+        }
+        composable("inspector_list_screen") {
+            InspectorListScreen()
         }
 //        composable("date&time") {
 //            BasicScreen(navController)

@@ -36,6 +36,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -96,10 +97,42 @@ fun UpcomingList(modifier: Modifier = Modifier, navController: NavController) {
 fun UpcomingList(
     cars: List<com.example.carapp.screens.Admin.Upcoming>,
     modifier: Modifier = Modifier, navController: NavController) {
-    LazyColumn {
-        items(cars) { car ->
-            CarItemA(car)
+    if (cars.isEmpty()) {
+        EmptyStateScreenU()
+    } else {
+        LazyColumn(modifier = modifier) {
+            items(cars) { car ->
+                CarItemA(car)
+            }
         }
+    }
+}
+@Composable
+private fun EmptyStateScreenU() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.car2),
+            contentDescription = "No Cars",
+            modifier = Modifier.size(120.dp),
+            tint = Color(0xFFBDBDBD)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "No Cars Upcoming",
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Medium,
+            color = Color(0xFF333333)
+        )
+        Text(
+            text = "Please check back later",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color(0xFF757575),
+            modifier = Modifier.padding(top = 8.dp)
+        )
     }
 }
 
@@ -350,14 +383,45 @@ fun CarDetailsDialogA(car: com.example.carapp.screens.Admin.Upcoming, onDismiss:
 fun Awaiting(
     lives: List<com.example.carapp.screens.Admin.Live>, navController: NavController,
     modifier: Modifier = Modifier) {
-    LazyColumn {
-        Log.d("test","here")
-        items(lives) { live ->
-            LiveItemA(live, navController)
+    if (lives.isEmpty()) {
+        EmptyStateScreenA()
+    } else {
+        LazyColumn(modifier = modifier) {
+            Log.d("test", "here")
+            items(lives) { live ->
+                LiveItemA(live, navController)
+            }
         }
     }
 }
-
+@Composable
+private fun EmptyStateScreenA() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.car2),
+            contentDescription = "No Cars",
+            modifier = Modifier.size(120.dp),
+            tint = Color(0xFFBDBDBD)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "No Cars Awaiting",
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Medium,
+            color = Color(0xFF333333)
+        )
+        Text(
+            text = "Please check back later",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color(0xFF757575),
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+}
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -540,13 +604,47 @@ fun LiveItemL(navController: NavController) {
         viewModel.fetchLiveCars(token)
     }
     val carList by viewModel.assignedSlots.collectAsState()
-    LazyColumn {
-        items(carList) { car ->
-            CarCard(car = car)
+
+    if (carList.isEmpty()) {
+        EmptyStateScreenL()
+    } else {
+        LazyColumn {
+            items(carList) { car ->
+                CarCard(car = car)
+            }
         }
     }
-
 }
+
+@Composable
+private fun EmptyStateScreenL() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.car2),
+            contentDescription = "No Cars",
+            modifier = Modifier.size(120.dp),
+            tint = Color(0xFFBDBDBD)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "No Cars",
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Medium,
+            color = Color(0xFF333333)
+        )
+        Text(
+            text = "Please check back later",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color(0xFF757575),
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+}
+
 
 @Composable
 fun CarCard(car: Live){

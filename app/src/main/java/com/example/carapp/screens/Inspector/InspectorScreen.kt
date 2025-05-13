@@ -44,15 +44,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -84,14 +80,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -219,25 +213,25 @@ fun InspectorListScree(
                                     Spacer(modifier = Modifier.height(20.dp))
 
                                     // Navigation Items
-                                    DrawerIte(
-                                        icon = Icons.Filled.Home,
+                                    DrawerIteP(
+                                        icon = painterResource(id = R.drawable.dea),
                                         label = "Home",
                                         onClick = {
                                             selectedScreen = "Home"
                                             scope.launch { drawerState.close() }
                                         }
                                     )
-                                    DrawerIte(
-                                        icon = Icons.Filled.Favorite,
+                                    DrawerIteP(
+                                        icon = painterResource(id = R.drawable.dea),
                                         label = "Manual Entry",
                                         onClick = {
                                             selectedScreen = "ManualEntry"
                                             scope.launch { drawerState.close() }
                                         }
                                     )
-                                    
-                                    DrawerIte(
-                                        icon = Icons.Filled.ShoppingCart,
+
+                                    DrawerIteP(
+                                        icon = painterResource(id = R.drawable.dea),
                                         label = "Schedule",
                                         onClick = {
                                             selectedScreen = "AddTimeSlot"
@@ -252,8 +246,8 @@ fun InspectorListScree(
                                         thickness = 1.dp,
                                         modifier = Modifier.padding(vertical = 8.dp)
                                     )
-                                    DrawerIte(
-                                        icon = Icons.Filled.ExitToApp,
+                                    DrawerIteP(
+                                        icon = painterResource(id = R.drawable.log),
                                         label = "Logout",
                                         onClick = { performLogout(navController, context) }
                                     )
@@ -1114,7 +1108,12 @@ fun calculateRemainingTime(targetDateTime: LocalDateTime?): TimeRemaining {
 }
 
 @Composable
-fun DrawerIte(icon: ImageVector, label: String, onClick: () -> Unit) {
+fun DrawerIte(
+//    icon: ImageVector,
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -1125,6 +1124,30 @@ fun DrawerIte(icon: ImageVector, label: String, onClick: () -> Unit) {
         Icon(imageVector = icon, contentDescription = label, tint = Color.White)
         Spacer(modifier = Modifier.width(12.dp))
         Text(text = label, fontSize = 16.sp, color = Color.White)
+    }
+}
+@Composable
+fun DrawerIteP(
+//    icon: ImageVector,
+    icon: Painter,
+    label: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = icon,
+            contentDescription = label,
+            modifier = Modifier.size(24.dp),
+            tint = Color.White
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = label, color = Color.White, fontSize = 16.sp)
     }
 }
 

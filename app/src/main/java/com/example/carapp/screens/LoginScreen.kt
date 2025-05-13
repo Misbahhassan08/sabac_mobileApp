@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -236,8 +237,9 @@ fun LoginScreen(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    var email by remember { mutableStateOf("admin1") }
-    var password by remember { mutableStateOf("1122") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.background(redcolor)
@@ -317,26 +319,7 @@ fun LoginScreen(navController: NavController) {
                 singleLine = true
             )
             Spacer(modifier = Modifier.height(12.dp))
-          /*  Button(
-                onClick = {
-                    coroutineScope.launch {
-                        val success = loginUser(email, password)
-                        if (success) {
-                            navController.navigate("seller")
-                        } else {
-                            Toast.makeText(context, "Login failed", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF9ED90D),
-                    contentColor = Color.Black
-                )
-            ) {
-                Text(text = "LOG IN", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-            }*/
-            Button(
+            /*Button(
                 onClick = {
                     coroutineScope.launch {
                         val success = loginUser(context, email, password, navController)
@@ -352,8 +335,38 @@ fun LoginScreen(navController: NavController) {
                 )
             ) {
                 Text(text = "LOG IN", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+            }*/
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        isLoading = true
+                        val success = loginUser(context, email, password, navController)
+                        isLoading = false
+                        if (!success) {
+                            Toast.makeText(context, "Login failed", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                ),
+                enabled = !isLoading
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(24.dp)
+                    )
+                } else {
+                    Text(text = "LOG IN", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+          Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = "Continue as Guest",

@@ -114,7 +114,10 @@ import java.io.IOException
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RegisterUserScreen(navController: NavController) {
+fun RegisterUserScreen(
+    navController: NavController,
+    onRegistrationSuccess: () -> Unit
+) {
     var firstname by remember { mutableStateOf("") }
     var lastname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
@@ -255,11 +258,13 @@ fun RegisterUserScreen(navController: NavController) {
                 onClick = {
                     coroutineScope.launch {
                         isLoading = true
-                        val response = registerUser(
+                        val result = registerUser(
                             context,navController,firstname, lastname, username, email, password, phonenumber, address
                         )
                         isLoading = false
 //                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, " Registered Successfully", Toast.LENGTH_LONG).show()
+                        onRegistrationSuccess()
                     }
                 },
                 modifier = Modifier

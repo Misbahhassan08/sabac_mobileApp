@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -55,6 +54,7 @@ import com.example.carapp.R
 import com.example.carapp.models.DealerList
 import com.example.carapp.screens.Inspector.CustomAnimatedLoade
 import com.example.carapp.screens.Inspector.DrawerIte
+import com.example.carapp.screens.Inspector.DrawerIteP
 import com.example.carapp.screens.performLogout
 import com.example.carapp.screens.redcolor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -133,6 +133,8 @@ fun AdminScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchCarList(context)
     }
+
+    var selectedTabIndex by remember { mutableStateOf(0) }
         CustomAnimatedLoade(
             modifier = Modifier.fillMaxSize(),
 //            color = Color.Magenta,
@@ -203,8 +205,8 @@ fun AdminScreen(
                                             scope.launch { drawerState.close() }
                                         }
                                     )
-                                    DrawerIte(
-                                        icon = Icons.Filled.Favorite,
+                                    DrawerIteP(
+                                        icon = painterResource(id = R.drawable.dea),
                                         label = "Manage Dealer",
                                         onClick = {
                                             selectedScreen = "RegisterUserScreen"
@@ -212,8 +214,8 @@ fun AdminScreen(
                                         }
                                     )
 
-                                    DrawerIte(
-                                        icon = Icons.Filled.ShoppingCart,
+                                    DrawerIteP(
+                                        icon = painterResource(id = R.drawable.insp),
                                         label = "Manage Inspector",
                                         onClick = {
                                             selectedScreen = "RegisterInspector"
@@ -221,8 +223,8 @@ fun AdminScreen(
                                         }
                                     )
 
-                                    DrawerIte(
-                                        icon = Icons.Filled.ShoppingCart,
+                                    DrawerIteP(
+                                        icon = painterResource(id = R.drawable.ad),
                                         label = "Manage Admin",
                                         onClick = {
                                             selectedScreen = "RegisterAdmin"
@@ -230,8 +232,8 @@ fun AdminScreen(
                                         }
                                     )
 
-                                    DrawerIte(
-                                        icon = Icons.Filled.ShoppingCart,
+                                    DrawerIteP(
+                                        icon = painterResource(id = R.drawable.bid),
                                         label = "Bidding",
                                         onClick = {
                                             selectedScreen = "ViewBidNotification"
@@ -246,8 +248,8 @@ fun AdminScreen(
                                         thickness = 1.dp,
                                         modifier = Modifier.padding(vertical = 8.dp)
                                     )
-                                    DrawerIte(
-                                        icon = Icons.Filled.ExitToApp,
+                                    DrawerIteP(
+                                        icon = painterResource(id = R.drawable.log),
                                         label = "Logout",
                                         onClick = { performLogout(navController, context) }
                                     )
@@ -334,6 +336,7 @@ fun AdminScreen(
                         }
                     }
 
+/*
                     "RegisterUserScreen" -> {
                         var selectedTabIndex by remember { mutableStateOf(0) }
                         val tabTitles = listOf("Dealer List", "Create +")
@@ -367,9 +370,11 @@ fun AdminScreen(
                             }
                         }
                     }
-                    "RegisterInspector" -> {
+*/
+
+                    "RegisterUserScreen" -> {
                         var selectedTabIndex by remember { mutableStateOf(0) }
-                        val tabTitles = listOf("Inspector List", "Create +")
+                        val tabTitles = listOf("Dealer List", "Create +")
 
                         Column(modifier = Modifier.padding(paddingValues)) {
                             androidx.compose.material3.TabRow(
@@ -395,12 +400,87 @@ fun AdminScreen(
                             }
 
                             when (selectedTabIndex) {
-                                0 -> InspectorListScreen()
-                                1 -> RegisterInspectorScreen(navController)
+                                0 -> DealerListScreen()
+                                1 -> RegisterUserScreen(navController, onRegistrationSuccess = {
+                                    selectedTabIndex = 0 // Switch to Dealer List tab
+                                })
                             }
                         }
                     }
 
+                    /*
+                                        "RegisterInspector" -> {
+                                            var selectedTabIndex by remember { mutableStateOf(0) }
+                                            val tabTitles = listOf("Inspector List", "Create +")
+
+                                            Column(modifier = Modifier.padding(paddingValues)) {
+                                                androidx.compose.material3.TabRow(
+                                                    selectedTabIndex = selectedTabIndex,
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    containerColor = Color(0xFFF84444)
+                                                ) {
+                                                    tabTitles.forEachIndexed { index, title ->
+                                                        androidx.compose.material3.Tab(
+                                                            selected = selectedTabIndex == index,
+                                                            onClick = { selectedTabIndex = index },
+                                                            text = {
+                                                                Text(
+                                                                    title,
+                                                                    color = if (selectedTabIndex == index) Color.Yellow else Color.White,
+                                                                    fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal
+                                                                )
+                                                            },
+                                                            selectedContentColor = Color.White,
+                                                            unselectedContentColor = Color.Black
+                                                        )
+                                                    }
+                                                }
+
+                                                when (selectedTabIndex) {
+                                                    0 -> InspectorListScreen()
+                                                    1 -> RegisterInspectorScreen(navController)
+                                                }
+                                            }
+                                        }
+                    */
+
+
+                    "RegisterInspector" -> {
+                        val tabTitles = listOf("Inspector List", "Create +")
+
+                        Column(modifier = Modifier.padding(paddingValues)) {
+                            androidx.compose.material3.TabRow(
+                                selectedTabIndex = selectedTabIndex,
+                                modifier = Modifier.fillMaxWidth(),
+                                containerColor = Color(0xFFF84444)
+                            ) {
+                                tabTitles.forEachIndexed { index, title ->
+                                    androidx.compose.material3.Tab(
+                                        selected = selectedTabIndex == index,
+                                        onClick = { selectedTabIndex = index },
+                                        text = {
+                                            Text(
+                                                title,
+                                                color = if (selectedTabIndex == index) Color.Yellow else Color.White,
+                                                fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal
+                                            )
+                                        },
+                                        selectedContentColor = Color.White,
+                                        unselectedContentColor = Color.Black
+                                    )
+                                }
+                            }
+                            when (selectedTabIndex) {
+                                0 -> InspectorListScreen()
+                                1 -> RegisterInspectorScreen(navController, onRegistrationSuccess = {
+                                    // Navigate to the Inspector List tab (index 0)
+                                    selectedTabIndex = 0
+                                })
+                            }
+                        }
+                    }
+
+/*
                     "RegisterAdmin" -> {
                         var selectedTabIndex by remember { mutableStateOf(0) }
                         val tabTitles = listOf("Admin List", "Create +")
@@ -434,6 +514,44 @@ fun AdminScreen(
                             }
                         }
                     }
+*/
+                    "RegisterAdmin" -> {
+                        var selectedTabIndex by remember { mutableStateOf(0) }
+                        val tabTitles = listOf("Admin List", "Create +")
+
+                        Column(modifier = Modifier.padding(paddingValues)) {
+                            androidx.compose.material3.TabRow(
+                                selectedTabIndex = selectedTabIndex,
+                                modifier = Modifier.fillMaxWidth(),
+                                containerColor = Color(0xFFF84444)
+                            ) {
+                                tabTitles.forEachIndexed { index, title ->
+                                    androidx.compose.material3.Tab(
+                                        selected = selectedTabIndex == index,
+                                        onClick = { selectedTabIndex = index },
+                                        text = {
+                                            Text(
+                                                title,
+                                                color = if (selectedTabIndex == index) Color.Yellow else Color.White,
+                                                fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal
+                                            )
+                                        },
+                                        selectedContentColor = Color.White,
+                                        unselectedContentColor = Color.Black
+                                    )
+                                }
+                            }
+
+                            when (selectedTabIndex) {
+                                0 -> AdminListScreen()
+                                1 -> RegisterAdminScreen(navController, onRegistrationSuccess = {
+                                    selectedTabIndex = 0
+                                })
+                            }
+                        }
+                    }
+
+
                     "ViewBidNotification" -> {
                         BiddingScreen(navController = navController)
                     }
