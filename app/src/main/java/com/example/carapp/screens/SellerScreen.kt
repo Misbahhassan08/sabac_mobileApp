@@ -280,7 +280,6 @@ fun CarListScreen(
                             Spacer(modifier = Modifier.height(20.dp))
 
                             Column(
-
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(16.dp),

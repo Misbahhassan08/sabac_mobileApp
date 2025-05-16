@@ -73,20 +73,30 @@ fun BiddingScreen(
     navController: NavController,
     viewModel: BidViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
+    Log.d("bid","heb")
     val notifications by viewModel.notifications.collectAsState()
     val systemUiController = rememberSystemUiController()
     val isLoading by viewModel.isLoading.collectAsState()
     val context = LocalContext.current
 
     systemUiController.isStatusBarVisible = false
-    LaunchedEffect(isLoading) {
+   /* LaunchedEffect(isLoading) {
+        Log.d("bid","hebL")
+
 //        if (!isLoading) {
         while (true) {
             viewModel.fetchNotifications(context)
-            delay(120L)
+            delay(120)
         }
 //        }
+    }*/
+    LaunchedEffect(Unit) {
+        while (true) {
+            viewModel.fetchNotifications(context)
+            delay(500)
+        }
     }
+
     if (notifications.isNotEmpty()) {
         Column(
             modifier = Modifier
@@ -149,22 +159,22 @@ fun NotificationCardB(notification: com.example.carapp.screens.Admin.Notificatio
             ) {
                 Button(
                     onClick = {
-                        sendBidid(notification.bid_id, context)
-                        updateCarStatusB(
-                            context,
-                            notification.id,
-//                            slot.car.salerCarId.toString(),
-                            "sold",
-                            onSuccess = {
-                                Handler(Looper.getMainLooper()).post {
-//                                    navController.navigate("report/${slot.car.salerCarId}")
-                                }
-                            },
-                            onFailure = { errorMessage ->
-                                Log.e("API_ERROR", "Failed to update status: $errorMessage")
-                            }
-                        )
-                        onDismiss()
+//                        sendBidid(notification.bid_id, context)
+//                        updateCarStatusB(
+//                            context,
+//                            notification.id,
+////                            slot.car.salerCarId.toString(),
+//                            "sold",
+//                            onSuccess = {
+//                                Handler(Looper.getMainLooper()).post {
+////                                    navController.navigate("report/${slot.car.salerCarId}")
+//                                }
+//                            },
+//                            onFailure = { errorMessage ->
+//                                Log.e("API_ERROR", "Failed to update status: $errorMessage")
+//                            }
+//                        )
+//                        onDismiss()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF4CAF50),

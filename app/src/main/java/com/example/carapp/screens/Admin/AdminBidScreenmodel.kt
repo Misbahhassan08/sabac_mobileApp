@@ -34,12 +34,16 @@ class BidViewModel : ViewModel() {
     private val _notifications = MutableStateFlow<List<NotificationItem>>(emptyList())
     val notifications: StateFlow<List<NotificationItem>> = _notifications
 
+/*
     fun fetchNotifications(context: Context) {
+        Log.d("bid","NOTIFICATION")
+
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("bid","NOTIFICATION_ent")
             try {
                 val token = getToken(context)
                 val client = OkHttpClient()
-
+                Log.d("bid","NOTIFICATION_enter")
                 val request = Request.Builder()
                     .url(TestApi.Bid_notification_for_seller)
                     .get()
@@ -47,8 +51,9 @@ class BidViewModel : ViewModel() {
                         token?.let { addHeader("Authorization", "Bearer $it") }
                     }
                     .build()
-
+                Log.d("bid","NOTIFICATION_build")
                 val response = client.newCall(request).execute()
+                Log.d("bid","NOTIFICATION_response")
                 if (response.isSuccessful) {
                     val jsonResponse = response.body?.string()
                     Log.d("FetchNotificationsB", "Response: $jsonResponse")
@@ -62,6 +67,55 @@ class BidViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                Log.d("bid","NOTIFICATION_error")
+            }
+        }
+    }
+*/
+
+    fun fetchNotifications(context: Context) {
+        Log.d("bid","NOTIFICATION")
+
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("bid","NOTIFICATION_ent")
+            try {
+                val token = getToken(context)
+                val client = OkHttpClient.Builder()
+                    .build()
+                Log.d("bid","NOTIFICATION_enter")
+
+                val request = Request.Builder()
+                    .url(TestApi.Bid_notification_for_seller)
+                    .get()
+                    .apply {
+                        token?.let {
+                            addHeader("Authorization", "Bearer $it")
+                            Log.d("bid", "Token added: $it")
+                        }
+                    }
+                    .build()
+
+                Log.d("bid","NOTIFICATION_build")
+
+                val response = client.newCall(request).execute()
+                Log.d("bid", "HTTP Status: ${response.code}")
+                val jsonResponse = response.body?.string()
+                Log.d("bid", "Raw Response: $jsonResponse")
+
+                if (response.isSuccessful) {
+                    val notificationsList = Gson().fromJson(jsonResponse, Array<NotificationItem>::class.java).toList()
+                    _notifications.value = notificationsList
+                    Log.d("bid", "Parsed Notifications: $notificationsList")
+
+                    if (notificationsList.isNotEmpty()) {
+                        markNotificationsAsRead(context, notificationsList.map { it.id })
+                    }
+                } else {
+                    Log.e("bid", "Request failed: ${response.message}")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.d("bid","NOTIFICATION_error: ${e.localizedMessage}")
             }
         }
     }

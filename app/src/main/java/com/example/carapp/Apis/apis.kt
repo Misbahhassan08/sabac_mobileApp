@@ -23,7 +23,7 @@ object TestApi{
     const val Post_UserInfo = "$Base_url/post_additional_details/"
     const val Post_BookSlot = "$Base_url/select_slot/"
     const val get_user_cars = "$Base_url/get_user_cars/"
-    const val Bid_notification_for_seller = "$Base_url/Bid_notification_for_seller/"
+    const val Bid_notification_for_seller = "$Base_url/bid_notification_for_seller/"
     const val mark_bid_notifications_as_read = "$Base_url/mark_bid_notifications_as_read/"
     const val accept_bid = "$Base_url/accept_bid/"
     const val reject_bid = "$Base_url/reject_bid/"
