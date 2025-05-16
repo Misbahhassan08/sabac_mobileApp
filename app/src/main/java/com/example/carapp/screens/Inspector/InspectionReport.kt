@@ -427,9 +427,11 @@ fun Inspectionreport(navController: NavController, id: String) {
                     }
                 }
             }
-
+            var isSubmitting by remember { mutableStateOf(false) }
+            // if in Submition of report got error check this its original
+            // in new code added loadin animation inside the button
             // Submit Button
-            Button(
+           /* Button(
                 onClick = {
                     Log.d("PRE_SUBMIT_DEBUG", "All body parts before submission:")
                     inspectionData.bodyPartsInspection.forEach { (part, conditions) ->
@@ -491,6 +493,67 @@ fun Inspectionreport(navController: NavController, id: String) {
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text("Submit report", fontSize = 16.sp)
+            }*/
+            Button(
+                onClick = {
+                    isSubmitting = true // Start loading
+
+                    getToken(context)?.let { token ->
+                        latestTechSpecs.value?.let { specs ->
+                            inspectionData.technicalSpecifications.value = specs
+                            logCompleteInspection(inspectionData)
+                        }
+
+                        inspectionData.updateBasicInformation(inputFields)
+                        inspectionData.updateTechnicalSpecifications(inputFields)
+
+                        updateStatus(
+                            context = context,
+                            carId = id,
+                            status = "await_approval",
+                            onSuccess = {
+                                update_status_inspection(context, id) { success ->
+                                    if (success) {
+                                        postInspectionReport(
+                                            context = context,
+                                            navController = navController,
+                                            id = id,
+                                            inspectionData = inspectionData,
+                                            token = token
+                                        )
+                                    } else {
+                                        Log.e("API_ERROR", "Failed to POST empty body to inspection endpoint.")
+                                    }
+                                    isSubmitting = false // Stop loading
+                                }
+                            },
+                            onFailure = { errorMessage ->
+                                Log.e("API_ERROR", "Failed to update status: $errorMessage")
+                                isSubmitting = false // Stop loading
+                            }
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = redcolor,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(8.dp),
+                enabled = !isSubmitting // Disable button while loading
+            ) {
+                if (isSubmitting) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier
+                            .size(20.dp)
+                    )
+                } else {
+                    Text("Submit report", fontSize = 16.sp)
+                }
             }
         }
     }

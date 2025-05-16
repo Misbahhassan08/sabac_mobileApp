@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "59035099532",
+    "project_id": "carmobileapp-sabac",
+    "storage_bucket": "carmobileapp-sabac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:59035099532:android:b3afac3901c454d30536a9",
+        "android_client_info": {
+          "package_name": "com.example.carapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFP1A5U2SWuamhXFAzvBirLVaY9TAPKf8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

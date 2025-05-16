@@ -1,6 +1,8 @@
 package com.example.carapp.screens
 
 import android.content.ContentValues.TAG
+import androidx.activity.compose.BackHandler
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -240,6 +242,10 @@ fun LoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+
+    BackHandler {
+        (context as? Activity)?.finish()
+    }
 
     Box(
         modifier = Modifier.background(redcolor)

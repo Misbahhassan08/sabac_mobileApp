@@ -53,6 +53,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -99,7 +100,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 
-@Composable
+/*@Composable
 fun RegisterAdminScreen(
     navController: NavController,
     onRegistrationSuccess: () -> Unit
@@ -112,6 +113,15 @@ fun RegisterAdminScreen(
     var phonenumber by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+
+    // Error States
+    var firstNameError by remember { mutableStateOf(false) }
+    var lastNameError by remember { mutableStateOf(false) }
+    var usernameError by remember { mutableStateOf(false) }
+    var emailError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
+    var phoneNumberError by remember { mutableStateOf(false) }
+    var addressError by remember { mutableStateOf(false) }
 
     var expanded by remember { mutableStateOf(false) }
     val roles = listOf("dealer", "inspector", "admin")
@@ -247,14 +257,6 @@ fun RegisterAdminScreen(
                 leadingIcon = Icons.Default.LocationOn
             )
 
-            /*DropdownInput(
-                label = "Select Role",
-                options = roles,
-                selected = selectedRole,
-                onSelected = { selectedRole = it }
-            )*/
-
-
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
@@ -286,24 +288,348 @@ fun RegisterAdminScreen(
                     Text("Register", fontSize = 16.sp)
                 }
             }
+        }
+    }
+}*/
+@Composable
+fun RegisterAdminScreen(
+    navController: NavController,
+    onRegistrationSuccess: () -> Unit
+) {
+    var firstname by remember { mutableStateOf("") }
+    var lastname by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var phonenumber by remember { mutableStateOf("") }
+    var address by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
-            Spacer(modifier = Modifier.height(10.dp))
-//            Row(modifier = Modifier.align(Alignment.Start)) {
-//                Text(text = "Already a user?", fontSize = 12.sp, fontWeight = FontWeight.Normal, color = Color.White)
-//                Spacer(modifier = Modifier.width(8.dp))
-//                Text(
-//                    text = "Log In",
-//                    fontSize = 12.sp,
-//                    fontWeight = FontWeight.Medium,
-//                    color = Color.White,
-//                    textDecoration = TextDecoration.Underline,
-//                    modifier = Modifier.clickable { navController.navigate("login") }
-//                )
-//            }
+    // Add error states for each field
+    var firstNameError by remember { mutableStateOf(false) }
+    var lastNameError by remember { mutableStateOf(false) }
+    var usernameError by remember { mutableStateOf(false) }
+    var emailError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
+    var phoneNumberError by remember { mutableStateOf(false) }
+    var addressError by remember { mutableStateOf(false) }
+
+    var apiErrorMessage by remember { mutableStateOf<String?>(null) }
+    var emailFormatError by remember { mutableStateOf(false) }
+    var phoneFormatError by remember { mutableStateOf(false) }
+
+    var expanded by remember { mutableStateOf(false) }
+    val roles = listOf("dealer", "inspector", "admin")
+    var selectedRole by remember { mutableStateOf(roles.first()) }
+    val coroutineScope = rememberCoroutineScope()
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    // Show API error message if exists
+    apiErrorMessage?.let { message ->
+        LaunchedEffect(message) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            apiErrorMessage = null // Clear after showing
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF8F9FA))
+            .padding(24.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        // Header Section
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Image(
+                painter = painterResource(id = R.drawable.car1),
+                contentDescription = "Logo",
+                modifier = Modifier.size(120.dp),
+                contentScale = ContentScale.Fit
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Create Admin Account",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color(0xFF2C3E50),
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Form Section
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp) // Fixed spacing
+        ) {
+            // Name Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                EnhancedTextField(
+                    label = "First Name *",
+                    value = firstname,
+                    onValueChange = {
+                        firstname = it
+                        firstNameError = it.isBlank()
+                    },
+                    modifier = Modifier.weight(1f),
+                    leadingIcon = Icons.Default.Person,
+                    isError = firstNameError,
+                    errorMessage = if (firstNameError) "First name is required" else null
+                )
+
+                EnhancedTextField(
+                    label = "Last Name *",
+                    value = lastname,
+                    onValueChange = {
+                        lastname = it
+                        lastNameError = it.isBlank()
+                    },
+                    modifier = Modifier.weight(1f),
+                    leadingIcon = Icons.Default.Person,
+                    isError = lastNameError,
+                    errorMessage = if (lastNameError) "Last name is required" else null
+                )
+            }
+
+            EnhancedTextField(
+                label = "Username *",
+                value = username,
+                onValueChange = {
+                    username = it
+                    usernameError = it.isBlank()
+                },
+                leadingIcon = Icons.Default.AccountCircle,
+                isError = usernameError,
+                errorMessage = if (usernameError) "Username is required" else null
+            )
+
+            EnhancedTextField(
+                label = "Email *",
+                value = email,
+                onValueChange = {
+                    email = it
+                    emailError = it.isBlank()
+                    emailFormatError = it.isNotBlank() && !isValidEmail(it)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                leadingIcon = Icons.Default.Email,
+                isError = emailError || emailFormatError,
+                errorMessage = when {
+                    emailError -> "Email is required"
+                    emailFormatError -> "Please enter a valid email"
+                    else -> null
+                }
+            )
+
+            EnhancedTextField(
+                label = "Password *",
+                value = password,
+                onValueChange = {
+                    password = it
+                    passwordError = it.isBlank()
+                },
+                visualTransformation = if (passwordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                trailingIcon = {
+                    val image = if (passwordVisible) {
+                        Icons.Default.Lock
+                    } else {
+                        Icons.Default.Lock
+                    }
+                    val description = if (passwordVisible) "Hide password" else "Show password"
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = image,
+                            contentDescription = description,
+                            tint = Color(0xFF7F8C8D)
+                        )
+                    }
+                },
+                leadingIcon = Icons.Default.Lock,
+                isError = passwordError,
+                errorMessage = if (passwordError) "Password is required" else null
+            )
+
+            /*EnhancedTextField(
+                label = "Phone Number *",
+                value = phonenumber,
+                onValueChange = {
+                    phonenumber = it
+                    phoneNumberError = it.isBlank()
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                leadingIcon = Icons.Default.Phone,
+                isError = phoneNumberError,
+                errorMessage = if (phoneNumberError) "Phone number is required" else null
+            )*/
+            EnhancedTextField(
+                label = "Phone Number *",
+                value = phonenumber,
+                onValueChange = {
+                    phonenumber = it
+                    phoneNumberError = it.isBlank()
+                    phoneFormatError = it.isNotBlank() && !isValidPhoneNumber(it)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                leadingIcon = Icons.Default.Phone,
+                isError = phoneNumberError || phoneFormatError,
+                errorMessage = when {
+                    phoneNumberError -> "Phone number is required"
+                    phoneFormatError -> "Please enter 10-15 digits"
+                    else -> null
+                }
+            )
+
+            EnhancedTextField(
+                label = "Address *",
+                value = address,
+                onValueChange = {
+                    address = it
+                    addressError = it.isBlank()
+                },
+                singleLine = false,
+                maxLines = 3,
+                leadingIcon = Icons.Default.LocationOn,
+                isError = addressError,
+                errorMessage = if (addressError) "Address is required" else null
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+               /* onClick = {
+                    // Validate all fields before submission
+                    firstNameError = firstname.isBlank()
+                    lastNameError = lastname.isBlank()
+                    usernameError = username.isBlank()
+                    emailError = email.isBlank()
+                    passwordError = password.isBlank()
+                    phoneNumberError = phonenumber.isBlank()
+                    addressError = address.isBlank()
+
+                    val isValid = !firstNameError && !lastNameError && !usernameError &&
+                            !emailError && !passwordError && !phoneNumberError &&
+                            !addressError
+
+                    if (isValid) {
+                        coroutineScope.launch {
+                            isLoading = true
+                            val result = registerUserA(
+                                context = context,
+                                navController = navController,
+                                firstname = firstname,
+                                lastname = lastname,
+                                username = username,
+                                email = email,
+                                password = password,
+                                phonenumber = phonenumber,
+                                address = address
+                            ).also { response ->
+                                Log.d("RegisterScreen", "API Response: $response")
+
+                                // Check if response contains error
+                                if (response.startsWith("Error:")) {
+                                    apiErrorMessage = response.removePrefix("Error: ")
+                                } else {
+                                    // Success case - navigate only if API was successful
+                                    onRegistrationSuccess()
+                                }
+                            }
+                            isLoading = false*/
+                onClick = {
+                    // Validate all fields before submission
+                    firstNameError = firstname.isBlank()
+                    lastNameError = lastname.isBlank()
+                    usernameError = username.isBlank()
+                    emailError = email.isBlank()
+                    emailFormatError = email.isNotBlank() && !isValidEmail(email)
+                    passwordError = password.isBlank()
+                    phoneNumberError = phonenumber.isBlank()
+                    phoneFormatError = phonenumber.isNotBlank() && !isValidPhoneNumber(phonenumber)
+                    addressError = address.isBlank()
+
+                    val isValid = !firstNameError && !lastNameError && !usernameError &&
+                            !emailError && !emailFormatError && !passwordError &&
+                            !phoneNumberError && !phoneFormatError && !addressError
+
+                    if (isValid) {
+                        coroutineScope.launch {
+                            isLoading = true
+                            val result = registerUserA(
+                                context = context,
+                                navController = navController,
+                                firstname = firstname,
+                                lastname = lastname,
+                                username = username,
+                                email = email,
+                                password = password,
+                                phonenumber = phonenumber,
+                                address = address
+                            ).also { response ->
+                                Log.d("RegisterScreen", "API Response: $response")
+                                if (response.startsWith("Error:")) {
+                                    apiErrorMessage = response.removePrefix("Error: ")
+                                } else {
+                                    onRegistrationSuccess()
+                                }
+                            }
+                            isLoading = false
+                        }
+                    } else {
+                        apiErrorMessage = "Please fill all required fields"
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(8.dp),
+                enabled = !isLoading
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+                } else {
+                    Text("Register", fontSize = 16.sp)
+                }
+            }
         }
     }
 }
+fun isValidEmail(email: String): Boolean {
+    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+    return email.matches(emailRegex.toRegex())
+}
 
+fun isValidPhoneNumber(phone: String): Boolean {
+    val phoneRegex = "^[0-9]{10,15}\$" // Allows 10-15 digits
+    return phone.matches(phoneRegex.toRegex())
+}
 suspend fun registerUserA(
     context: android.content.Context,
     navController: NavController,
@@ -402,7 +728,7 @@ suspend fun registerUserA(
     }
 }
 
-@Composable
+/*@Composable
 fun EnhancedTextField(
     label: String,
     value: String,
@@ -413,7 +739,9 @@ fun EnhancedTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = true,
-    maxLines: Int = 1
+    maxLines: Int = 1,
+    isError: Boolean = false,
+    errorMessage: String? = null,
 ) {
     OutlinedTextField(
         value = value,
@@ -438,6 +766,7 @@ fun EnhancedTextField(
                 )
             }
         },
+        isError = isError,
         trailingIcon = trailingIcon,
         modifier = modifier
             .fillMaxWidth()
@@ -455,6 +784,173 @@ fun EnhancedTextField(
             cursorColor = Color(0xFF2C3E50)
         )
     )
+    if (isError && errorMessage != null) {
+        Text(
+            text = errorMessage,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+        )
+    }
+}*/
+/*@Composable
+fun EnhancedTextField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    leadingIcon: ImageVector? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    singleLine: Boolean = true,
+    maxLines: Int = 1,
+    isError: Boolean = false,
+    errorMessage: String? = null,
+) {
+    Column(modifier = modifier) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D)
+                )
+            },
+            singleLine = singleLine,
+            maxLines = maxLines,
+            keyboardOptions = keyboardOptions,
+            visualTransformation = visualTransformation,
+            leadingIcon = leadingIcon?.let {
+                @Composable {
+                    Icon(
+                        imageVector = it,
+                        contentDescription = null,
+                        tint = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D)
+                    )
+                }
+            },
+            isError = isError,
+            trailingIcon = trailingIcon,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = if (singleLine) 56.dp else 80.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedTextColor = Color(0xFF2C3E50),
+                unfocusedTextColor = Color(0xFF2C3E50),
+                focusedLabelColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF2C3E50),
+                unfocusedLabelColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D),
+                focusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF2C3E50),
+                unfocusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFFBDC3C7),
+                cursorColor = Color(0xFF2C3E50)
+            )
+        )
+
+        // Error message with fixed height to prevent layout shifts
+        Box(modifier = Modifier.height(20.dp)) {
+            if (isError && errorMessage != null) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                )
+            }
+        }
+    }
+}*/
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EnhancedTextField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    leadingIcon: ImageVector? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    singleLine: Boolean = true,
+    maxLines: Int = 1,
+    isError: Boolean = false,
+    errorMessage: String? = null,
+) {
+    Column(modifier = modifier) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D)
+                )
+            },
+            singleLine = singleLine,
+            maxLines = maxLines,
+            keyboardOptions = keyboardOptions,
+            visualTransformation = visualTransformation,
+            leadingIcon = leadingIcon?.let {
+                @Composable {
+                    Icon(
+                        imageVector = it,
+                        contentDescription = null,
+                        tint = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D)
+                    )
+                }
+            },
+            isError = isError,
+            trailingIcon = trailingIcon,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = if (singleLine) 56.dp else 80.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                // Container colors
+                containerColor = Color.White,
+//                unfocusedContainerColor = Color.White,
+                errorContainerColor = Color.White,
+
+                // Text colors
+//                textColor = Color(0xFF2C3E50),
+                unfocusedTextColor = Color(0xFF2C3E50),
+                errorTextColor = Color(0xFF2C3E50),
+
+                // Label colors
+                focusedLabelColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF2C3E50),
+                unfocusedLabelColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D),
+
+                // Border colors
+                focusedBorderColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF2C3E50),
+                unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFFBDC3C7),
+                errorBorderColor = MaterialTheme.colorScheme.error,
+
+                // Cursor color
+                cursorColor = Color(0xFF2C3E50),
+
+                // Placeholder color
+//                placeholderColor = Color(0xFF7F8C8D),
+                unfocusedPlaceholderColor = Color(0xFF7F8C8D)
+            )
+        )
+
+        // Error message with fixed height to prevent layout shifts
+        Box(modifier = Modifier.height(20.dp)) {
+            if (isError && errorMessage != null) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                )
+            }
+        }
+    }
 }
 @Composable
 fun TextInputA(name: String, value: String, onChange: (String) -> Unit) {

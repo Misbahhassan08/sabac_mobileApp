@@ -463,6 +463,7 @@ class   ViewReportModel : ViewModel() {
 
     */
 
+/*
         fun fetchReport(carId: String, context: Context) {
             _isLoading.value = true
 
@@ -541,7 +542,80 @@ class   ViewReportModel : ViewModel() {
                 }
             })
         }
+*/
+
+    fun fetchReport(carId: String, context: Context) {
+        _isLoading.value = true
+
+        val url = "${TestApi.get_inspection_report}?car_id=$carId"
+        val token = getToken(context)
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .apply { token?.let { addHeader("Authorization", "Bearer $it") } }
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("ViewReportModel", "API call failed: ${e.message}")
+                e.printStackTrace()
+                viewModelScope.launch { _isLoading.value = false }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseBody = response.body?.string()
+                Log.d("ViewReportModelR", "RAW RESPONSE: ${responseBody.toString()}")
+                Log.d("ViewReportModel", "Response Code: ${response.code}")
+                Log.d("ViewReportModel", "Response Body: $responseBody")
+
+                if (response.isSuccessful) {
+                    try {
+                        responseBody?.let {
+                            val jsonObject = JSONObject(it)
+                            val reportList = mutableListOf<Report>()
+
+                            val report = Report(
+                                id = jsonObject.getInt("id"),
+                                inspectorId = jsonObject.getInt("inspector"),
+                                salerCarId = jsonObject.getInt("saler_car"),
+                                createdAt = jsonObject.getString("created_at"),
+                                isAccepted = jsonObject.getBoolean("is_accepted"),
+                                isRejected = jsonObject.getBoolean("is_rejected"),
+                                jsonObj = if (!jsonObject.isNull("json_obj")) {
+                                    try {
+                                        parseInspectionData(jsonObject.getJSONObject("json_obj"))
+                                    } catch (e: Exception) {
+                                        Log.e(
+                                            "ViewReportModel",
+                                            "Error parsing inspection data: ${e.message}"
+                                        )
+                                        null
+                                    }
+                                } else null
+                            )
+
+                            reportList.add(report)
+
+                            viewModelScope.launch {
+                                _reportList.value = reportList
+                                _report.value = reportList.firstOrNull()
+                                _isLoading.value = false
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("ViewReportModel", "Error parsing JSON: ${e.message}")
+                        viewModelScope.launch { _isLoading.value = false }
+                    }
+                } else {
+                    Log.e("ViewReportModel", "API request failed with code: ${response.code}")
+                    viewModelScope.launch { _isLoading.value = false }
+                }
+            }
+        })
     }
+
+}
 
     private fun parseInspectionData(jsonObj: JSONObject): InspectionData? {
         val keys = jsonObj.keys()

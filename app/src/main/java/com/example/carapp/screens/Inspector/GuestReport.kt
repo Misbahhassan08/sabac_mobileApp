@@ -63,6 +63,7 @@ fun ViewReportScreen(
     navController: NavController,
     viewModel: ViewReportModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
+    Log.d("ViewReportScreen", "............... reported Screen ")
     val context = LocalContext.current
     val report by viewModel.report.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()

@@ -527,7 +527,7 @@ fun UserInfoForm(navController: NavController) {
     var username by rememberSaveable { mutableStateOf(storedUsername) }
     var firstname by rememberSaveable { mutableStateOf(storedFirstname) }
     var lastname by rememberSaveable { mutableStateOf(storedLastname) }
-    var phone by rememberSaveable { mutableStateOf(storedPhone) }
+    var phone by rememberSaveable { mutableStateOf("") }
     var userId by rememberSaveable { mutableStateOf(storedId) }
     var secondaryPhone by remember { mutableStateOf("") }
 

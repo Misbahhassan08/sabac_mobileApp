@@ -31,6 +31,7 @@ class   ViewBidModel : ViewModel() {
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    /*
     fun fetchReport(carId: String, context: Context) {
         _isLoading.value = true
 
@@ -49,13 +50,6 @@ class   ViewBidModel : ViewModel() {
                 e.printStackTrace()
                 viewModelScope.launch { _isLoading.value = false }
             }
-
-            //            override fun onResponse(call: Call, response: Response) {
-//                val responseBody = response.body?.string()
-//                Log.d("Respo", "RESPONSE CODE: ${response.code}")
-//                Log.d("Response", "FULL RESPONSE:\n$responseBody")
-//                viewModelScope.launch { _isLoading.value = false }
-//            }
             override fun onResponse(call: Call, response: Response) {
                 val responseBody = response.body?.string()
                 Log.d("Response", "FULL RESPONSE:\n$responseBody")
@@ -92,7 +86,65 @@ class   ViewBidModel : ViewModel() {
 
         })
     }
+*/
+    fun fetchReport(carId: String, context: Context) {
+        _isLoading.value = true
+
+        val url = "${TestApi.get_inspection_report}?car_id=$carId"
+        val token = getToken(context)
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .apply {
+                token?.let { addHeader("Authorization", "Bearer $it") }
+            }
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("ViewReportModel", "API call failed: ${e.message}")
+                e.printStackTrace()
+                viewModelScope.launch { _isLoading.value = false }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseBody = response.body?.string()
+                Log.d("Response", "FULL RESPONSE:\n$responseBody")
+
+                viewModelScope.launch {
+                    _isLoading.value = false
+
+                    responseBody?.let {
+                        try {
+                            val parsedReport: ReportResponse =
+                                Gson().fromJson(it, ReportResponse::class.java)
+
+                            _report.value = Report(
+                                id = parsedReport.id,
+                                carName = parsedReport.jsonObj.carDetail.basicInfo.carName,
+                                carModel = parsedReport.jsonObj.carDetail.basicInfo.carModel,
+                                bodyColor = parsedReport.jsonObj.carDetail.basicInfo.bodyColor,
+                                company = parsedReport.jsonObj.carDetail.basicInfo.company,
+                                condition = parsedReport.jsonObj.carDetail.techSpecs.condition,
+                                assembly = parsedReport.jsonObj.carDetail.techSpecs.assembly,
+                                engineCapacity = parsedReport.jsonObj.carDetail.techSpecs.engineCapacity,
+                                fuelType = parsedReport.jsonObj.carDetail.techSpecs.fuelType,
+                                kmsDriven = parsedReport.jsonObj.carDetail.techSpecs.kmsDriven,
+                                variant = parsedReport.jsonObj.carDetail.techSpecs.variant
+                            )
+
+                        } catch (e: Exception) {
+                            Log.e("ViewReportModel2", "Parsing error: ${e.message}")
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+        })
+    }
 }
+
 data class Report(
     val id: Int,
     val carName: String,
@@ -107,6 +159,10 @@ data class Report(
     val variant: String
 )
 
+data class ReportWrapper(
+    val status: Boolean,
+    val data: List<ReportResponse>
+)
 
 data class ReportResponse(
     val id: Int,

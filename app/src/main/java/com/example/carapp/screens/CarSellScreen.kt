@@ -47,6 +47,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -75,6 +76,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -121,6 +123,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -469,7 +472,7 @@ fun CarSellScreen(navController: NavController) {
                         selectedImages = selectedImagesCard1,
                         showError = imagesError.value,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        cardName = "Test Case"
+                        cardName = "Seller images"
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -543,7 +546,19 @@ fun CarSellScreen(navController: NavController) {
                                 .padding(horizontal = 16.dp)
                                 .padding(bottom = 16.dp)
                         ) {
-                            Button(
+                            // Button loading animation
+                            var isLoading by remember { mutableStateOf(false) }
+
+//                            if (isLoading) {
+//                                CircularProgressIndicator(
+//                                    modifier = Modifier
+//                                        .align(Alignment.CenterHorizontally)
+//                                        .padding(16.dp),
+//                                    color = redcolor
+//                                )
+//                            }
+
+                            /*Button(
                                 onClick = {
                                     Log.d("FORM_SUBMIT", "Button pressed - starting validation")
 
@@ -632,6 +647,190 @@ fun CarSellScreen(navController: NavController) {
                                 enabled = true
                             ) {
                                 Text("Book Inspection", fontSize = 16.sp)
+                            }*/
+                            Button(
+                                /*onClick = {
+                                    Log.d("FORM_SUBMIT", "Button pressed - starting validation")
+
+                                    if (selectedOption == "Self") {
+                                        Log.d("FORM_SUBMIT", "Self option selected")
+
+                                        isLoading = true // Start loader
+
+                                        // Reset all errors
+                                        inputFields.forEach { (_, fieldState) ->
+                                            fieldState.error.value = false
+                                        }
+
+                                        // Validate input fields
+                                        var hasErrors = false
+                                        inputFields.forEach { (fieldName, fieldState) ->
+                                            val config = dropdownOptions[fieldName]
+                                            if (config?.isRequired == true && fieldState.value.value.isBlank()) {
+                                                fieldState.error.value = true
+                                                fieldState.errorMessage.value = "This field is required"
+                                                hasErrors = true
+                                            }
+                                        }
+
+                                        if (!hasErrors) {
+                                            val imageFiles = AssetHelper.getTempAssets(context)
+                                                .filter { it.isFile && it.exists() }
+
+                                            Log.d("IMAGE_DEBUG", "Found ${imageFiles.size} valid images to upload")
+
+                                            if (imageFiles.isNotEmpty()) {
+                                                // Upload images
+                                                viewModel.uploadImages(imageFiles.map { it.absolutePath }) { uploadResults ->
+                                                    val successfulUploads = uploadResults.filter {
+                                                        it.second?.get("success")?.asBoolean == true
+                                                    }
+
+                                                    val imageUrls = successfulUploads.mapNotNull {
+                                                        it.second?.get("image_url")?.asString
+                                                    }
+
+                                                    Log.d("IMAGE_URLS", "Successfully uploaded URLs: $imageUrls")
+
+                                                    saveAndLogFormData(
+                                                        selectedOption = selectedOption,
+                                                        inputFields = inputFields,
+                                                        context = context,
+                                                        imageUrls = imageUrls
+                                                    )
+
+                                                    AssetHelper.clearTempAssets(context)
+
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Submitted with ${imageUrls.size} image(s)",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+
+                                                    isLoading = false
+                                                    navController.navigate("info") {
+                                                        popUpTo(navController.graph.startDestinationId) {
+                                                            saveState = true
+                                                        }
+                                                        launchSingleTop = true
+                                                        restoreState = true
+                                                    }
+                                                }
+                                            } else {
+                                                Log.d("IMAGE_DEBUG", "No images found in temp assets")
+                                                isLoading = false
+                                                Toast.makeText(
+                                                    context,
+                                                    "Please attach at least one image before submitting.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        } else {
+                                            isLoading = false
+                                        }
+                                    }
+                                },*/
+                                onClick = {
+                                    Log.d("FORM_SUBMIT", "Button pressed - starting validation")
+
+                                    if (selectedOption == "Self") {
+                                        Log.d("FORM_SUBMIT", "Self option selected")
+
+                                        isLoading = true // Start loader
+
+                                        // Reset all errors
+                                        inputFields.forEach { (_, fieldState) ->
+                                            fieldState.error.value = false
+                                        }
+
+                                        // Validate input fields
+                                        var hasErrors = false
+                                        inputFields.forEach { (fieldName, fieldState) ->
+                                            val config = dropdownOptions[fieldName]
+                                            if (config?.isRequired == true && fieldState.value.value.isBlank()) {
+                                                fieldState.error.value = true
+                                                fieldState.errorMessage.value = "This field is required"
+                                                hasErrors = true
+                                            }
+                                        }
+
+                                        if (!hasErrors) {
+                                            val imageFiles = AssetHelper.getTempAssets(context)
+                                                .filter { it.isFile && it.exists() }
+
+                                            Log.d("IMAGE_DEBUG", "Found ${imageFiles.size} valid images to upload")
+
+                                            if (imageFiles.isNotEmpty()) {
+                                                // Upload images
+                                                viewModel.uploadImages(imageFiles.map { it.absolutePath }) { uploadResults ->
+                                                    val successfulUploads = uploadResults.filter {
+                                                        it.second?.get("success")?.asBoolean == true
+                                                    }
+
+                                                    val imageUrls = successfulUploads.mapNotNull {
+                                                        it.second?.get("image_url")?.asString
+                                                    }
+
+                                                    Log.d("IMAGE_URLS", "Successfully uploaded URLs: $imageUrls")
+
+                                                    saveAndLogFormData(
+                                                        selectedOption = selectedOption,
+                                                        inputFields = inputFields,
+                                                        context = context,
+                                                        imageUrls = imageUrls
+                                                    )
+
+                                                    AssetHelper.clearTempAssets(context)
+
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Submitted with ${imageUrls.size} image(s)",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+
+                                                    isLoading = false
+                                                    navController.navigate("info") {
+                                                        popUpTo(navController.graph.startDestinationId) {
+                                                            saveState = true
+                                                        }
+                                                        launchSingleTop = true
+                                                        restoreState = true
+                                                    }
+                                                }
+                                            } else {
+                                                Log.d("IMAGE_DEBUG", "No images found in temp assets")
+                                                isLoading = false
+                                                Toast.makeText(
+                                                    context,
+                                                    "Please attach at least one image before submitting.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        } else {
+                                            isLoading = false
+                                            // Show toast for validation failure
+                                            Toast.makeText(
+                                                context,
+                                                "Please fill all fields",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(containerColor = redcolor),
+                                shape = RoundedCornerShape(8.dp),
+                                enabled = !isLoading // Disable while loading
+                            ) {
+                                if (isLoading) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(20.dp),
+                                        color = Color.Red,
+                                        strokeWidth = 2.dp
+                                    )
+                                } else {
+                                    Text("Book Inspection", fontSize = 16.sp)
+                                }
                             }
                         }
                     }
@@ -809,6 +1008,169 @@ fun ProfessionalInputFields(
 }
 
 
+/*
+@Composable
+fun ProfessionalInputFields(
+    inputFields: Map<String, FieldState>,
+    iconMapping: Map<String, Int>,
+    dropdownOptions: Map<String, DropdownConfig>
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        inputFields.keys.forEach { fieldName ->
+            val fieldState = inputFields[fieldName] ?: return@forEach
+            val textFieldValue = fieldState.value.value
+            var expanded by remember { mutableStateOf(false) }
+            val config = dropdownOptions[fieldName]
+            val suggestions = config?.options ?: emptyList()
+            val isDropdown = config?.inputType == InputType.Dropdown
+            val isRequired = config?.isRequired ?: false
+            val validation = config?.validation
+            val isNumericField = fieldName in listOf("Price (PKR)", "Phone Number", "Engine Capacity", "KMs Driven")
+            val numericRegex = Regex("^[0-9,]*$")
+            val showError = fieldState.error.value
+
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = fieldName,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = if (fieldState.error.value) MaterialTheme.colorScheme.error else Color.Gray,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        if (isRequired) {
+                            Text(
+                                text = " *",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                        }
+                    }
+
+                    Box {
+                        OutlinedTextField(
+                            value = textFieldValue,
+                            onValueChange = { newValue ->
+                                if (isNumericField && !numericRegex.matches(newValue)) {
+                                    fieldState.error.value = true
+                                    fieldState.errorMessage.value = "Only numbers are allowed"
+                                } else {
+                                    fieldState.value.value = newValue
+                                    fieldState.error.value = false
+                                }
+
+                                if (validation != null && !validation(newValue)) {
+                                    fieldState.error.value = true
+                                    fieldState.errorMessage.value = "Invalid format"
+                                } else {
+                                    fieldState.error.value = false
+                                }
+                            },
+                            placeholder = { Text("Enter ${fieldName.lowercase()}") },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = if (fieldState.error.value) MaterialTheme.colorScheme.error
+                                else Color(0xFF1976D2),
+                                unfocusedBorderColor = if (fieldState.error.value) MaterialTheme.colorScheme.error
+                                else Color.Gray,
+                                cursorColor = Color(0xFF1976D2),
+                                errorBorderColor = MaterialTheme.colorScheme.error,
+                                errorLabelColor = MaterialTheme.colorScheme.error,
+                                errorSupportingTextColor = MaterialTheme.colorScheme.error
+                            ),
+                            isError = fieldState.error.value,
+                            supportingText = {
+                                if (fieldState.error.value) {
+                                    Text(
+                                        text = fieldState.errorMessage.value,
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            },
+                            leadingIcon = {
+                                iconMapping[fieldName]?.let { iconResId ->
+                                    Image(
+                                        painter = painterResource(id = iconResId),
+                                        contentDescription = "$fieldName Icon",
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+                            },
+                            trailingIcon = {
+                                if (isDropdown) {
+                                    Icon(
+                                        imageVector = if (expanded) Icons.Default.KeyboardArrowUp
+                                        else Icons.Default.ArrowDropDown,
+                                        contentDescription = if (expanded) "Collapse" else "Expand"
+                                    )
+                                }
+                            },
+                            readOnly = isDropdown,
+                            keyboardOptions = if (isNumericField) KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Number) else KeyboardOptions.Default
+                        )
+
+                        // Invisible clickable overlay for dropdown fields
+                        if (isDropdown) {
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .clickable { expanded = !expanded }
+                                    .alpha(0f)
+                            )
+                        }
+                    }
+
+                    if (fieldName == "Company") {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        CompanyIconSelector(
+                            selectedCompany = textFieldValue,
+                            onCompanySelected = { company ->
+                                fieldState.value.value = company
+                                fieldState.error.value = false
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    if (isDropdown) {
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier
+//                                .fillMaxWidth()
+                                .background(Color.White)
+                                .widthIn(min = with(LocalDensity.current) {
+                                    (LocalConfiguration.current.screenWidthDp.dp - 32.dp) }
+                                )
+                        ) {
+                            suggestions.forEach { item ->
+                                DropdownMenuItem(
+                                    text = { Text(item) },
+                                    onClick = {
+                                        fieldState.value.value = item
+                                        expanded = false
+                                        fieldState.error.value = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+*/
+
 @Composable
 fun InputFieldWithDropdown(
     label: String,
@@ -863,6 +1225,68 @@ fun InputFieldWithDropdown(
     }
 }
 
+
+/*@Composable
+fun InputFieldWithDropdown(
+    label: String,
+    icon: Int,
+    dropdownItems: List<String>,
+    selectedItem: String,
+    onItemSelected: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var textFieldValue by remember { mutableStateOf(selectedItem) }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(
+                value = textFieldValue,
+                onValueChange = { newText ->
+                    textFieldValue = newText
+                    onItemSelected(newText)
+                },
+                label = { Text(label) },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = icon),
+                        contentDescription = label
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.ArrowDropDown,
+                        contentDescription = if (expanded) "Collapse" else "Expand"
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                readOnly = true
+            )
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .clickable { expanded = !expanded }
+                    .alpha(0f)
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            dropdownItems.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text(item) },
+                    onClick = {
+                        textFieldValue = item
+                        onItemSelected(item)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}*/
 
 // ALL PERFECT THIS BELOW
 /*@Composable
@@ -1316,7 +1740,7 @@ fun CompanyDetailsCard(
                         }
 
                         // Text field with dropdown
-                        /*Box(modifier = Modifier.fillMaxWidth()) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
                             OutlinedTextField(
                                 value = companyField.value.value,
                                 onValueChange = { },
@@ -1365,7 +1789,7 @@ fun CompanyDetailsCard(
                                 expanded = companyExpanded,
                                 onDismissRequest = { companyExpanded = false },
                                 modifier = Modifier
-                                    .fillMaxWidth() // Makes dropdown match text field width
+                                    .fillMaxWidth()
                             ) {
                                 companyConfig.options.forEachIndexed { index, item ->
                                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -1388,11 +1812,11 @@ fun CompanyDetailsCard(
                                     }
                                 }
                             }
-                        }*/
+                        }
                         // Inside the Column for "Company"
 
 
-                        Box(modifier = Modifier
+                        /*Box(modifier = Modifier
                             .fillMaxWidth()
                         ) {
                             OutlinedTextField(
@@ -1464,7 +1888,7 @@ fun CompanyDetailsCard(
                                     }
                                 }
                             }
-                        }
+                        }*/
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -1781,7 +2205,7 @@ fun CarDetailsCard(
                                 }
                             }
 
-                            OutlinedTextField(
+                           /* OutlinedTextField(
                                 value = fieldState.value.value,
                                 onValueChange = { newValue ->
                                     if (fieldConfig.inputType == InputType.Number) {
@@ -1846,6 +2270,79 @@ fun CarDetailsCard(
                                     expanded = fieldExpanded,
                                     onDismissRequest = { fieldExpanded = false },
                                     modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    fieldConfig.options.forEach { item ->
+                                        DropdownMenuItem(
+                                            text = { Text(item) },
+                                            onClick = {
+                                                fieldState.value.value = item
+                                                fieldExpanded = false
+                                                fieldState.error.value = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }*/
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
+
+                                OutlinedTextField(
+                                    value = fieldState.value.value,
+                                    onValueChange = {},
+                                    placeholder = { Text("Select $fieldName") },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .onGloballyPositioned { coordinates ->
+                                            textFieldSize = coordinates.size
+                                        }
+                                        .clickable {
+                                            if (fieldConfig.inputType == InputType.Dropdown) {
+                                                fieldExpanded = true
+                                            }
+                                        },
+                                    shape = RoundedCornerShape(8.dp),
+                                    readOnly = true,
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = if (showFieldError) MaterialTheme.colorScheme.error
+                                        else Color(0xFF1976D2),
+                                        unfocusedBorderColor = if (showFieldError) MaterialTheme.colorScheme.error
+                                        else Color.Gray,
+                                        errorBorderColor = MaterialTheme.colorScheme.error
+                                    ),
+                                    isError = showFieldError,
+                                    supportingText = {
+                                        if (showFieldError) {
+                                            Text(
+                                                text = fieldState.errorMessage.value.ifEmpty { "This field is required" },
+                                                color = MaterialTheme.colorScheme.error
+                                            )
+                                        }
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            painter = painterResource(id = iconMapping[fieldName] ?: R.drawable.male_icon),
+                                            contentDescription = fieldName,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    },
+                                    trailingIcon = {
+                                        IconButton(onClick = {
+                                            fieldExpanded = !fieldExpanded
+                                        }) {
+                                            Icon(
+                                                imageVector = if (fieldExpanded) Icons.Default.KeyboardArrowUp
+                                                else Icons.Default.ArrowDropDown,
+                                                contentDescription = if (fieldExpanded) "Collapse" else "Expand"
+                                            )
+                                        }
+                                    }
+                                )
+
+                                DropdownMenu(
+                                    expanded = fieldExpanded,
+                                    onDismissRequest = { fieldExpanded = false },
+                                    modifier = Modifier
+                                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
                                 ) {
                                     fieldConfig.options.forEach { item ->
                                         DropdownMenuItem(
@@ -2227,7 +2724,7 @@ fun CarTechnicalDetailsCard(
                                 }
                             }
 
-                            OutlinedTextField(
+                            /*OutlinedTextField(
                                 value = fieldState.value.value,
                                 onValueChange = { newValue ->
                                     when (fieldConfig.inputType) {
@@ -2317,6 +2814,110 @@ fun CarTechnicalDetailsCard(
                                                 fieldState.error.value = false
                                             }
                                         )
+                                    }
+                                }
+                            }*/
+                            var textFieldWidth by remember { mutableStateOf(0) }
+
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .onGloballyPositioned { coordinates ->
+                                    textFieldWidth = coordinates.size.width
+                                }
+                            ) {
+                                OutlinedTextField(
+                                    value = fieldState.value.value,
+                                    onValueChange = { newValue ->
+                                        when (fieldConfig.inputType) {
+                                            InputType.Number -> {
+                                                if (newValue.matches(Regex("^[0-9,]*$"))) {
+                                                    fieldState.value.value = newValue
+                                                    fieldState.error.value = false
+                                                }
+                                            }
+                                            else -> {
+                                                fieldState.value.value = newValue
+                                                fieldState.error.value = false
+                                            }
+                                        }
+                                    },
+                                    placeholder = {
+                                        Text(
+                                            when (fieldName) {
+                                                "KMs Driven" -> "Enter kilometers driven"
+                                                else -> "Enter $fieldName"
+                                            }
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable(enabled = fieldConfig.inputType == InputType.Dropdown) {
+                                            if (fieldConfig.inputType == InputType.Dropdown) {
+                                                fieldExpanded = true
+                                            }
+                                        },
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = if (showFieldError) MaterialTheme.colorScheme.error else Color(0xFF1976D2),
+                                        unfocusedBorderColor = if (showFieldError) MaterialTheme.colorScheme.error else Color.Gray,
+                                        errorBorderColor = MaterialTheme.colorScheme.error
+                                    ),
+                                    isError = showFieldError,
+                                    supportingText = {
+                                        if (showFieldError) {
+                                            Text(
+                                                text = fieldState.errorMessage.value.ifEmpty { "This field is required" },
+                                                color = MaterialTheme.colorScheme.error
+                                            )
+                                        }
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            painter = painterResource(id = iconMapping[fieldName] ?: R.drawable.male_icon),
+                                            contentDescription = fieldName,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    },
+                                    trailingIcon = {
+                                        if (fieldConfig.inputType == InputType.Dropdown) {
+                                            IconButton(onClick = { fieldExpanded = !fieldExpanded }) {
+                                                Icon(
+                                                    imageVector = if (fieldExpanded) Icons.Default.KeyboardArrowUp
+                                                    else Icons.Default.ArrowDropDown,
+                                                    contentDescription = if (fieldExpanded) "Collapse" else "Expand"
+                                                )
+                                            }
+                                        }
+                                    },
+                                    readOnly = fieldConfig.inputType == InputType.Dropdown,
+                                    keyboardOptions = when {
+                                        fieldName == "Phone Number" -> KeyboardOptions.Default.copy(
+                                            keyboardType = KeyboardType.Phone
+                                        )
+                                        fieldConfig.inputType == InputType.Number -> KeyboardOptions.Default.copy(
+                                            keyboardType = KeyboardType.Number
+                                        )
+                                        else -> KeyboardOptions.Default
+                                    }
+                                )
+
+                                if (fieldConfig.inputType == InputType.Dropdown) {
+                                    DropdownMenu(
+                                        expanded = fieldExpanded,
+                                        onDismissRequest = { fieldExpanded = false },
+                                        modifier = Modifier
+                                            .width(with(LocalDensity.current) { textFieldWidth.toDp() })
+                                    ) {
+                                        fieldConfig.options.forEach { item ->
+                                            DropdownMenuItem(
+                                                text = { Text(item) },
+                                                onClick = {
+                                                    fieldState.value.value = item
+                                                    fieldExpanded = false
+                                                    fieldState.error.value = false
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }

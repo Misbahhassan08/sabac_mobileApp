@@ -127,12 +127,35 @@ fun RegisterUserScreen(
     var address by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
+    // Add error states for each field
+    var firstNameError by remember { mutableStateOf(false) }
+    var lastNameError by remember { mutableStateOf(false) }
+    var usernameError by remember { mutableStateOf(false) }
+    var emailError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
+    var phoneNumberError by remember { mutableStateOf(false) }
+    var addressError by remember { mutableStateOf(false) }
+
+    var apiErrorMessage by remember { mutableStateOf<String?>(null) }
+    var emailFormatError by remember { mutableStateOf(false) }
+    var phoneFormatError by remember { mutableStateOf(false) }
+
     var expanded by remember { mutableStateOf(false) }
     val roles = listOf("dealer", "inspector", "admin")
     var selectedRole by remember { mutableStateOf(roles.first()) }
     val coroutineScope = rememberCoroutineScope()
 
+    var passwordVisible by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
+
+    // Show API error message if exists
+    apiErrorMessage?.let { message ->
+        LaunchedEffect(message) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            apiErrorMessage = null // Clear after showing
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -183,7 +206,7 @@ fun RegisterUserScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                EnhancedTextFieldD(
+                /*EnhancedTextFieldD(
                     label = "First Name",
                     value = firstname,
                     onValueChange = { firstname = it },
@@ -220,7 +243,7 @@ fun RegisterUserScreen(
                 onValueChange = { password = it },
                 visualTransformation = PasswordVisualTransformation(),
                 trailingIcon = {
-                    IconButton(onClick = { /* Toggle visibility */ }) {
+                    IconButton(onClick = {  }) {
                         Icon(Icons.Default.Lock, null)
                     }
                 },
@@ -242,6 +265,148 @@ fun RegisterUserScreen(
                 singleLine = false,
                 maxLines = 3,
                 leadingIcon = Icons.Default.LocationOn
+            )*/
+
+                EnhancedTextFieldD(
+                    label = "First Name *",
+                    value = firstname,
+                    onValueChange = {
+                        firstname = it
+                        firstNameError = it.isBlank()
+                    },
+                    modifier = Modifier.weight(1f),
+                    leadingIcon = Icons.Default.Person,
+                    isError = firstNameError,
+                    errorMessage = if (firstNameError) "First name is required" else null
+                )
+
+                EnhancedTextFieldD(
+                    label = "Last Name *",
+                    value = lastname,
+                    onValueChange = {
+                        lastname = it
+                        lastNameError = it.isBlank()
+                    },
+                    modifier = Modifier.weight(1f),
+                    leadingIcon = Icons.Default.Person,
+                    isError = lastNameError,
+                    errorMessage = if (lastNameError) "Last name is required" else null
+                )
+            }
+
+            EnhancedTextFieldD(
+                label = "Username *",
+                value = username,
+                onValueChange = {
+                    username = it
+                    usernameError = it.isBlank()
+                },
+                leadingIcon = Icons.Default.AccountCircle,
+                isError = usernameError,
+                errorMessage = if (usernameError) "Username is required" else null
+            )
+
+            EnhancedTextFieldD(
+               /* label = "Email *",
+                value = email,
+                onValueChange = {
+                    email = it
+                    emailError = it.isBlank()
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                leadingIcon = Icons.Default.Email,
+                isError = emailError,
+                errorMessage = if (emailError) "Email is required" else null*/
+                label = "Email *",
+                value = email,
+                onValueChange = {
+                    email = it
+                    emailError = it.isBlank()
+                    emailFormatError = it.isNotBlank() && !isValidEmail(it)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                leadingIcon = Icons.Default.Email,
+                isError = emailError || emailFormatError,
+                errorMessage = when {
+                    emailError -> "Email is required"
+                    emailFormatError -> "Please enter a valid email"
+                    else -> null
+                }
+            )
+
+            EnhancedTextFieldD(
+                label = "Password *",
+                value = password,
+                onValueChange = {
+                    password = it
+                    passwordError = it.isBlank()
+                },
+                visualTransformation = if (passwordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                trailingIcon = {
+                    val image = if (passwordVisible) {
+                        Icons.Default.Lock
+                    } else {
+                        Icons.Default.Lock
+                    }
+                    val description = if (passwordVisible) "Hide password" else "Show password"
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = image,
+                            contentDescription = description,
+                            tint = Color(0xFF7F8C8D)
+                        )
+                    }
+                },
+                leadingIcon = Icons.Default.Lock,
+                isError = passwordError,
+                errorMessage = if (passwordError) "Password is required" else null
+            )
+
+            EnhancedTextFieldD(
+               /* label = "Phone Number *",
+                value = phonenumber,
+                onValueChange = {
+                    phonenumber = it
+                    phoneNumberError = it.isBlank()
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                leadingIcon = Icons.Default.Phone,
+                isError = phoneNumberError,
+                errorMessage = if (phoneNumberError) "Phone number is required" else null*/
+                label = "Phone Number *",
+                value = phonenumber,
+                onValueChange = {
+                    phonenumber = it
+                    phoneNumberError = it.isBlank()
+                    phoneFormatError = it.isNotBlank() && !isValidPhoneNumber(it)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                leadingIcon = Icons.Default.Phone,
+                isError = phoneNumberError || phoneFormatError,
+                errorMessage = when {
+                    phoneNumberError -> "Phone number is required"
+                    phoneFormatError -> "Please enter 10-15 digits"
+                    else -> null
+                }
+            )
+
+            EnhancedTextFieldD(
+                label = "Address *",
+                value = address,
+                onValueChange = {
+                    address = it
+                    addressError = it.isBlank()
+                },
+                singleLine = false,
+                maxLines = 3,
+                leadingIcon = Icons.Default.LocationOn,
+                isError = addressError,
+                errorMessage = if (addressError) "Address is required" else null
             )
 
             /*DropdownInput(
@@ -255,16 +420,86 @@ fun RegisterUserScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
+                /*onClick = {
+                    // Validate all fields before submission
+                    firstNameError = firstname.isBlank()
+                    lastNameError = lastname.isBlank()
+                    usernameError = username.isBlank()
+                    emailError = email.isBlank()
+                    passwordError = password.isBlank()
+                    phoneNumberError = phonenumber.isBlank()
+                    addressError = address.isBlank()
+
+                    val isValid = !firstNameError && !lastNameError && !usernameError &&
+                            !emailError && !passwordError && !phoneNumberError &&
+                            !addressError
+
+                    if (isValid) {
+                        coroutineScope.launch {
+                            isLoading = true
+                            val result = registerUser(
+                                context = context,
+                                navController = navController,
+                                firstname = firstname,
+                                lastname = lastname,
+                                username = username,
+                                email = email,
+                                password = password,
+                                phonenumber = phonenumber,
+                                address = address
+                            ).also { response ->
+                                Log.d("RegisterScreen", "API Response: $response")
+
+                                // Check if response contains error
+                                if (response.startsWith("Error:")) {
+                                    apiErrorMessage = response.removePrefix("Error: ")
+                                } else {
+                                    // Success case - navigate only if API was successful
+                                    onRegistrationSuccess()
+                                }
+                            }
+                            isLoading = false*/
                 onClick = {
-                    coroutineScope.launch {
-                        isLoading = true
-                        val result = registerUser(
-                            context,navController,firstname, lastname, username, email, password, phonenumber, address
-                        )
-                        isLoading = false
-//                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
-                        Toast.makeText(context, " Registered Successfully", Toast.LENGTH_LONG).show()
-                        onRegistrationSuccess()
+                    // Validate all fields before submission
+                    firstNameError = firstname.isBlank()
+                    lastNameError = lastname.isBlank()
+                    usernameError = username.isBlank()
+                    emailError = email.isBlank()
+                    emailFormatError = email.isNotBlank() && !isValidEmail(email)
+                    passwordError = password.isBlank()
+                    phoneNumberError = phonenumber.isBlank()
+                    phoneFormatError = phonenumber.isNotBlank() && !isValidPhoneNumber(phonenumber)
+                    addressError = address.isBlank()
+
+                    val isValid = !firstNameError && !lastNameError && !usernameError &&
+                            !emailError && !emailFormatError && !passwordError &&
+                            !phoneNumberError && !phoneFormatError && !addressError
+
+                    if (isValid) {
+                        coroutineScope.launch {
+                            isLoading = true
+                            val result = registerUser(
+                                context = context,
+                                navController = navController,
+                                firstname = firstname,
+                                lastname = lastname,
+                                username = username,
+                                email = email,
+                                password = password,
+                                phonenumber = phonenumber,
+                                address = address
+                            ).also { response ->
+                                Log.d("RegisterScreen", "API Response: $response")
+                                if (response.startsWith("Error:")) {
+                                    apiErrorMessage = response.removePrefix("Error: ")
+                                } else {
+                                    onRegistrationSuccess()
+                                }
+                            }
+                            isLoading = false
+                        }
+                    } else {
+                        apiErrorMessage = "Please fill all required fields"
                     }
                 },
                 modifier = Modifier
@@ -278,7 +513,7 @@ fun RegisterUserScreen(
                 enabled = !isLoading
             ) {
                 if (isLoading) {
-                    CircularProgressIndicator(color = Color.Black, modifier = Modifier.size(20.dp))
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
                 } else {
                     Text("Register", fontSize = 16.sp)
                 }
@@ -394,7 +629,7 @@ suspend fun registerUser(
         }
     }
 }
-@Composable
+/*@Composable
 fun EnhancedTextFieldD(
     label: String,
     value: String,
@@ -447,7 +682,80 @@ fun EnhancedTextFieldD(
             cursorColor = Color(0xFF2C3E50)
         )
     )
+}*/
+
+@Composable
+fun EnhancedTextFieldD(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    leadingIcon: ImageVector? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    singleLine: Boolean = true,
+    maxLines: Int = 1,
+    isError: Boolean = false,
+    errorMessage: String? = null,
+) {
+    Column(modifier = modifier) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D)
+                )
+            },
+            singleLine = singleLine,
+            maxLines = maxLines,
+            keyboardOptions = keyboardOptions,
+            visualTransformation = visualTransformation,
+            leadingIcon = leadingIcon?.let {
+                @Composable {
+                    Icon(
+                        imageVector = it,
+                        contentDescription = null,
+                        tint = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D)
+                    )
+                }
+            },
+            isError = isError,
+            trailingIcon = trailingIcon,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = if (singleLine) 56.dp else 80.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedTextColor = Color(0xFF2C3E50),
+                unfocusedTextColor = Color(0xFF2C3E50),
+                focusedLabelColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF2C3E50),
+                unfocusedLabelColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D),
+                focusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF2C3E50),
+                unfocusedIndicatorColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFFBDC3C7),
+                cursorColor = Color(0xFF2C3E50)
+            )
+        )
+
+        // Error message with fixed height to prevent layout shifts
+        Box(modifier = Modifier.height(20.dp)) {
+            if (isError && errorMessage != null) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                )
+            }
+        }
+    }
 }
+
 
 @Composable
 fun TextInput(name: String, value: String, onChange: (String) -> Unit) {
@@ -665,7 +973,9 @@ fun DealerListScreen(
         isLoading.value = false
     }
 
-            Box(modifier = Modifier.fillMaxSize().background(Color(0xFFF5F7FA))) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF5F7FA))) {
         if (isLoading.value) {
             LoadingAnimation()
         } else if (dealers.isEmpty()) {

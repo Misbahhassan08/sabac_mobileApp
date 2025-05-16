@@ -83,7 +83,7 @@ fun BiddingScreen(
 //        if (!isLoading) {
         while (true) {
             viewModel.fetchNotifications(context)
-            delay(12000L)
+            delay(120L)
         }
 //        }
     }

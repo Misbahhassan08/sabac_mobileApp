@@ -336,42 +336,6 @@ fun AdminScreen(
                         }
                     }
 
-/*
-                    "RegisterUserScreen" -> {
-                        var selectedTabIndex by remember { mutableStateOf(0) }
-                        val tabTitles = listOf("Dealer List", "Create +")
-
-                        Column(modifier = Modifier.padding(paddingValues)) {
-                            androidx.compose.material3.TabRow(
-                                selectedTabIndex = selectedTabIndex,
-                                modifier = Modifier.fillMaxWidth(),
-                                containerColor = Color(0xFFF84444)
-                            ) {
-                                tabTitles.forEachIndexed { index, title ->
-                                    androidx.compose.material3.Tab(
-                                        selected = selectedTabIndex == index,
-                                        onClick = { selectedTabIndex = index },
-                                        text = {
-                                            Text(
-                                                title,
-                                                color = if (selectedTabIndex == index) Color.Yellow else Color.White,
-                                                fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal
-                                            )
-                                        },
-                                        selectedContentColor = Color.White,
-                                        unselectedContentColor = Color.Black
-                                    )
-                                }
-                            }
-
-                            when (selectedTabIndex) {
-                                0 -> DealerListScreen()
-                                1 -> RegisterUserScreen(navController)
-                            }
-                        }
-                    }
-*/
-
                     "RegisterUserScreen" -> {
                         var selectedTabIndex by remember { mutableStateOf(0) }
                         val tabTitles = listOf("Dealer List", "Create +")
@@ -408,43 +372,6 @@ fun AdminScreen(
                         }
                     }
 
-                    /*
-                                        "RegisterInspector" -> {
-                                            var selectedTabIndex by remember { mutableStateOf(0) }
-                                            val tabTitles = listOf("Inspector List", "Create +")
-
-                                            Column(modifier = Modifier.padding(paddingValues)) {
-                                                androidx.compose.material3.TabRow(
-                                                    selectedTabIndex = selectedTabIndex,
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    containerColor = Color(0xFFF84444)
-                                                ) {
-                                                    tabTitles.forEachIndexed { index, title ->
-                                                        androidx.compose.material3.Tab(
-                                                            selected = selectedTabIndex == index,
-                                                            onClick = { selectedTabIndex = index },
-                                                            text = {
-                                                                Text(
-                                                                    title,
-                                                                    color = if (selectedTabIndex == index) Color.Yellow else Color.White,
-                                                                    fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal
-                                                                )
-                                                            },
-                                                            selectedContentColor = Color.White,
-                                                            unselectedContentColor = Color.Black
-                                                        )
-                                                    }
-                                                }
-
-                                                when (selectedTabIndex) {
-                                                    0 -> InspectorListScreen()
-                                                    1 -> RegisterInspectorScreen(navController)
-                                                }
-                                            }
-                                        }
-                    */
-
-
                     "RegisterInspector" -> {
                         val tabTitles = listOf("Inspector List", "Create +")
 
@@ -480,41 +407,6 @@ fun AdminScreen(
                         }
                     }
 
-/*
-                    "RegisterAdmin" -> {
-                        var selectedTabIndex by remember { mutableStateOf(0) }
-                        val tabTitles = listOf("Admin List", "Create +")
-
-                        Column(modifier = Modifier.padding(paddingValues)) {
-                            androidx.compose.material3.TabRow(
-                                selectedTabIndex = selectedTabIndex,
-                                modifier = Modifier.fillMaxWidth(),
-                                containerColor = Color(0xFFF84444)
-                            ) {
-                                tabTitles.forEachIndexed { index, title ->
-                                    androidx.compose.material3.Tab(
-                                        selected = selectedTabIndex == index,
-                                        onClick = { selectedTabIndex = index },
-                                        text = {
-                                            Text(
-                                                title,
-                                                color = if (selectedTabIndex == index) Color.Yellow else Color.White,
-                                                fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal
-                                            )
-                                        },
-                                        selectedContentColor = Color.White,
-                                        unselectedContentColor = Color.Black
-                                    )
-                                }
-                            }
-
-                            when (selectedTabIndex) {
-                                0 -> AdminListScreen()
-                                1 -> RegisterAdminScreen(navController)
-                            }
-                        }
-                    }
-*/
                     "RegisterAdmin" -> {
                         var selectedTabIndex by remember { mutableStateOf(0) }
                         val tabTitles = listOf("Admin List", "Create +")
@@ -550,7 +442,6 @@ fun AdminScreen(
                             }
                         }
                     }
-
 
                     "ViewBidNotification" -> {
                         BiddingScreen(navController = navController)

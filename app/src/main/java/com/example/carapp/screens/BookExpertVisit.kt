@@ -43,6 +43,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.offset
@@ -281,6 +282,9 @@ fun ExpertItem(
 
     var freeSchedule by remember { mutableStateOf<List<ScheduleItem>>(emptyList()) }
     var reservedSchedule by remember { mutableStateOf<List<ReservedScheduleItem>>(emptyList()) }
+    var isSlotSelected by remember { mutableStateOf(false) }
+    var isBookingInProgress by remember { mutableStateOf(false) }
+    var selectedSlot by remember { mutableStateOf<ScheduleItem?>(null) }
 
     Card(
         modifier = Modifier
@@ -366,7 +370,7 @@ fun ExpertItem(
                         }
                     }
                 }
-                if (showSchedule) {
+                /*if (showSchedule) {
                     ScheduleList(
                         freeSlots = freeSchedule,
                         reservedSlots = reservedSchedule,
@@ -383,6 +387,54 @@ fun ExpertItem(
 
                             Toast.makeText(context, "Slot saved locally", Toast.LENGTH_SHORT).show()
                         }
+                    )
+                }*/
+
+
+// Modify your ScheduleList to update this state
+                if (showSchedule) {
+                    /*ScheduleList(
+                        freeSlots = freeSchedule,
+                        reservedSlots = reservedSchedule,
+                        onSlotSelected = { selectedSlot ->
+                            // Save data using the enhanced saveAndLogFormData function
+                            saveAndLogFormData(
+                                selectedOption = "slot_selected",
+                                inputFields = emptyMap(),
+                                context = context,
+                                date = selectedSlot.date,
+                                timeSlot = selectedSlot.timeSlot
+                            )
+
+                            // Update the slot selected state
+                            isSlotSelected = true
+
+                            Toast.makeText(context, "Slot saved locally", Toast.LENGTH_SHORT).show()
+                        }
+                    )*/
+                    // Add this state variable to track the selected slot
+                    var selectedSlot by remember { mutableStateOf<ScheduleItem?>(null) }
+
+                    ScheduleList(
+                        freeSlots = freeSchedule,
+                        reservedSlots = reservedSchedule,
+                        onSlotSelected = { selectedSlotItem ->
+                            // Save data using the enhanced saveAndLogFormData function
+                            saveAndLogFormData(
+                                selectedOption = "slot_selected",
+                                inputFields = emptyMap(),
+                                context = context,
+                                date = selectedSlotItem.date,
+                                timeSlot = selectedSlotItem.timeSlot
+                            )
+
+                            // Update the selected slot
+                            selectedSlot = selectedSlotItem
+                            isSlotSelected = true
+
+                            Toast.makeText(context, "Slot saved locally", Toast.LENGTH_SHORT).show()
+                        },
+                        selectedSlot = selectedSlot // Pass the selected slot to highlight it
                     )
                 }
             }
@@ -465,11 +517,29 @@ fun ExpertItem(
             }
         },
         modifier = Modifier.fillMaxWidth(1.0f),
-        colors = ButtonDefaults.buttonColors(containerColor = redcolor),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isSlotSelected) redcolor else Color.LightGray,
+            disabledContainerColor = Color.LightGray
+        ),
         shape = RoundedCornerShape(8.dp),
-        enabled = true
+        enabled = isSlotSelected && !isBookingInProgress // Disable during booking process
     ) {
-        Text("Book Inspection", fontSize = 16.sp)
+        if (isBookingInProgress) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = Color.Red,
+                    strokeWidth = 2.dp
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Booking...", fontSize = 16.sp)
+            }
+        } else {
+            Text("Book Inspection", fontSize = 16.sp)
+        }
     }
 
 }
@@ -504,6 +574,7 @@ fun mapPaintCondition(value: String?): String {
 }
 
 
+/*
 @Composable
 fun ScheduleList(
     freeSlots: List<ScheduleItem>,
@@ -543,10 +614,51 @@ fun ScheduleList(
         }
     }
 }
-
-
+*/
 
 @Composable
+fun ScheduleList(
+    freeSlots: List<ScheduleItem>,
+    reservedSlots: List<ReservedScheduleItem>,
+    onSlotSelected: (ScheduleItem) -> Unit,
+    selectedSlot: ScheduleItem? = null // Add selected slot parameter
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+    ) {
+        Text(
+            text = "Available Slots:",
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        if (freeSlots.isEmpty()) {
+            Text("No available slots")
+        } else {
+            freeSlots.groupBy { it.date }.forEach { (date, slots) ->
+                Text(
+                    text = date,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                )
+                LazyRow {
+                    items(slots) { slot ->
+                        SlotChip(
+                            time = slot.timeSlot,
+                            isAvailable = true,
+                            isSelected = selectedSlot?.timeSlot == slot.timeSlot && selectedSlot.date == slot.date,
+                            onClick = { onSlotSelected(slot) }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*@Composable
 fun SlotChip(
     time: String,
     isAvailable: Boolean,
@@ -561,6 +673,35 @@ fun SlotChip(
             .clickable(enabled = isAvailable, onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         color = backgroundColor.copy(alpha = if (isAvailable) 1f else 0.5f)
+    ) {
+        Text(
+            text = time,
+            color = contentColor,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+        )
+    }
+}*/
+@Composable
+fun SlotChip(
+    time: String,
+    isAvailable: Boolean,
+    isSelected: Boolean, // Add selected state
+    onClick: () -> Unit
+) {
+    val backgroundColor = when {
+        isSelected -> Color.Red // Selected color
+        isAvailable -> Color(0xFF4CAF50) // Available color
+        else -> Color.LightGray // Unavailable color
+    }
+    val contentColor = if (isAvailable || isSelected) Color.White else Color.DarkGray
+
+    Surface(
+        modifier = Modifier
+            .padding(end = 8.dp)
+            .clickable(enabled = isAvailable, onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
+        color = backgroundColor.copy(alpha = if (isAvailable || isSelected) 1f else 0.5f),
+        border = if (isSelected) BorderStroke(2.dp, Color.Red) else null
     ) {
         Text(
             text = time,

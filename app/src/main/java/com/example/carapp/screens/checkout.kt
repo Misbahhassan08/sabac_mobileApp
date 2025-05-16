@@ -1,6 +1,7 @@
 package com.example.carapp.screens
 
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +45,15 @@ import com.example.carapp.R
 
 @Composable
 fun Checkout(navController: NavController) {
+    BackHandler {
+        navController.navigate("seller") {
+            popUpTo(navController.graph.startDestinationId) {
+                saveState = true
+            }
+            launchSingleTop = true
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

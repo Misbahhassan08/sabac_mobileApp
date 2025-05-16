@@ -2,6 +2,7 @@ package com.example.carapp.screens
 
 import android.content.Intent
 import android.util.Log
+import androidx.hilt.navigation.compose.hiltViewModel
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,13 +22,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,10 +52,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
+import com.example.carapp.models.CarListViewModel
+import com.example.carapp.models.SignUpViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -211,7 +223,10 @@ import org.json.JSONObject
 //}
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(
+    navController: NavController,
+//    viewModel: SignUpViewModel = hiltViewModel()
+) {
     var firstname by remember { mutableStateOf("") }
     var lastname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
@@ -219,10 +234,121 @@ fun RegisterScreen(navController: NavController) {
     var password by remember { mutableStateOf("") }
     var phonenumber by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+//    val state = viewModel.signUpState.collectAsState(initial = null)
 
     val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
+
+    /*Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 30.dp, end = 30.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Enter Your Credential's to register",
+            fontWeight = FontWeight.Medium,
+            fontSize = 16.sp,
+            color= Color.Gray
+        )
+
+        TextField(value = email, onValueChange = {
+            email = it
+        }, modifier = Modifier.fillMaxWidth(),
+//            colors = TextFieldColors()
+            shape = RoundedCornerShape(8.dp), singleLine = true, placeholder = {
+                Text(text = "Email")
+            }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+        TextField(value = password, onValueChange = {
+            password = it
+        }, modifier = Modifier.fillMaxWidth(),
+//            colors = TextFieldColors()
+            shape = RoundedCornerShape(8.dp), singleLine = true, placeholder = {
+                Text(text = "password")
+            }
+        )
+
+        Button(onClick = {
+            coroutineScope.launch {
+                viewModel.registerUser(email, password)
+            }
+
+        }, modifier = Modifier.fillMaxWidth().padding(top = 20.dp, start = 30.dp, end = 30.dp), colors = ButtonDefaults.buttonColors(
+            Color.Blue, contentColor = Color.White
+        ), shape = RoundedCornerShape(15.dp)
+        ) {
+            Text(text = "Sign Up", color= Color.White, modifier = Modifier.padding(7.dp))
+
+        }
+    }
+    Row(modifier = Modifier
+        .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        if (state.value?.isLoading == true){
+            CircularProgressIndicator()
+        }
+    }
+    Text(
+        text = "Already have an account? SignIn",
+        fontWeight = FontWeight.Bold,
+        color = Color.Black,
+    )
+
+    Text(
+        text = "Or Connect With",
+        fontWeight = FontWeight.Bold,
+        color = Color.Black,
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        IconButton(onClick = {}) {
+            Icon(
+                painter = painterResource(id = R.drawable.google),
+                contentDescription = null,
+                modifier = Modifier.size(50.dp),
+                tint = Color.Unspecified
+            )
+        }
+        Spacer(Modifier.width(20.dp))
+        IconButton(onClick = {}) {
+            Icon(
+                painter = painterResource(id = R.drawable.facebook),
+                contentDescription = null,
+                modifier = Modifier.size(50.dp),
+                tint = Color.Unspecified
+            )
+        }
+
+        LaunchedEffect(key1 = state.value?.isSuccess){
+            coroutineScope.launch{
+                if(state.value?.isSuccess?.isNotEmpty() == true){
+                    val success = state.value?.isSuccess
+                    Toast.makeText(context,"${success}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        LaunchedEffect(key1 = state.value?.isError){
+            coroutineScope.launch{
+                if(state.value?.isError?.isNotEmpty() == true){
+                    val error = state.value?.isError
+                    Toast.makeText(context,"${error}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+}*/
+// BELOW ORIGINAL CODE
 
     Box(
         modifier = Modifier

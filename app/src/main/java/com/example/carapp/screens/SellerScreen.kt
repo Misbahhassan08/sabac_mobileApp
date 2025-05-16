@@ -74,12 +74,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -101,6 +103,8 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults.color
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.key
@@ -113,6 +117,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
@@ -143,7 +148,61 @@ fun CarListScreen(
     val carList by viewModel.cars.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
+
     val systemUiController = rememberSystemUiController()
+    var showExitDialog by remember { mutableStateOf(false) }
+    // Back press handler
+    BackHandler {
+        showExitDialog = true
+    }
+
+    //
+
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = {
+                Text(
+                    text = "Exit App?",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    "Are you sure you want to exit the application?",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        (context as? Activity)?.finish()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("Yes, Exit")
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = { showExitDialog = false },
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(1.dp, Color.Gray)
+                ) {
+                    Text("Cancel")
+                }
+            },
+            shape = RoundedCornerShape(16.dp),
+            tonalElevation = 8.dp,
+            properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
+        )
+    }
+
 
     systemUiController.isStatusBarVisible = false
     LaunchedEffect(isLoading) {
@@ -326,20 +385,29 @@ fun CarListScreen(
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        ExtendedFloatingActionButton(
-                            onClick = { navController.navigate("postcar") },
-                            modifier = Modifier.padding(16.dp),
+                        FloatingActionButton(
+                         /*   onClick = { navController.navigate("postcar") },
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .shadow(
+                                    elevation = 8.dp,
+                                    shape = CircleShape,
+                                    spotColor = Color.Black.copy(alpha = 0.3f)
+                                ),
                             containerColor = redcolor,
-                            shape = RoundedCornerShape(50),
+                            contentColor = Color.White,
+                            shape = CircleShape,  // More modern than rounded corner
                             elevation = FloatingActionButtonDefaults.elevation(
-                                defaultElevation = 6.dp,
-                                pressedElevation = 12.dp
+                                defaultElevation = 4.dp,
+                                pressedElevation = 8.dp,
+                                hoveredElevation = 6.dp,
+                                focusedElevation = 6.dp
                             )
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
+//                            Row(
+//                                verticalAlignment = Alignment.CenterVertically,
+//                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+//                            ) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
                                     contentDescription = "Add",
@@ -351,7 +419,30 @@ fun CarListScreen(
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
-                            }
+//                            }*/
+                            onClick = { navController.navigate("postcar") },
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .shadow(
+                                    elevation = 8.dp,
+                                    shape = CircleShape,
+                                    spotColor = Color.Black.copy(alpha = 0.3f)
+                                ),
+                            containerColor = redcolor,
+                            contentColor = Color.White,
+                            shape = CircleShape,
+                            elevation = FloatingActionButtonDefaults.elevation(
+                                defaultElevation = 4.dp,
+                                pressedElevation = 8.dp,
+                                hoveredElevation = 6.dp,
+                                focusedElevation = 6.dp
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add",
+                                tint = Color.White
+                            )
                         }
                     }
                 }
@@ -515,15 +606,15 @@ fun performLogout(navController: NavController, context: Context) {
 
             withContext(Dispatchers.Main) {
                 clearTokenData(context)
-                navController.navigate("login")
+                navController.navigate("login") {
+                    popUpTo(0) { inclusive = true }
+                    launchSingleTop = true
+                }
             }
         } catch (e: IOException) {
             e.printStackTrace()
             Log.e("LogoutAPI", "Logout failed: ${e.message}")
-            withContext(Dispatchers.Main) {
-                navController.navigate("login")
-            }
-        }
+            Toast.makeText(context, "Logout Failed!!!", Toast.LENGTH_SHORT).show()        }
     }
 }
 
