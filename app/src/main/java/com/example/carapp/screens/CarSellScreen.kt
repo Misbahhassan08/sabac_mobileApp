@@ -1663,6 +1663,8 @@ fun CompanyDetailsCard(
 ) {
     var expanded by remember { mutableStateOf(true) }
     var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
+    val dropdownWidth = with(LocalDensity.current) { textFieldSize.width.toDp() }
+
 
     Card(
         modifier = modifier
@@ -1718,11 +1720,20 @@ fun CompanyDetailsCard(
                     var companyExpanded by remember { mutableStateOf(false) }
                     val showCompanyError = companyField.error.value
 
+                    CompanyIconSelector(
+                        selectedCompany = companyField.value.value,
+                        onCompanySelected = { company ->
+                            companyField.value.value = company
+                            companyField.error.value = false
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                     Column(modifier = Modifier.fillMaxWidth()) {
                         // Label row
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = "Company",
+                                text = "Others",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium,
                                 color = if (showCompanyError) MaterialTheme.colorScheme.error else Color.Gray,
@@ -1788,8 +1799,7 @@ fun CompanyDetailsCard(
                             DropdownMenu(
                                 expanded = companyExpanded,
                                 onDismissRequest = { companyExpanded = false },
-                                modifier = Modifier
-                                    .fillMaxWidth()
+                                modifier = Modifier.width(dropdownWidth)
                             ) {
                                 companyConfig.options.forEachIndexed { index, item ->
                                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -1800,7 +1810,7 @@ fun CompanyDetailsCard(
                                                 companyExpanded = false
                                                 companyField.error.value = false
                                             },
-                                            modifier = Modifier.fillMaxWidth()
+                                            modifier = Modifier.width(dropdownWidth)
                                         )
                                         if (index < companyConfig.options.size - 1) {
                                             Divider(
@@ -1892,118 +1902,14 @@ fun CompanyDetailsCard(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    CompanyIconSelector(
-                        selectedCompany = companyField.value.value,
-                        onCompanySelected = { company ->
-                            companyField.value.value = company
-                            companyField.error.value = false
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    // Car Name Field - same pattern as Company field
-                    val carNameField = inputFields["Car Name"] ?: return@Column
-                    val carNameConfig = dropdownOptions["Car Name"] ?: return@Column
-                    var carNameExpanded by remember { mutableStateOf(false) }
-                    val showCarNameError = carNameField.error.value
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "Car Name",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = if (showCarNameError) MaterialTheme.colorScheme.error else Color.Gray,
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            if (carNameConfig.isRequired) {
-                                Text(
-                                    text = " *",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.error,
-                                    modifier = Modifier.padding(bottom = 4.dp)
-                                )
-                            }
-                        }
-
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            OutlinedTextField(
-                                value = carNameField.value.value,
-                                onValueChange = { },
-                                placeholder = { Text("Select car name") },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { carNameExpanded = true }
-                                    .onGloballyPositioned { coordinates ->
-                                        textFieldSize = coordinates.size
-                                    }
-                                    .clickable { companyExpanded = !companyExpanded },
-                                shape = RoundedCornerShape(8.dp),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = if (showCarNameError) MaterialTheme.colorScheme.error
-                                    else Color(0xFF1976D2),
-                                    unfocusedBorderColor = if (showCarNameError) MaterialTheme.colorScheme.error
-                                    else Color.Gray,
-                                    errorBorderColor = MaterialTheme.colorScheme.error
-                                ),
-                                isError = showCarNameError,
-                                supportingText = {
-                                    if (showCarNameError) {
-                                        Text(
-                                            text = carNameField.errorMessage.value.ifEmpty { "This field is required" },
-                                            color = MaterialTheme.colorScheme.error
-                                        )
-                                    }
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        painter = painterResource(id = iconMapping["Car Name"] ?: R.drawable.car_icon),
-                                        contentDescription = "Car Name",
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                },
-                                trailingIcon = {
-                                    Icon(
-                                        imageVector = if (carNameExpanded) Icons.Default.KeyboardArrowUp
-                                        else Icons.Default.ArrowDropDown,
-                                        contentDescription = if (carNameExpanded) "Collapse" else "Expand",
-                                        modifier = Modifier.clickable { carNameExpanded = !carNameExpanded }
-                                    )
-                                },
-                                readOnly = true
-                            )
-
-                            DropdownMenu(
-                                expanded = carNameExpanded,
-                                onDismissRequest = { carNameExpanded = false },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                carNameConfig.options.forEachIndexed { index, item ->
-                                    Column(modifier = Modifier.fillMaxWidth()) {
-                                        DropdownMenuItem(
-                                            text = { Text(item) },
-                                            onClick = {
-                                                carNameField.value.value = item
-                                                carNameExpanded = false
-                                                carNameField.error.value = false
-                                            },
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                        if (index < carNameConfig.options.size - 1) {
-                                            Divider(
-                                                modifier = Modifier.padding(horizontal = 8.dp),
-                                                thickness = 0.5.dp,
-                                                color = Color.LightGray
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
+//                    CompanyIconSelector(
+//                        selectedCompany = companyField.value.value,
+//                        onCompanySelected = { company ->
+//                            companyField.value.value = company
+//                            companyField.error.value = false
+//                        },
+//                        modifier = Modifier.fillMaxWidth()
+//                    )
 
                     // Car Model Field - same pattern as other fields
                     val carModelField = inputFields["Car Model"] ?: return@Column
@@ -2081,7 +1987,7 @@ fun CompanyDetailsCard(
                             DropdownMenu(
                                 expanded = carModelExpanded,
                                 onDismissRequest = { carModelExpanded = false },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.width(dropdownWidth)
                             ) {
                                 carModelConfig.options.forEachIndexed { index, item ->
                                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -2106,6 +2012,141 @@ fun CompanyDetailsCard(
                             }
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    // Car Name Field - same pattern as Company field
+                    val carNameField = inputFields["Car Name"] ?: return@Column
+                    val carNameConfig = dropdownOptions["Car Name"] ?: return@Column
+                    var carNameExpanded by remember { mutableStateOf(false) }
+                    val showCarNameError = carNameField.error.value
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Car Name",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = if (showCarNameError) MaterialTheme.colorScheme.error else Color.Gray,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            if (carNameConfig.isRequired) {
+                                Text(
+                                    text = " *",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                            }
+                        }
+
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { carNameExpanded = true }
+                        ) {
+                            OutlinedTextField(
+                                value = carNameField.value.value,
+                                onValueChange = { },
+                                placeholder = { Text("Select car name") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { carNameExpanded = true }
+                                    .onGloballyPositioned { coordinates ->
+                                        textFieldSize = coordinates.size
+                                    }
+                                    .clickable { companyExpanded = !companyExpanded },
+                                shape = RoundedCornerShape(8.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = if (showCarNameError) MaterialTheme.colorScheme.error
+                                    else Color(0xFF1976D2),
+                                    unfocusedBorderColor = if (showCarNameError) MaterialTheme.colorScheme.error
+                                    else Color.Gray,
+                                    errorBorderColor = MaterialTheme.colorScheme.error
+                                ),
+                                isError = showCarNameError,
+                                supportingText = {
+                                    if (showCarNameError) {
+                                        Text(
+                                            text = carNameField.errorMessage.value.ifEmpty { "This field is required" },
+                                            color = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = iconMapping["Car Name"] ?: R.drawable.car_icon),
+                                        contentDescription = "Car Name",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = if (carNameExpanded) Icons.Default.KeyboardArrowUp
+                                        else Icons.Default.ArrowDropDown,
+                                        contentDescription = if (carNameExpanded) "Collapse" else "Expand",
+                                        modifier = Modifier.clickable { carNameExpanded = !carNameExpanded }
+                                    )
+                                },
+                                readOnly = true
+                            )
+
+                            /*DropdownMenu(
+                                expanded = carNameExpanded,
+                                onDismissRequest = { carNameExpanded = false },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                carNameConfig.options.forEachIndexed { index, item ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        DropdownMenuItem(
+                                            text = { Text(item) },
+                                            onClick = {
+                                                carNameField.value.value = item
+                                                carNameExpanded = false
+                                                carNameField.error.value = false
+                                            },
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                        if (index < carNameConfig.options.size - 1) {
+                                            Divider(
+                                                modifier = Modifier.padding(horizontal = 8.dp),
+                                                thickness = 0.5.dp,
+                                                color = Color.LightGray
+                                            )
+                                        }
+                                    }
+                                }
+                            }*/
+
+
+                            DropdownMenu(
+                                expanded = carNameExpanded,
+                                onDismissRequest = { carNameExpanded = false },
+                                modifier = Modifier.width(dropdownWidth)
+                            ) {
+                                carNameConfig.options.forEachIndexed { index, item ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        DropdownMenuItem(
+                                            text = { Text(item) },
+                                            onClick = {
+                                                carNameField.value.value = item
+                                                carNameExpanded = false
+                                                carNameField.error.value = false
+                                            },
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                        if (index < carNameConfig.options.size - 1) {
+                                            Divider(
+                                                modifier = Modifier.padding(horizontal = 8.dp),
+                                                thickness = 0.5.dp,
+                                                color = Color.LightGray
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
