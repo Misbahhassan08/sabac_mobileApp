@@ -72,7 +72,7 @@ fun App() {
     NavHost(navController = navController, startDestination = "splash") {
         composable(route = "splash") {
             SplashScreen{
-                navController.navigate("login")
+                navController.navigate("postcar")
             }
         }
 

@@ -100,11 +100,12 @@ class BidViewModel : ViewModel() {
                 val response = client.newCall(request).execute()
                 Log.d("bid", "HTTP Status: ${response.code}")
                 val jsonResponse = response.body?.string()
-                Log.d("bid", "Raw Response: $jsonResponse")
+                Log.d("bid_", "Raw Response: $jsonResponse")
 
                 if (response.isSuccessful) {
                     val notificationsList = Gson().fromJson(jsonResponse, Array<NotificationItem>::class.java).toList()
-                    _notifications.value = notificationsList
+//                    _notifications.value = notificationsList
+                    addNotifications(notificationsList)
                     Log.d("bid", "Parsed Notifications: $notificationsList")
 
                     if (notificationsList.isNotEmpty()) {
@@ -120,6 +121,13 @@ class BidViewModel : ViewModel() {
         }
     }
 
+    fun addNotifications(newList: List<NotificationItem>) {
+        val currentList = _notifications.value.toMutableList()
+        val newOnes = newList.filterNot { n -> currentList.any { it.id == n.id } }
+        if (newOnes.isNotEmpty()) {
+            _notifications.value = currentList + newOnes
+        }
+    }
 
     private fun markNotificationsAsRead(context: Context, notificationIds: List<String>) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -187,5 +195,25 @@ data class NotificationItem(
     val category: String,
     val message: String,
     val id: String,
-    val bid_id: String
+    val bid : Bid?
+)
+
+
+data class Bid(
+    val id: Int,
+    val bid_amount: String,
+    val is_accepted: Boolean,
+    val dealer_name: String,
+    val car_name: String,
+    val is_sold: Boolean,
+    val created_at: String,
+    val dealer: Int,
+    val saler_car: SalerCar?
+)
+
+data class SalerCar(
+    val saler_car_id: Int,
+    val user: Int,
+    val guest: Any?, // Adjust type based on actual use
+    val car_name: String
 )

@@ -15,19 +15,30 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -45,9 +56,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,6 +75,10 @@ import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
 import com.example.carapp.models.CarListViewModel
 import com.example.carapp.models.SignUpViewModel
+import com.example.carapp.screens.Admin.EnhancedTextField
+import com.example.carapp.screens.Admin.isValidEmail
+import com.example.carapp.screens.Admin.isValidPhoneNumber
+import com.example.carapp.screens.Admin.registerUserA
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -227,7 +247,7 @@ fun RegisterScreen(
     navController: NavController,
 //    viewModel: SignUpViewModel = hiltViewModel()
 ) {
-    var firstname by remember { mutableStateOf("") }
+   /* var firstname by remember { mutableStateOf("") }
     var lastname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -240,115 +260,6 @@ fun RegisterScreen(
 
     val context = LocalContext.current
 
-    /*Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 30.dp, end = 30.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Enter Your Credential's to register",
-            fontWeight = FontWeight.Medium,
-            fontSize = 16.sp,
-            color= Color.Gray
-        )
-
-        TextField(value = email, onValueChange = {
-            email = it
-        }, modifier = Modifier.fillMaxWidth(),
-//            colors = TextFieldColors()
-            shape = RoundedCornerShape(8.dp), singleLine = true, placeholder = {
-                Text(text = "Email")
-            }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-        TextField(value = password, onValueChange = {
-            password = it
-        }, modifier = Modifier.fillMaxWidth(),
-//            colors = TextFieldColors()
-            shape = RoundedCornerShape(8.dp), singleLine = true, placeholder = {
-                Text(text = "password")
-            }
-        )
-
-        Button(onClick = {
-            coroutineScope.launch {
-                viewModel.registerUser(email, password)
-            }
-
-        }, modifier = Modifier.fillMaxWidth().padding(top = 20.dp, start = 30.dp, end = 30.dp), colors = ButtonDefaults.buttonColors(
-            Color.Blue, contentColor = Color.White
-        ), shape = RoundedCornerShape(15.dp)
-        ) {
-            Text(text = "Sign Up", color= Color.White, modifier = Modifier.padding(7.dp))
-
-        }
-    }
-    Row(modifier = Modifier
-        .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        if (state.value?.isLoading == true){
-            CircularProgressIndicator()
-        }
-    }
-    Text(
-        text = "Already have an account? SignIn",
-        fontWeight = FontWeight.Bold,
-        color = Color.Black,
-    )
-
-    Text(
-        text = "Or Connect With",
-        fontWeight = FontWeight.Bold,
-        color = Color.Black,
-    )
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 10.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        IconButton(onClick = {}) {
-            Icon(
-                painter = painterResource(id = R.drawable.google),
-                contentDescription = null,
-                modifier = Modifier.size(50.dp),
-                tint = Color.Unspecified
-            )
-        }
-        Spacer(Modifier.width(20.dp))
-        IconButton(onClick = {}) {
-            Icon(
-                painter = painterResource(id = R.drawable.facebook),
-                contentDescription = null,
-                modifier = Modifier.size(50.dp),
-                tint = Color.Unspecified
-            )
-        }
-
-        LaunchedEffect(key1 = state.value?.isSuccess){
-            coroutineScope.launch{
-                if(state.value?.isSuccess?.isNotEmpty() == true){
-                    val success = state.value?.isSuccess
-                    Toast.makeText(context,"${success}", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-
-        LaunchedEffect(key1 = state.value?.isError){
-            coroutineScope.launch{
-                if(state.value?.isError?.isNotEmpty() == true){
-                    val error = state.value?.isError
-                    Toast.makeText(context,"${error}", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
-}*/
-// BELOW ORIGINAL CODE
 
     Box(
         modifier = Modifier
@@ -381,17 +292,257 @@ fun RegisterScreen(
             TextInput(name = "Password", value = password, onChange = { password = it })
             TextInput(name = "Phone Number", value = phonenumber, onChange = { phonenumber = it })
 
+            Spacer(modifier = Modifier.height(8.dp))*/
+    var firstname by remember { mutableStateOf("") }
+    var lastname by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var phonenumber by remember { mutableStateOf("") }
+    var address by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+
+    // Add error states for each field
+    var firstNameError by remember { mutableStateOf(false) }
+    var lastNameError by remember { mutableStateOf(false) }
+    var usernameError by remember { mutableStateOf(false) }
+    var emailError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
+    var phoneNumberError by remember { mutableStateOf(false) }
+    var addressError by remember { mutableStateOf(false) }
+
+    var apiErrorMessage by remember { mutableStateOf<String?>(null) }
+    var emailFormatError by remember { mutableStateOf(false) }
+    var phoneFormatError by remember { mutableStateOf(false) }
+
+    var expanded by remember { mutableStateOf(false) }
+    val roles = listOf("dealer", "inspector", "admin")
+    var selectedRole by remember { mutableStateOf(roles.first()) }
+    val coroutineScope = rememberCoroutineScope()
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    // Show API error message if exists
+    apiErrorMessage?.let { message ->
+        LaunchedEffect(message) {
+//            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            apiErrorMessage = null
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF8F9FA))
+            .padding(24.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        // Header Section
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Image(
+                painter = painterResource(id = R.drawable.car1),
+                contentDescription = "Logo",
+                modifier = Modifier.size(120.dp),
+                contentScale = ContentScale.Fit
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Create Your Account",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color(0xFF2C3E50),
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Form Section
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp) // Fixed spacing
+        ) {
+            // Name Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                EnhancedTextFieldS(
+                    label = "First Name *",
+                    value = firstname,
+                    onValueChange = {
+                        firstname = it
+                        firstNameError = it.isBlank()
+                    },
+                    modifier = Modifier.weight(1f),
+                    leadingIcon = Icons.Default.Person,
+                    isError = firstNameError,
+                    errorMessage = if (firstNameError) "First name is required" else null
+                )
+
+                EnhancedTextFieldS(
+                    label = "Last Name *",
+                    value = lastname,
+                    onValueChange = {
+                        lastname = it
+                        lastNameError = it.isBlank()
+                    },
+                    modifier = Modifier.weight(1f),
+                    leadingIcon = Icons.Default.Person,
+                    isError = lastNameError,
+                    errorMessage = if (lastNameError) "Last name is required" else null
+                )
+            }
+
+            EnhancedTextFieldS(
+                label = "Username *",
+                value = username,
+                onValueChange = {
+                    username = it
+                    usernameError = it.isBlank()
+                },
+                leadingIcon = Icons.Default.AccountCircle,
+                isError = usernameError,
+                errorMessage = if (usernameError) "Username is required" else null
+            )
+
+            EnhancedTextFieldS(
+                label = "Email *",
+                value = email,
+                onValueChange = {
+                    email = it
+                    emailError = it.isBlank()
+                    emailFormatError = it.isNotBlank() && !isValidEmail(it)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                leadingIcon = Icons.Default.Email,
+                isError = emailError || emailFormatError,
+                errorMessage = when {
+                    emailError -> "Email is required"
+                    emailFormatError -> "Please enter a valid email"
+                    else -> null
+                }
+            )
+
+            EnhancedTextFieldS(
+                label = "Password *",
+                value = password,
+                onValueChange = {
+                    password = it
+                    passwordError = it.isBlank()
+                },
+                visualTransformation = if (passwordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                trailingIcon = {
+                    val image = if (passwordVisible) {
+                        Icons.Default.Lock
+                    } else {
+                        Icons.Default.Lock
+                    }
+                    val description = if (passwordVisible) "Hide password" else "Show password"
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = image,
+                            contentDescription = description,
+                            tint = Color(0xFF7F8C8D)
+                        )
+                    }
+                },
+                leadingIcon = Icons.Default.Lock,
+                isError = passwordError,
+                errorMessage = if (passwordError) "Password is required" else null
+            )
+
+            EnhancedTextFieldS(
+                label = "Phone Number *",
+                value = phonenumber,
+                onValueChange = {
+                    phonenumber = it
+                    phoneNumberError = it.isBlank()
+                    phoneFormatError = it.isNotBlank() && !isValidPhoneNumber(it)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                leadingIcon = Icons.Default.Phone,
+                isError = phoneNumberError || phoneFormatError,
+                errorMessage = when {
+                    phoneNumberError -> "Phone number is required"
+                    phoneFormatError -> "Please enter 10-15 digits"
+                    else -> null
+                }
+            )
+
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = {
-                    coroutineScope.launch {
-                        isLoading = true
-                        val response = registerUser(
-                            context,navController,firstname, lastname, username, email, password, phonenumber
-                        )
-                        isLoading = false
-//                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+//                    coroutineScope.launch {
+//                        isLoading = true
+//                        val response = registerUser(
+//                            context,navController,firstname, lastname, username, email, password, phonenumber
+//                        )
+//                        isLoading = false
+////                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+//                    }
+//                },
+                    Log.d("btn","button Clicked.........")
+                    firstNameError = firstname.isBlank()
+                    lastNameError = lastname.isBlank()
+                    usernameError = username.isBlank()
+                    emailError = email.isBlank()
+                    emailFormatError = email.isNotBlank() && !isValidEmail(email)
+                    passwordError = password.isBlank()
+                    phoneNumberError = phonenumber.isBlank()
+                    phoneFormatError = phonenumber.isNotBlank() && !isValidPhoneNumber(phonenumber)
+                    addressError = address.isBlank()
+                    Log.d("btn","button Clicked..2.......")
+                    val isValid = !firstNameError && !lastNameError && !usernameError &&
+                            !emailError && !emailFormatError && !passwordError &&
+                            !phoneNumberError && !phoneFormatError
+                    Log.d("btn","button Clicked....3....")
+                    if (isValid) {
+                        Log.d("btn","button Clicked....4.....")
+                        coroutineScope.launch {
+                            Log.d("btn","button Clicked.....6....")
+                            isLoading = true
+                            val result = registerUser(
+                            context,
+                                navController,
+                                firstname,
+                                lastname,
+                                username,
+                                email,
+                                password,
+                                phonenumber
+                            )
+//                                .also { response ->
+//                                Log.d("RegisterScreen", "API Response: $response")
+//                                if (response.startsWith("Error:")) {
+//                                    apiErrorMessage = response.removePrefix("Error: ")
+//                                } else {
+//                                    onRegistrationSuccess()
+//                                }
+//                            }
+                            isLoading = false
+                        }
+                    } else {
+                        apiErrorMessage = "Please fill all required fields"
                     }
                 },
                 modifier = Modifier
@@ -410,6 +561,14 @@ fun RegisterScreen(
                     Text("Sign Up", fontSize = 16.sp)
                 }
             }
+            //ERROR MESSAGE TEXT
+            Spacer(modifier = Modifier.height(8.dp))
+//            apiErrorMessage?.let {
+//                Log.d("err","ERROR***** $it")
+                Text(
+                    text = "g", color = Color.Red
+                )
+//            }
 
             Spacer(modifier = Modifier.height(10.dp))
             Row(modifier = Modifier.align(Alignment.Start)) {
@@ -429,8 +588,8 @@ fun RegisterScreen(
 }
 
 suspend fun registerUser(
-    context: android.content.Context, // Pass Context to show Toast
-    navController: NavController,    // Added NavController for navigation
+    context: android.content.Context,
+    navController: NavController,
     firstname: String,
     lastname: String,
     username: String,
@@ -496,13 +655,26 @@ suspend fun registerUser(
 
                 jsonResponse?.toString() ?: "Success"
             } else {
-                Log.e("RegisterAPI", "Error Response: $responseBody")
-
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Registration Failed!", Toast.LENGTH_SHORT).show()
+//                Log.e("RegisterAPI", "Error Response: $responseBody")
+//
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(context, "Registration Failed!", Toast.LENGTH_SHORT).show()
+//                }
+//
+//                "Error: ${response.code} - $responseBody"
+                val errorMessageR = try {
+                    val errorJson = JSONObject(responseBody)
+                    errorJson.optString("message", "Unknown error occurred")
+                } catch (e: Exception) {
+                    Log.e("RegisterAPI", "Error parsing error response", e)
+                    "Unknown error occurred"
                 }
 
-                "Error: ${response.code} - $responseBody"
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Registration Failed: $errorMessageR", Toast.LENGTH_LONG).show()
+                }
+                // Return the extracted message for reuse elsewhere
+                "Error: $errorMessageR"
             }
         } catch (e: Exception) {
             Log.e("RegisterAPI", "Exception: ${e.localizedMessage}", e)
@@ -535,6 +707,95 @@ fun TextInput(name: String, value: String, onChange: (String) -> Unit) {
     )
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EnhancedTextFieldS(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    leadingIcon: ImageVector? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    singleLine: Boolean = true,
+    maxLines: Int = 1,
+    isError: Boolean = false,
+    errorMessage: String? = null,
+) {
+    Column(modifier = modifier) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D)
+                )
+            },
+            singleLine = singleLine,
+            maxLines = maxLines,
+            keyboardOptions = keyboardOptions,
+            visualTransformation = visualTransformation,
+            leadingIcon = leadingIcon?.let {
+                @Composable {
+                    Icon(
+                        imageVector = it,
+                        contentDescription = null,
+                        tint = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D)
+                    )
+                }
+            },
+            isError = isError,
+            trailingIcon = trailingIcon,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = if (singleLine) 56.dp else 80.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                // Container colors
+                containerColor = Color.White,
+//                unfocusedContainerColor = Color.White,
+                errorContainerColor = Color.White,
+
+                // Text colors
+//                textColor = Color(0xFF2C3E50),
+                unfocusedTextColor = Color(0xFF2C3E50),
+                errorTextColor = Color(0xFF2C3E50),
+
+                // Label colors
+                focusedLabelColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF2C3E50),
+                unfocusedLabelColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF7F8C8D),
+
+                // Border colors
+                focusedBorderColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFF2C3E50),
+                unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error else Color(0xFFBDC3C7),
+                errorBorderColor = MaterialTheme.colorScheme.error,
+
+                // Cursor color
+                cursorColor = Color(0xFF2C3E50),
+
+                // Placeholder color
+//                placeholderColor = Color(0xFF7F8C8D),
+                unfocusedPlaceholderColor = Color(0xFF7F8C8D)
+            )
+        )
+
+        // Error message with fixed height to prevent layout shifts
+        Box(modifier = Modifier.height(20.dp)) {
+            if (isError && errorMessage != null) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                )
+            }
+        }
+    }
+}
 @Preview(showBackground = true, widthDp = 309, heightDp = 675)
 @Composable
 fun RegisterPreview() {

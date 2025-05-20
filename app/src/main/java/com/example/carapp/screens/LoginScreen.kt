@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
 import android.provider.Settings
+import android.widget.TextView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -77,163 +78,8 @@ import org.json.JSONObject
 import java.io.IOException
 
 
-/*@Composable
-fun LoginScreen(navController: NavController) {
 
-    var email by remember { mutableStateOf("seller@sabac.com") }
-    var password by remember { mutableStateOf("123456789") }
-
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
-//    val gAuthViewModel: GAuthViewModel = hiltViewModel()
-//    val launcher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.StartActivityForResult()
-//    ) { result ->
-//        val account = gAuthViewModel.handleGoogleSignIn(result.data)
-//        Log.d("LoginScreen", "Result: $account")
-//    }
-
-    val googleAuth: GoogleViewModel = viewModel()
-
-    val loginViewModel: LoginViewModel = hiltViewModel()
-
-    val authState by loginViewModel.authState.collectAsState()
-
-    LaunchedEffect(authState) {
-    when (authState) {
-        is AuthState.Loading -> {}
-        is AuthState.Success -> {
-            val role = (authState as AuthState.Success).role
-            if (role == "seller") {
-                navController.navigate("seller")
-            }
-        }
-        is AuthState.Error -> {
-            Log.e(TAG, "Login Error: ${(authState as AuthState.Error).message}")
-        }
-
-        is AuthState.Idle -> {}
-    }
-}
-    Box(
-        modifier = Modifier.background(Color(0xFF2C2B34))
-    ) {
-
-        Image(
-            painter = painterResource(id = R.drawable.skew),
-            contentDescription = null,
-//            modifier = Modifier.fillMaxWidth()
-            contentScale = ContentScale.Crop
-        )
-        Column(
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState())
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.car3),
-                contentDescription = "car",
-                modifier = Modifier.height(150.dp).fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(text = "Selling Point", fontWeight = FontWeight.Bold, fontSize = 32.sp, color = Color.White)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "Travel love a car", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Medium)
-            Spacer(modifier = Modifier.height(26.dp))
-            OutlinedTextField(
-                value = email,
-                onValueChange = {email = it},
-                placeholder = {
-                    Text(text = "Email")
-                },
-                shape = RoundedCornerShape(28.dp),
-                modifier = Modifier.fillMaxWidth()
-                    .background(Color.White, shape = RoundedCornerShape(28.dp)).height(58.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = Color(0xFF9ED90D)
-                ),
-                singleLine = true
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            OutlinedTextField(
-                value = password,
-                onValueChange = {password = it},
-                placeholder = {
-                    Text(text = "Password")
-                },
-                shape = RoundedCornerShape(28.dp),
-                modifier = Modifier.fillMaxWidth()
-                    .background(Color.White, shape = RoundedCornerShape(28.dp)).height(58.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = Color(0xFF9ED90D)
-                ),
-                singleLine = true,
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    loginViewModel.loginUser(email, password)
-                    if(email == "seller@sabac.com"){
-                        navController.navigate("seller")
-                    }
-                    if(email == "inspection@sabac.com" ) {
-                        navController.navigate("inspection")
-                    }
-                    if(email == "admin@sabac.com") {
-                        navController.navigate("admin")
-                    }
-                },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF9ED90D),
-                    contentColor = Color.Black
-                )
-            ) {
-                Text(text = "LOG IN", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-            }
-            Row(
-                modifier = Modifier.padding(16.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                HorizontalDivider( modifier = Modifier.weight(1f).height(1.dp), color = Color(0x80FFFFFF))
-                IconButton( modifier = Modifier.background(color = Color.White, shape = CircleShape),
-                    onClick = {
-//                        launcher.launch(googleViewModel.googleSignInClient.signInIntent)
-//                        launcher.launch(gAuthViewModel.getGoogleSignInIntent(context))
-                        googleAuth.initiateGoogleSignIn(context, coroutineScope)
-                    }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.google),
-                        contentDescription = "Sign in using Google",
-                        modifier = Modifier.size(30.dp),
-                        tint = Color.Unspecified
-                    )
-                }
-                HorizontalDivider( modifier = Modifier.weight(1f).height(1.dp), color = Color(0x80FFFFFF))
-            }
-            Row {
-                Text(text = "Don't have an account?",
-                    fontSize = 12.sp, fontWeight = FontWeight.Normal, color = Color.White)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Sign Up",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.White,
-                    textDecoration = TextDecoration.Underline,
-                    modifier = Modifier.clickable { navController.navigate("registration") }
-                )
-            }
-            Spacer(modifier = Modifier.height(54.dp))
-        }
-    }
-}*/
-
+/*
 @Composable
 fun LoginScreen(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
@@ -325,7 +171,8 @@ fun LoginScreen(navController: NavController) {
                 singleLine = true
             )
             Spacer(modifier = Modifier.height(12.dp))
-            /*Button(
+            */
+/*Button(
                 onClick = {
                     coroutineScope.launch {
                         val success = loginUser(context, email, password, navController)
@@ -342,6 +189,8 @@ fun LoginScreen(navController: NavController) {
             ) {
                 Text(text = "LOG IN", fontSize = 18.sp, fontWeight = FontWeight.Medium)
             }*/
+/*
+
             Button(
                 onClick = {
                     coroutineScope.launch {
@@ -432,7 +281,249 @@ fun LoginScreen(navController: NavController) {
         }
     }
 }
+*/
 
+
+@Composable
+fun LoginScreen(navController: NavController) {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var emailError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
+
+    // Define error colors that contrast well with red background
+    val errorBorderColor = Color(0xFFFFD700) // Gold/Yellow
+    val errorTextColor = Color(0xFFFFF176) // Light Yellow
+    val errorIndicatorColor = Color(0xFFFFA000) // Amber
+
+    BackHandler {
+        (context as? Activity)?.finish()
+    }
+
+    Box(
+        modifier = Modifier.background(redcolor)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.skew),
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.car3),
+                contentDescription = "car",
+                modifier = Modifier
+                    .height(150.dp)
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = "Selling Point",
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Travel love a car",
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(26.dp))
+            // Email Field
+            OutlinedTextField(
+                value = email,
+                onValueChange = {
+                    email = it
+                    emailError = false
+                },
+                placeholder = {
+                    Text(text = "Username/Email", color = Color.Gray)
+                },
+                shape = RoundedCornerShape(28.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White, shape = RoundedCornerShape(28.dp))
+                    .height(58.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = redcolor,
+                    unfocusedIndicatorColor = if (emailError) errorIndicatorColor else Color.Gray,
+                    cursorColor = redcolor,
+                    errorIndicatorColor = errorIndicatorColor
+                ),
+                singleLine = true,
+                isError = emailError
+            )
+            if (emailError) {
+                Text(
+                    text = "Username or Email is required",
+                    color = errorTextColor,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .padding(start = 16.dp, top = 4.dp)
+                        .fillMaxWidth(),
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Password Field
+            OutlinedTextField(
+                value = password,
+                onValueChange = {
+                    password = it
+                    passwordError = false
+                },
+                placeholder = {
+                    Text(text = "Password", color = Color.Gray)
+                },
+                shape = RoundedCornerShape(28.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White, shape = RoundedCornerShape(28.dp))
+                    .height(58.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = redcolor,
+                    unfocusedIndicatorColor = if (passwordError) errorIndicatorColor else Color.Gray,
+                    cursorColor = redcolor,
+                    errorIndicatorColor = errorIndicatorColor
+                ),
+                singleLine = true,
+                isError = passwordError
+            )
+            if (passwordError) {
+                Text(
+                    text = "Password is required",
+                    color = errorTextColor,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .padding(start = 16.dp, top = 4.dp)
+                        .fillMaxWidth(),
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Login Button
+            Button(
+                onClick = {
+                    // Validate fields
+                    emailError = email.isBlank()
+                    passwordError = password.isBlank()
+
+                    if (!emailError && !passwordError) {
+                        coroutineScope.launch {
+                            isLoading = true
+                            val success = loginUser(context, email, password, navController)
+                            isLoading = false
+                            if (!success) {
+                                Toast.makeText(context, "Login failed", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        // Show error message with custom color
+                        val toast = Toast.makeText(
+                            context,
+                            "Please fill in all fields",
+                            Toast.LENGTH_SHORT
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                ),
+                enabled = !isLoading
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(24.dp)
+                    )
+                } else {
+                    Text(text = "LOG IN", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Continue as Guest",
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate("post")
+                    }
+                    .padding(8.dp)
+            )
+
+            Row(
+                modifier = Modifier.padding(16.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f).height(1.dp),
+                    color = Color(0x80FFFFFF)
+                )
+                IconButton(
+                    modifier = Modifier.background(color = Color.White, shape = CircleShape),
+                    onClick = {}
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.car2),
+                        contentDescription = "Sign in using Google",
+                        modifier = Modifier.size(30.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f).height(1.dp),
+                    color = Color(0x80FFFFFF)
+                )
+            }
+            Row {
+                Text(
+                    text = "Don't have an account?",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Sign Up",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable { navController.navigate("registration") }
+                )
+            }
+            Spacer(modifier = Modifier.height(54.dp))
+        }
+    }
+}
 
 suspend fun loginUser(context: Context, email: String, password: String, navController: NavController): Boolean {
     return withContext(Dispatchers.IO) {

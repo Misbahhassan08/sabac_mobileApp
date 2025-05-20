@@ -14,12 +14,17 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
@@ -35,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -45,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -67,6 +74,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
+import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
 fun BiddingScreen(
@@ -78,6 +86,8 @@ fun BiddingScreen(
     val systemUiController = rememberSystemUiController()
     val isLoading by viewModel.isLoading.collectAsState()
     val context = LocalContext.current
+
+
 
     systemUiController.isStatusBarVisible = false
    /* LaunchedEffect(isLoading) {
@@ -93,11 +103,12 @@ fun BiddingScreen(
     LaunchedEffect(Unit) {
         while (true) {
             viewModel.fetchNotifications(context)
-            delay(500)
+//            delay(500)
+            delay(1000)
         }
     }
 
-    if (notifications.isNotEmpty()) {
+   /* if (notifications.isNotEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -114,8 +125,31 @@ fun BiddingScreen(
             }
         }
     }
+}*/
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (notifications.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .zIndex(1f)
+                    .padding(top = 80.dp),
+                contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
+            ) {
+                items(
+                    items = notifications.reversed(),
+                    key = { notification -> notification.id }
+                    ) { notification ->
+                    NotificationCardB(
+                        notification = notification,
+                        onDismiss = { viewModel.removeNotification(notification) }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+        }
+    }
 }
-
+/*
 @Composable
 fun NotificationCardB(notification: com.example.carapp.screens.Admin.NotificationItem, onDismiss: () -> Unit) {
     var timeLeft by remember { mutableStateOf(20) }
@@ -207,10 +241,152 @@ fun NotificationCardB(notification: com.example.carapp.screens.Admin.Notificatio
     }
 }
 
+*/
+@Composable
+fun NotificationCardB(
+    notification: NotificationItem,
+    onDismiss: () -> Unit
+) {
+    val totalTime = 20 // seconds
+    var timeLeft by remember(notification) { mutableIntStateOf(totalTime) }
+    val context = LocalContext.current
+
+    val salerCarId = notification.bid?.saler_car?.saler_car_id
+    Log.d("bid___ID", "SalerCarId: $salerCarId")
+
+    val bidId = notification.bid?.id
+    Log.d("bid___ID", "bidId* : $bidId")
+
+    LaunchedEffect(notification) {
+        timeLeft = totalTime
+        try {
+            repeat(totalTime) {
+                delay(1000L)
+                timeLeft--
+            }
+            onDismiss()
+        } catch (e: CancellationException) {
+        }
+    }
+    val progress by remember(timeLeft) {
+        derivedStateOf { timeLeft.toFloat() / totalTime.toFloat() }
+    }
 
 
-fun updateCarStatusB(context: Context, carId: String, status: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-    val url = "${TestApi.update_status}$carId/"
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFE3F2FD),
+            contentColor = Color(0xFF0D47A1)
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Notification header with time remaining
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "New Bid",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0D47A1)
+                )
+
+                Text(
+                    text = "$timeLeft s",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF0D47A1).copy(alpha = 0.7f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Notification message
+            Text(
+                text = notification.message,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    onClick = {
+                        Log.d("bid_id", "-- ${notification.id}")
+                        sendBidid(bidId.toString(), context)
+                        updateCarStatusB(
+                            context,
+//                            notification.id,
+                            salerCarId,
+                            "sold",
+                            onSuccess = {
+                                Handler(Looper.getMainLooper()).post {
+//                                    navController.navigate("report/${slot.car.salerCarId}")
+                                }
+                            },
+                            onFailure = { errorMessage ->
+                                Log.e("API_ERROR", "Failed to update status: $errorMessage")
+                            }
+                        )
+                        onDismiss()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4CAF50),
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier.weight(1f).padding(end = 4.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("Accept")
+                }
+
+                Button(
+                    onClick = {
+                        RejectBid(bidId.toString(), context)
+                        onDismiss()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFF44336),
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier.weight(1f).padding(start = 4.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("Reject")
+                }
+            }
+
+            // Progress bar
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp)
+                    .height(6.dp),
+                color = Color(0xFF0D47A1),
+                trackColor = Color(0xFFBBDEFB),
+                strokeCap = StrokeCap.Round
+            )
+        }
+    }
+}
+
+
+fun updateCarStatusB(context: Context, salerCarId: Int?, status: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+    val url = "${TestApi.update_status}$salerCarId/"
     Log.d("API_DEBUG", "Request URL: $url")
 
     val token = getToken(context)

@@ -1179,7 +1179,7 @@ fun InputFieldWithDropdown(
     selectedItem: String,
     onItemSelected: (String) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
     var textFieldValue by remember { mutableStateOf(selectedItem) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -1661,7 +1661,7 @@ fun CompanyDetailsCard(
     dropdownOptions: Map<String, DropdownConfig>,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
     var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
 
     Card(
@@ -2119,7 +2119,7 @@ fun CarDetailsCard(
     dropdownOptions: Map<String, DropdownConfig>,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
 
     Card(
         modifier = modifier
@@ -2638,7 +2638,7 @@ fun CarTechnicalDetailsCard(
     dropdownOptions: Map<String, DropdownConfig>,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
 
     Card(
         modifier = modifier
@@ -2995,7 +2995,7 @@ fun ImageSliderCard(
     showError: Boolean,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
 
     Card(
         modifier = modifier
@@ -3534,7 +3534,7 @@ fun RadioButtonSelectionCard(
     onOptionSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
 
     Card(
         modifier = modifier
@@ -3780,7 +3780,7 @@ fun Inspectiodseller(
     modifier: Modifier = Modifier,
     cardName: String
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
 
     Card(
         modifier = modifier

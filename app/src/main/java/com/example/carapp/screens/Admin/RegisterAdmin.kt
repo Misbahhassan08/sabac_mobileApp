@@ -621,8 +621,10 @@ fun RegisterAdminScreen(
         }
     }
 }
+
 fun isValidEmail(email: String): Boolean {
-    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+//    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+[a-z]\$"
+    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-z]{2,3}\$"
     return email.matches(emailRegex.toRegex())
 }
 
@@ -696,8 +698,8 @@ suspend fun registerUserA(
                     null
                 }
                 Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(context, "Registration Successful!", Toast.LENGTH_SHORT).show()
-                    // If you need to navigate after this, do it here too
+//                    Toast.makeText(context, "Registration Successful!", Toast.LENGTH_SHORT).show()
+                    // If need to navigate after this
                     // navController.navigate("login")
                 }
 //                // Show success Toast on Main Thread
