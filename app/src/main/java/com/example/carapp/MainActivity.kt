@@ -24,6 +24,7 @@ import com.example.carapp.screens.CalenderDate
 import com.example.carapp.screens.CarListScreen
 import com.example.carapp.screens.CarSellScreen
 import com.example.carapp.screens.Checkout
+import com.example.carapp.screens.Dashboard
 import com.example.carapp.screens.Dealer.DealerListScreen
 //import com.example.carapp.screens.Dealer.ViewDealerReport
 import com.example.carapp.screens.Dealer.ViewDealerReports
@@ -72,12 +73,15 @@ fun App() {
     NavHost(navController = navController, startDestination = "splash") {
         composable(route = "splash") {
             SplashScreen{
-                navController.navigate("postcar")
+                navController.navigate("dash")
             }
         }
 
         composable(route = "login") {
             LoginScreen(navController)
+        }
+        composable(route = "dash") {
+            Dashboard(navController)
         }
         composable(route = "Test") {
 //            TestCase(navController)

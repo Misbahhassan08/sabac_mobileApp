@@ -48,11 +48,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.carapp.Apis.TestApi
+import com.example.carapp.assets.redcolor
 import com.example.carapp.models.ViewReportModel
 import com.example.carapp.screens.Inspector.CarDetailRow
 import com.example.carapp.screens.Inspector.CustomAnimatedLoade
 import com.example.carapp.screens.getToken
-import com.example.carapp.screens.redcolor
 import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback

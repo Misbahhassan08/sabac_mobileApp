@@ -76,9 +76,7 @@ import com.example.carapp.R
 import com.example.carapp.assets.AssetHelper
 import com.example.carapp.models.InspectionModel
 import com.example.carapp.screens.AddImage
-import com.example.carapp.screens.cardColor
 import com.example.carapp.screens.getToken
-import com.example.carapp.screens.redcolor
 import kotlinx.coroutines.launch
 import java.io.File
 import androidx.compose.material3.AlertDialog

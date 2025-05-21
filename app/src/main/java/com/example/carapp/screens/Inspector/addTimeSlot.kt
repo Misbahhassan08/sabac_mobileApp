@@ -113,7 +113,6 @@ import com.example.carapp.screens.DatePickerModal
 import com.example.carapp.screens.SimpleTimeMaker
 import com.example.carapp.screens.convertMillisToDate
 import com.example.carapp.screens.getToken
-import com.example.carapp.screens.redcolor
 import com.example.carapp.viewmodels.InspectionViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
@@ -144,7 +143,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import androidx.compose.material3.FilterChip
-
+import com.example.carapp.assets.redcolor
 
 
 @OptIn(ExperimentalMaterial3Api::class)

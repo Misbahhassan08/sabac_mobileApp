@@ -64,6 +64,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
+import com.example.carapp.assets.redcolor
 import com.example.carapp.models.AuthState
 import com.example.carapp.viewmodels.GAuthViewModel
 import com.example.carapp.viewmodels.GoogleViewModel
@@ -301,7 +302,7 @@ fun LoginScreen(navController: NavController) {
     val errorIndicatorColor = Color(0xFFFFA000) // Amber
 
     BackHandler {
-        (context as? Activity)?.finish()
+        navController.navigate("dash")
     }
 
     Box(
@@ -466,17 +467,17 @@ fun LoginScreen(navController: NavController) {
             }
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "Continue as Guest",
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier
-                    .clickable {
-                        navController.navigate("post")
-                    }
-                    .padding(8.dp)
-            )
+//            Text(
+//                text = "Continue as Guest",
+//                color = Color.White,
+//                fontSize = 16.sp,
+//                fontWeight = FontWeight.Medium,
+//                modifier = Modifier
+//                    .clickable {
+//                        navController.navigate("post")
+//                    }
+//                    .padding(8.dp)
+//            )
 
             Row(
                 modifier = Modifier.padding(16.dp),
@@ -503,23 +504,23 @@ fun LoginScreen(navController: NavController) {
                     color = Color(0x80FFFFFF)
                 )
             }
-            Row {
-                Text(
-                    text = "Don't have an account?",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Sign Up",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.White,
-                    textDecoration = TextDecoration.Underline,
-                    modifier = Modifier.clickable { navController.navigate("registration") }
-                )
-            }
+//            Row {
+//                Text(
+//                    text = "Don't have an account?",
+//                    fontSize = 12.sp,
+//                    fontWeight = FontWeight.Normal,
+//                    color = Color.White
+//                )
+//                Spacer(modifier = Modifier.width(8.dp))
+//                Text(
+//                    text = "Sign Up",
+//                    fontSize = 12.sp,
+//                    fontWeight = FontWeight.Medium,
+//                    color = Color.White,
+//                    textDecoration = TextDecoration.Underline,
+//                    modifier = Modifier.clickable { navController.navigate("registration") }
+//                )
+//            }
             Spacer(modifier = Modifier.height(54.dp))
         }
     }

@@ -51,12 +51,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.carapp.R
+import com.example.carapp.assets.redcolor
 import com.example.carapp.models.DealerList
 import com.example.carapp.screens.Inspector.CustomAnimatedLoade
 import com.example.carapp.screens.Inspector.DrawerIte
 import com.example.carapp.screens.Inspector.DrawerIteP
 import com.example.carapp.screens.performLogout
-import com.example.carapp.screens.redcolor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 

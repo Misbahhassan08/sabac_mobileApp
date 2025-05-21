@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.carapp.R
+import com.example.carapp.assets.redcolor
 import com.example.carapp.screens.Checkout
-import com.example.carapp.screens.redcolor
 
 @Composable
 fun Checkou(navController: NavController) {

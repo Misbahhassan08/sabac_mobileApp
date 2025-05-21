@@ -77,8 +77,8 @@ import androidx.navigation.compose.rememberNavController
 import coil3.compose.rememberAsyncImagePainter
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
+import com.example.carapp.assets.redcolor
 import com.example.carapp.screens.getToken
-import com.example.carapp.screens.redcolor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

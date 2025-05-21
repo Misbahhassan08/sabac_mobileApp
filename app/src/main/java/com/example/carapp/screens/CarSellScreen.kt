@@ -148,6 +148,9 @@ import coil3.compose.rememberAsyncImagePainter
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
 import com.example.carapp.assets.AssetHelper
+import com.example.carapp.assets.cardColor
+import com.example.carapp.assets.redcolor
+import com.example.carapp.assets.seller_Color
 import com.example.carapp.screens.Inspector.Inspectiod
 import com.example.carapp.screens.Inspector.Inspectir
 import com.example.carapp.screens.Inspector.UploadViewModel
@@ -183,8 +186,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 
-val cardColor = Color(0xFFEAECEE)
-val redcolor = Color(0xFFE52020)
+
 
 fun saveAndLogFormData(
     selectedOption: String,
@@ -317,7 +319,7 @@ fun CarSellScreen(navController: NavController) {
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false
-                navController.navigate("seller") { popUpTo("basicInfoScreen") { inclusive = true } }
+                navController.navigate("dash") { popUpTo("basicInfoScreen") { inclusive = true } }
             }
         )
     }
@@ -401,7 +403,7 @@ fun CarSellScreen(navController: NavController) {
             Column(
                 modifier = Modifier
                     .background(
-                        redcolor
+                        seller_Color
                     )
             ) {
                 TopAppBar(
@@ -440,7 +442,7 @@ fun CarSellScreen(navController: NavController) {
                     StepProgressIndicatorss(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 7.dp, vertical = 4.dp),
+                            .padding(start = 7.dp, end = 7.dp, top = 32.dp, bottom = 4.dp),
                         stepCount = 3,
                         currentStep = 1,
                         titles = listOf("Car Detail", "User Detail", "Inspector Detail")
@@ -818,14 +820,14 @@ fun CarSellScreen(navController: NavController) {
                                     }
                                 },
                                 modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.buttonColors(containerColor = redcolor),
+                                colors = ButtonDefaults.buttonColors(containerColor = seller_Color),
                                 shape = RoundedCornerShape(8.dp),
                                 enabled = !isLoading // Disable while loading
                             ) {
                                 if (isLoading) {
                                     CircularProgressIndicator(
                                         modifier = Modifier.size(20.dp),
-                                        color = Color.Red,
+                                        color = seller_Color,
                                         strokeWidth = 2.dp
                                     )
                                 } else {
@@ -3531,7 +3533,7 @@ fun StepProgressIndicatorss(
                     modifier = Modifier
                         .size(30.dp)
                         .background(
-                            color = if (index == 0) Color.Red
+                            color = if (index == 0) seller_Color
                             else Color.Gray, // Other steps are gray
                             shape = CircleShape
                         ),

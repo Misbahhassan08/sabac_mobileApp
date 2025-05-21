@@ -56,7 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.carapp.R
-import com.example.carapp.screens.redcolor
+import com.example.carapp.assets.redcolor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString

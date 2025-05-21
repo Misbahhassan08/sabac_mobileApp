@@ -87,7 +87,6 @@ import androidx.navigation.NavController
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
 import com.example.carapp.screens.getToken
-import com.example.carapp.screens.redcolor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

@@ -109,10 +109,9 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
+import com.example.carapp.assets.redcolor
 import com.example.carapp.models.ViewReportModel
-import com.example.carapp.screens.cardColor
 import com.example.carapp.screens.getToken
-import com.example.carapp.screens.redcolor
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator

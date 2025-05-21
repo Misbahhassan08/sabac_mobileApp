@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.carapp.R
-import com.example.carapp.screens.redcolor
+import com.example.carapp.assets.redcolor
 
 @Composable
 fun Donecheck(navController: NavController) {

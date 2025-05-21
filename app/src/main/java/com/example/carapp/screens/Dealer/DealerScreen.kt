@@ -107,6 +107,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.carapp.R
+import com.example.carapp.assets.redcolor
 import com.example.carapp.models.AssignedSlot
 import com.example.carapp.models.CarI
 import com.example.carapp.models.CarListViewModelI
@@ -120,7 +121,6 @@ import com.example.carapp.screens.Inspector.calculateRemainingTime
 import com.example.carapp.screens.Inspector.checkIfReportExists
 import com.example.carapp.screens.Inspector.decodeBase64ToBitma
 import com.example.carapp.screens.extractImageUrl
-import com.example.carapp.screens.redcolor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

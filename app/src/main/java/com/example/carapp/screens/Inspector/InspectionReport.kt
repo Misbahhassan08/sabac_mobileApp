@@ -124,15 +124,14 @@ import coil3.compose.rememberAsyncImagePainter
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
 import com.example.carapp.assets.AssetHelper
+import com.example.carapp.assets.redcolor
 import com.example.carapp.models.InspectionModel
 import com.example.carapp.screens.AddImage
 import com.example.carapp.screens.CustomAlertDialog
 import com.example.carapp.screens.ImageSliderCard
 import com.example.carapp.screens.PageSlider
-import com.example.carapp.screens.cardColor
 import com.example.carapp.screens.getToken
 import com.example.carapp.screens.getUserId
-import com.example.carapp.screens.redcolor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

@@ -101,6 +101,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
+import com.example.carapp.assets.redcolor
 import com.example.carapp.models.AssignedSlot
 import com.example.carapp.models.CarI
 import com.example.carapp.models.CarListViewModelI
@@ -108,7 +109,6 @@ import com.example.carapp.models.InspectionModel
 import com.example.carapp.screens.extractImageUrl
 import com.example.carapp.screens.getToken
 import com.example.carapp.screens.performLogout
-import com.example.carapp.screens.redcolor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
