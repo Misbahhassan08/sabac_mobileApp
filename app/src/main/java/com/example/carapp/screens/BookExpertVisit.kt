@@ -50,10 +50,15 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Divider
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.painterResource
@@ -62,6 +67,7 @@ import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
 import com.example.carapp.assets.AssetHelper
 import com.example.carapp.assets.redcolor
+import com.example.carapp.assets.seller_Color
 import com.example.carapp.screens.Guest.postExpertSelection
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -83,6 +89,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 
+/*
 
 @Composable
 fun BookExpertVisit(navController: NavController, list: List<Expert>) {
@@ -118,7 +125,7 @@ fun BookExpertVisit(navController: NavController, list: List<Expert>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(redcolor)
+            .background(seller_Color)
     ) {
         HeaderSectionExpertVisit()
         ExpertVisitForm(navController,list)
@@ -128,12 +135,113 @@ fun BookExpertVisit(navController: NavController, list: List<Expert>) {
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false
-                navController.navigate("seller") { popUpTo("basicInfoScreen") { inclusive = true } }
+                navController.navigate("dash") { popUpTo("basicInfoScreen") { inclusive = true } }
             }
         )
     }
 }
+*/
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BookExpertVisit(navController: NavController, list: List<Expert>) {
+    val systemUiController = rememberSystemUiController()
+    var expertList by remember { mutableStateOf<List<Expert>>(emptyList()) }
+    val context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        fetchExperts(TestApi.Get_Inspector) { experts ->
+            expertList = experts
+        }
+    }
+
+    systemUiController.isStatusBarVisible = false
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+
+    // Handle back press
+    val backCallback = remember {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                showDialog = true
+            }
+        }
+    }
+
+    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+
+    LaunchedEffect(Unit) {
+        backDispatcher?.addCallback(backCallback)
+    }
+
+    Scaffold(
+        topBar = {
+            Column(
+                modifier = Modifier.background(seller_Color)
+            ) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            "Book Inspection",
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            }
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .background(seller_Color)
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            // Step progress under TopAppBar
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                StepProgressIndicatorsss(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp, top = 32.dp, bottom = 4.dp),
+                    stepCount = 3,
+                    currentStep = 1,
+                    titles = listOf("Car Detail", "User Detail", "Book Inspection"),
+                    onStepClicked = { /* optional */ }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    color = Color.Gray,
+                    thickness = 3.dp
+                )
+            }
+
+            ExpertVisitForm(navController, list)
+        }
+    }
+
+    if (showDialog) {
+        CustomAlertDialog(
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                showDialog = false
+                navController.navigate("dash") {
+                    popUpTo("basicInfoScreen") { inclusive = true }
+                }
+            }
+        )
+    }
+}
 @Composable
 fun HeaderSectionExpertVisit() {
     Box(
@@ -141,7 +249,7 @@ fun HeaderSectionExpertVisit() {
             .fillMaxWidth()
             .height(260.dp)
             .background(
-                redcolor
+                seller_Color
 //                Brush.verticalGradient(listOf(Color(0xFF1E4DB7), Color(0xFF1C72E8)))
             )
     ) {
@@ -163,14 +271,14 @@ fun HeaderSectionExpertVisit() {
                     .padding(horizontal = 10.dp),
                 stepCount = 3,
                 currentStep = 1, // Change this based on your actual step
-                titles = listOf("Car Detail", "User Detail", "Inspector Detail"),
+                titles = listOf("Car Detail", "User Detail", "Book Inspection"),
                 onStepClicked = { /* Handle step click if needed */ }
             )
 
 //            StepProgressIndicatorExpertVisit()
-            Spacer(modifier = Modifier.height(34.dp))
-            Text("Book a free car inspection now!", color = Color.White, fontSize = 38.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(25.dp))
+//            Spacer(modifier = Modifier.height(34.dp))
+//            Text("Book a free car inspection now!", color = Color.White, fontSize = 38.sp, fontWeight = FontWeight.Bold)
+//            Spacer(modifier = Modifier.height(25.dp))
         }
     }
 }
@@ -199,7 +307,7 @@ fun StepProgressIndicatorsss(
                     modifier = Modifier
                         .size(30.dp)
                         .background(
-                            color = if (index <= 2) Color.Red
+                            color = if (index <= 2) seller_Color
                             else Color.Gray,
                             shape = CircleShape
                         ),
@@ -216,7 +324,7 @@ fun StepProgressIndicatorsss(
                     text = titles.getOrElse(index) { "Step ${index + 1}" },
                     color = Color.DarkGray,
                     fontSize = 15.sp,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(top = 4.dp,start = 8.dp, end = 8.dp)
                 )
             }
 
@@ -519,7 +627,7 @@ fun ExpertItem(
         },
         modifier = Modifier.fillMaxWidth(1.0f),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSlotSelected) redcolor else Color.LightGray,
+            containerColor = if (isSlotSelected) seller_Color else Color.LightGray,
             disabledContainerColor = Color.LightGray
         ),
         shape = RoundedCornerShape(8.dp),

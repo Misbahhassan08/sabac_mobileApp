@@ -445,7 +445,7 @@ fun CarSellScreen(navController: NavController) {
                             .padding(start = 7.dp, end = 7.dp, top = 32.dp, bottom = 4.dp),
                         stepCount = 3,
                         currentStep = 1,
-                        titles = listOf("Car Detail", "User Detail", "Inspector Detail")
+                        titles = listOf("Car Detail", "User Detail", "Book Inspection")
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Divider(
@@ -489,7 +489,8 @@ fun CarSellScreen(navController: NavController) {
                     CompanyDetailsCard(
                         inputFields = inputFields,
                         iconMapping = iconMapping,
-                        dropdownOptions = dropdownOptions
+                        dropdownOptions = dropdownOptions,
+                        companyToCarNames = carNamesMap
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     CarDetailsCard(
@@ -1291,381 +1292,20 @@ fun InputFieldWithDropdown(
 }*/
 
 // ALL PERFECT THIS BELOW
-/*@Composable
-fun CompanyDetailsCard(
-    inputFields: Map<String, FieldState>,
-    iconMapping: Map<String, Int>,
-    dropdownOptions: Map<String, DropdownConfig>,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .animateContentSize()
-                .background(cardColor)
-        ) {
-            // Header row remains the same
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { expanded = !expanded }
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    "Car Details",
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp
-                )
-                Icon(
-                    imageVector = if (expanded) Icons.Default.KeyboardArrowUp
-                    else Icons.Default.KeyboardArrowDown,
-                    contentDescription = if (expanded) "Collapse" else "Expand",
-                    tint = Color.Gray
-                )
-            }
-
-            if (expanded) {
-                Divider(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    thickness = 1.dp,
-                    color = Color.LightGray
-                )
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    // Company Field
-                    val companyField = inputFields["Company"] ?: return@Column
-                    val companyConfig = dropdownOptions["Company"] ?: return@Column
-                    var companyExpanded by remember { mutableStateOf(false) }
-                    val showCompanyError = companyField.error.value
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        // Label row remains the same
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "Company",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = if (showCompanyError) MaterialTheme.colorScheme.error else Color.Gray,
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            if (companyConfig.isRequired) {
-                                Text(
-                                    text = " *",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.error,
-                                    modifier = Modifier.padding(bottom = 4.dp)
-                                )
-                            }
-                        }
-
-                        OutlinedTextField(
-                            value = companyField.value.value,
-                            onValueChange = { },
-                            placeholder = { Text("Select company") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { companyExpanded = !companyExpanded },
-                            shape = RoundedCornerShape(8.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error
-                                else Color(0xFF1976D2),
-                                unfocusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error
-                                else Color.Gray,
-                                errorBorderColor = MaterialTheme.colorScheme.error
-                            ),
-                            isError = showCompanyError,
-                            supportingText = {
-                                if (showCompanyError) {
-                                    Text(
-                                        text = companyField.errorMessage.value.ifEmpty { "This field is required" },
-                                        color = MaterialTheme.colorScheme.error
-                                    )
-                                }
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(
-                                        id = iconMapping["Company"] ?: R.drawable.company
-                                    ),
-                                    contentDescription = "Company",
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            },
-                            trailingIcon = {
-                                IconButton(onClick = { companyExpanded = !companyExpanded }) {
-                                    Icon(
-                                        imageVector = if (companyExpanded) Icons.Default.KeyboardArrowUp
-                                        else Icons.Default.ArrowDropDown,
-                                        contentDescription = if (companyExpanded) "Collapse" else "Expand"
-                                    )
-                                }
-                            },
-                            readOnly = true
-                        )
-
-                        DropdownMenu(
-                            expanded = companyExpanded,
-                            onDismissRequest = { companyExpanded = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            companyConfig.options.forEachIndexed { index, item ->
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    DropdownMenuItem(
-                                        text = { Text(item) },
-                                        onClick = {
-                                            companyField.value.value = item
-                                            companyExpanded = false
-                                            companyField.error.value = false
-                                        }
-                                    )
-                                    if (index < companyConfig.options.size - 1) {
-                                        Divider(
-                                            modifier = Modifier.padding(horizontal = 8.dp),
-                                            thickness = 0.5.dp,
-                                            color = Color.LightGray
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    CompanyIconSelector(
-                        selectedCompany = companyField.value.value,
-                        onCompanySelected = { company ->
-                            companyField.value.value = company
-                            companyField.error.value = false
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    // Car Name Field - same changes as Company field
-                    val carNameField = inputFields["Car Name"] ?: return@Column
-                    val carNameConfig = dropdownOptions["Car Name"] ?: return@Column
-                    var carNameExpanded by remember { mutableStateOf(false) }
-                    val showCarNameError = carNameField.error.value
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        // Label row remains the same
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "Car Name",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = if (showCarNameError) MaterialTheme.colorScheme.error else Color.Gray,
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            if (carNameConfig.isRequired) {
-                                Text(
-                                    text = " *",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.error,
-                                    modifier = Modifier.padding(bottom = 4.dp)
-                                )
-                            }
-                        }
-
-                        OutlinedTextField(
-                            value = carNameField.value.value,
-                            onValueChange = { },
-                            placeholder = { Text("Select car name") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { carNameExpanded = !carNameExpanded },
-                            shape = RoundedCornerShape(8.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = if (showCarNameError) MaterialTheme.colorScheme.error
-                                else Color(0xFF1976D2),
-                                unfocusedBorderColor = if (showCarNameError) MaterialTheme.colorScheme.error
-                                else Color.Gray,
-                                errorBorderColor = MaterialTheme.colorScheme.error
-                            ),
-                            isError = showCarNameError,
-                            supportingText = {
-                                if (showCarNameError) {
-                                    Text(
-                                        text = carNameField.errorMessage.value.ifEmpty { "This field is required" },
-                                        color = MaterialTheme.colorScheme.error
-                                    )
-                                }
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(id = iconMapping["Car Name"] ?: R.drawable.car_icon),
-                                    contentDescription = "Car Name",
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            },
-                            trailingIcon = {
-                                IconButton(onClick = { carNameExpanded = !carNameExpanded }) {
-                                    Icon(
-                                        imageVector = if (carNameExpanded) Icons.Default.KeyboardArrowUp
-                                        else Icons.Default.ArrowDropDown,
-                                        contentDescription = if (carNameExpanded) "Collapse" else "Expand"
-                                    )
-                                }
-                            },
-                            readOnly = true
-                        )
-
-                        DropdownMenu(
-                            expanded = carNameExpanded,
-                            onDismissRequest = { carNameExpanded = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            carNameConfig.options.forEachIndexed { index, item ->
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    DropdownMenuItem(
-                                        text = { Text(item) },
-                                        onClick = {
-                                            carNameField.value.value = item
-                                            carNameExpanded = false
-                                            carNameField.error.value = false
-                                        }
-                                    )
-                                    if (index < carNameConfig.options.size - 1) {
-                                        Divider(
-                                            modifier = Modifier.padding(horizontal = 8.dp),
-                                            thickness = 0.5.dp,
-                                            color = Color.LightGray
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Car Model Field - same changes as other fields
-                    val carModelField = inputFields["Car Model"] ?: return@Column
-                    val carModelConfig = dropdownOptions["Car Model"] ?: return@Column
-                    var carModelExpanded by remember { mutableStateOf(false) }
-                    val showCarModelError = carModelField.error.value
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        // Label row remains the same
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "Car Model",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = if (showCarModelError) MaterialTheme.colorScheme.error else Color.Gray,
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            if (carModelConfig.isRequired) {
-                                Text(
-                                    text = " *",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.error,
-                                    modifier = Modifier.padding(bottom = 4.dp)
-                                )
-                            }
-                        }
-
-                        OutlinedTextField(
-                            value = carModelField.value.value,
-                            onValueChange = {  },
-                            placeholder = { Text("Select car model") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { carModelExpanded = !carModelExpanded },
-                            shape = RoundedCornerShape(8.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = if (showCarModelError) MaterialTheme.colorScheme.error
-                                else Color(0xFF1976D2),
-                                unfocusedBorderColor = if (showCarModelError) MaterialTheme.colorScheme.error
-                                else Color.Gray,
-                                errorBorderColor = MaterialTheme.colorScheme.error
-                            ),
-                            isError = showCarModelError,
-                            supportingText = {
-                                if (showCarModelError) {
-                                    Text(
-                                        text = carModelField.errorMessage.value.ifEmpty { "This field is required" },
-                                        color = MaterialTheme.colorScheme.error
-                                    )
-                                }
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(id = iconMapping["Car Model"] ?: R.drawable.car_icon),
-                                    contentDescription = "Car Model",
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            },
-                            trailingIcon = {
-                                IconButton(onClick = { carModelExpanded = !carModelExpanded }) {
-                                    Icon(
-                                        imageVector = if (carModelExpanded) Icons.Default.KeyboardArrowUp
-                                        else Icons.Default.ArrowDropDown,
-                                        contentDescription = if (carModelExpanded) "Collapse" else "Expand"
-                                    )
-                                }
-                            },
-                            readOnly = true
-                        )
-
-                        DropdownMenu(
-                            expanded = carModelExpanded,
-                            onDismissRequest = { carModelExpanded = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            carModelConfig.options.forEachIndexed { index, item ->
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    DropdownMenuItem(
-                                        text = { Text(item) },
-                                        onClick = {
-                                            carModelField.value.value = item
-                                            carModelExpanded = false
-                                            carModelField.error.value = false
-                                        }
-                                    )
-                                    if (index < carModelConfig.options.size - 1) {
-                                        Divider(
-                                            modifier = Modifier.padding(horizontal = 8.dp),
-                                            thickness = 0.5.dp,
-                                            color = Color.LightGray
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}*/
 @Composable
 fun CompanyDetailsCard(
     inputFields: Map<String, FieldState>,
     iconMapping: Map<String, Int>,
     dropdownOptions: Map<String, DropdownConfig>,
+    companyToCarNames: Map<String, List<String>>,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(true) }
     var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
     val dropdownWidth = with(LocalDensity.current) { textFieldSize.width.toDp() }
+
+    // State to hold dynamic Car Name options
+    var dynamicCarNames by remember { mutableStateOf(listOf<String>()) }
 
 
     Card(
@@ -1722,7 +1362,7 @@ fun CompanyDetailsCard(
                     var companyExpanded by remember { mutableStateOf(false) }
                     val showCompanyError = companyField.error.value
 
-                    CompanyIconSelector(
+                  /*  CompanyIconSelector(
                         selectedCompany = companyField.value.value,
                         onCompanySelected = { company ->
                             companyField.value.value = company
@@ -1827,28 +1467,66 @@ fun CompanyDetailsCard(
                         }
                         // Inside the Column for "Company"
 
+                    }*/
 
-                        /*Box(modifier = Modifier
-                            .fillMaxWidth()
-                        ) {
+                    CompanyIconSelector(
+                        selectedCompany = companyField.value.value,
+                        onCompanySelected = { company ->
+                            companyField.value.value = company
+                            companyField.error.value = false
+
+                            dynamicCarNames = when (company) {
+                                "Honda" -> companyToCarNames["Honda"]
+                                "Toyota" -> companyToCarNames["Toyota"]
+                                "Hyundai" -> companyToCarNames["Hyundai"]
+                                else -> emptyList()
+                            } ?: emptyList()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+// COMPANY DROPDOWN
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        // Label row
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Others",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = if (showCompanyError) MaterialTheme.colorScheme.error else Color.Gray,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            if (companyConfig.isRequired) {
+                                Text(
+                                    text = " *",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                            }
+                        }
+
+                        // Text field with dropdown
+                        Box(modifier = Modifier.fillMaxWidth()) {
                             OutlinedTextField(
                                 value = companyField.value.value,
                                 onValueChange = { },
                                 placeholder = { Text("Select company") },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .onGloballyPositioned { coordinates ->
-                                        textFieldSize = coordinates.size
-                                    }
-                                    .clickable { companyExpanded = !companyExpanded },
+                                    .clickable { companyExpanded = true },
                                 shape = RoundedCornerShape(8.dp),
                                 colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error else Color(0xFF1976D2),
-                                    unfocusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error else Color.Gray,
+                                    focusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error
+                                    else Color(0xFF1976D2),
+                                    unfocusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error
+                                    else Color.Gray,
                                     errorBorderColor = MaterialTheme.colorScheme.error
                                 ),
                                 isError = showCompanyError,
-                                readOnly = true,
                                 supportingText = {
                                     if (showCompanyError) {
                                         Text(
@@ -1870,15 +1548,17 @@ fun CompanyDetailsCard(
                                     Icon(
                                         imageVector = if (companyExpanded) Icons.Default.KeyboardArrowUp
                                         else Icons.Default.ArrowDropDown,
-                                        contentDescription = if (companyExpanded) "Collapse" else "Expand"
+                                        contentDescription = if (companyExpanded) "Collapse" else "Expand",
+                                        modifier = Modifier.clickable { companyExpanded = !companyExpanded }
                                     )
-                                }
+                                },
+                                readOnly = true
                             )
+
                             DropdownMenu(
                                 expanded = companyExpanded,
                                 onDismissRequest = { companyExpanded = false },
-                                modifier = Modifier
-                                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                                modifier = Modifier.width(dropdownWidth)
                             ) {
                                 companyConfig.options.forEachIndexed { index, item ->
                                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -1888,7 +1568,15 @@ fun CompanyDetailsCard(
                                                 companyField.value.value = item
                                                 companyExpanded = false
                                                 companyField.error.value = false
-                                            }
+
+                                                dynamicCarNames = when (item) {
+                                                    "Honda" -> companyToCarNames["Honda"]
+                                                    "Toyota" -> companyToCarNames["Toyota"]
+                                                    "Hyundai" -> companyToCarNames["Hyundai"]
+                                                    else -> emptyList()
+                                                } ?: emptyList()
+                                            },
+                                            modifier = Modifier.width(dropdownWidth)
                                         )
                                         if (index < companyConfig.options.size - 1) {
                                             Divider(
@@ -1900,8 +1588,11 @@ fun CompanyDetailsCard(
                                     }
                                 }
                             }
-                        }*/
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
 
                     Spacer(modifier = Modifier.height(16.dp))
 //                    CompanyIconSelector(
@@ -2022,7 +1713,7 @@ fun CompanyDetailsCard(
                     var carNameExpanded by remember { mutableStateOf(false) }
                     val showCarNameError = carNameField.error.value
 
-                    Column(modifier = Modifier.fillMaxWidth()) {
+                    /*Column(modifier = Modifier.fillMaxWidth()) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "Car Name",
@@ -2092,33 +1783,6 @@ fun CompanyDetailsCard(
                                 readOnly = true
                             )
 
-                            /*DropdownMenu(
-                                expanded = carNameExpanded,
-                                onDismissRequest = { carNameExpanded = false },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                carNameConfig.options.forEachIndexed { index, item ->
-                                    Column(modifier = Modifier.fillMaxWidth()) {
-                                        DropdownMenuItem(
-                                            text = { Text(item) },
-                                            onClick = {
-                                                carNameField.value.value = item
-                                                carNameExpanded = false
-                                                carNameField.error.value = false
-                                            },
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                        if (index < carNameConfig.options.size - 1) {
-                                            Divider(
-                                                modifier = Modifier.padding(horizontal = 8.dp),
-                                                thickness = 0.5.dp,
-                                                color = Color.LightGray
-                                            )
-                                        }
-                                    }
-                                }
-                            }*/
-
 
                             DropdownMenu(
                                 expanded = carNameExpanded,
@@ -2144,16 +1808,275 @@ fun CompanyDetailsCard(
                                             )
                                         }
                                     }
+                                }*/
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Car Name",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = if (showCarNameError) MaterialTheme.colorScheme.error else Color.Gray,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            if (carNameConfig.isRequired) {
+                                Text(
+                                    text = " *",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                            }
+                        }
+
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { carNameExpanded = true }
+                        ) {
+                            OutlinedTextField(
+                                value = carNameField.value.value,
+                                onValueChange = { },
+                                placeholder = { Text("Select car name") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .onGloballyPositioned { coordinates ->
+                                        textFieldSize = coordinates.size
+                                    },
+                                shape = RoundedCornerShape(8.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = if (showCarNameError) MaterialTheme.colorScheme.error
+                                    else Color(0xFF1976D2),
+                                    unfocusedBorderColor = if (showCarNameError) MaterialTheme.colorScheme.error
+                                    else Color.Gray,
+                                    errorBorderColor = MaterialTheme.colorScheme.error
+                                ),
+                                isError = showCarNameError,
+                                supportingText = {
+                                    if (showCarNameError) {
+                                        Text(
+                                            text = carNameField.errorMessage.value.ifEmpty { "This field is required" },
+                                            color = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                },
+                                readOnly = true,
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = iconMapping["Car Name"] ?: R.drawable.car_icon),
+                                        contentDescription = "Car Name",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = if (carNameExpanded) Icons.Default.KeyboardArrowUp
+                                        else Icons.Default.ArrowDropDown,
+                                        contentDescription = null,
+                                        modifier = Modifier.clickable { carNameExpanded = !carNameExpanded }
+                                    )
                                 }
+                            )
+
+                            DropdownMenu(
+                                expanded = carNameExpanded,
+                                onDismissRequest = { carNameExpanded = false },
+                                modifier = Modifier.width(dropdownWidth)
+                            ) {
+                                dynamicCarNames.forEach { carName ->
+                                    DropdownMenuItem(
+                                        text = { Text(carName) },
+                                        onClick = {
+                                            carNameField.value.value = carName
+                                            carNameExpanded = false
+                                            carNameField.error.value = false
+                                        }
+                                    )
+                                }
+//                                dynamicCarNames.forEachIndexed { index, name ->
+//                                    DropdownMenuItem(
+//                                        text = { Text(name) },
+//                                        onClick = {
+//                                            carNameField.value.value = name
+//                                            carNameExpanded = false
+//                                            carNameField.error.value = false
+//                                        }
+//                                    )
+//                                }
                             }
                         }
                     }
-
                 }
             }
         }
     }
 }
+/*
+@Composable
+fun CompanyDetailsCard(
+    inputFields: Map<String, FieldState>,
+    iconMapping: Map<String, Int>,
+    dropdownOptions: Map<String, DropdownConfig>,
+    companyToCarNames: Map<String, List<String>>,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(true) }
+    var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
+    val dropdownWidth = with(LocalDensity.current) { textFieldSize.width.toDp() }
+
+    // State to hold dynamic Car Name options
+    var dynamicCarNames by remember { mutableStateOf(listOf<String>()) }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize()
+                .background(Color.White)
+        ) {
+            // HEADER OMITTED FOR BREVITY...
+
+            if (expanded) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    */
+/** --- COMPANY FIELD --- **//*
+
+                    val companyField = inputFields["Company"] ?: return@Column
+                    val companyConfig = dropdownOptions["Company"] ?: return@Column
+                    var companyExpanded by remember { mutableStateOf(false) }
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            OutlinedTextField(
+                                value = companyField.value.value,
+                                onValueChange = {},
+                                placeholder = { Text("Select company") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { companyExpanded = true },
+                                readOnly = true,
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = iconMapping["Company"] ?: R.drawable.company),
+                                        contentDescription = "Company",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = if (companyExpanded) Icons.Default.KeyboardArrowUp
+                                        else Icons.Default.ArrowDropDown,
+                                        contentDescription = null,
+                                        modifier = Modifier.clickable {
+                                            companyExpanded = !companyExpanded
+                                        }
+                                    )
+                                }
+                            )
+
+                            DropdownMenu(
+                                expanded = companyExpanded,
+                                onDismissRequest = { companyExpanded = false },
+                                modifier = Modifier.width(dropdownWidth)
+                            ) {
+                                companyConfig.options.forEach { company ->
+                                    DropdownMenuItem(
+                                        text = { Text(company) },
+                                        onClick = {
+                                            companyField.value.value = company
+                                            companyExpanded = false
+                                            companyField.error.value = false
+
+                                            val relatedCarNames = when (company) {
+                                                "Honda" -> companyToCarNames["Honda"]
+                                                "Toyota" -> companyToCarNames["Toyota"]
+                                                "Hyundai" -> companyToCarNames["Hyundai"]
+                                                else -> emptyList()
+                                            } ?: emptyList()
+
+                                            dynamicCarNames = relatedCarNames
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    */
+/** --- CAR NAME FIELD --- **//*
+
+                    val carNameField = inputFields["Car Name"] ?: return@Column
+                    var carNameExpanded by remember { mutableStateOf(false) }
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { carNameExpanded = true }
+                        ) {
+                            OutlinedTextField(
+                                value = carNameField.value.value,
+                                onValueChange = { },
+                                placeholder = { Text("Select car name") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .onGloballyPositioned { coordinates ->
+                                        textFieldSize = coordinates.size
+                                    },
+                                readOnly = true,
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = iconMapping["Car Name"] ?: R.drawable.car_icon),
+                                        contentDescription = "Car Name",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = if (carNameExpanded) Icons.Default.KeyboardArrowUp
+                                        else Icons.Default.ArrowDropDown,
+                                        contentDescription = null,
+                                        modifier = Modifier.clickable { carNameExpanded = !carNameExpanded }
+                                    )
+                                }
+                            )
+
+                            DropdownMenu(
+                                expanded = carNameExpanded,
+                                onDismissRequest = { carNameExpanded = false },
+                                modifier = Modifier.width(dropdownWidth)
+                            ) {
+                                dynamicCarNames.forEachIndexed { index, name ->
+                                    DropdownMenuItem(
+                                        text = { Text(name) },
+                                        onClick = {
+                                            carNameField.value.value = name
+                                            carNameExpanded = false
+                                            carNameField.error.value = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+*/
+
 // BELOW IS COMPLETED AS PER REQ
 @Composable
 fun CarDetailsCard(
@@ -3181,6 +3104,7 @@ fun PageSlider(
                 if (page < pages.size) {
                     Card(
                         shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         elevation = CardDefaults.cardElevation(4.dp)
                     ) {
                         val painter = rememberAsyncImagePainter(model = pages[page])
@@ -3551,7 +3475,7 @@ fun StepProgressIndicatorss(
                     text = titles.getOrElse(index) { "Step ${index + 1}" },
                     color = Color.DarkGray,
                     fontSize = 15.sp,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(top = 4.dp,start = 8.dp, end = 8.dp)
                 )
             }
 
