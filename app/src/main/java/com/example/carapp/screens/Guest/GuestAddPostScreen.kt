@@ -1,4 +1,4 @@
-package com.example.carapp.screens
+package com.example.carapp.screens.Guest
 
 
 import android.Manifest
@@ -156,6 +156,8 @@ import com.example.carapp.screens.Inspector.Inspectir
 import com.example.carapp.screens.Inspector.UploadViewModel
 import com.example.carapp.screens.Inspector.UploadViewModel2
 import com.example.carapp.screens.Inspector.showImagePickerDialog
+import com.example.carapp.screens.carNamesMap
+import com.example.carapp.screens.getToken
 import com.example.carapp.ui.theme.lexendFont
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.JsonArray
@@ -188,8 +190,7 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 
 
-
-fun saveAndLogFormData(
+fun saveAndLogFormDataG(
     selectedOption: String,
     inputFields: Map<String, FieldState>,
     context: Context,
@@ -205,13 +206,13 @@ fun saveAndLogFormData(
 
     val normalizedFieldMap = mapOf(
         "Car Name" to "car_name",
-    "Company" to "company",
-    "Car Model" to "year",
-    "Engine Capacity" to "engine_size",
-    "KMs Driven" to "milage",
-    "Paint Condition" to "paint_condition",
-    "Select Option Type" to "specs",
-    "Select Specification" to "option_type"
+        "Company" to "company",
+        "Car Model" to "year",
+        "Engine Capacity" to "engine_size",
+        "KMs Driven" to "milage",
+        "Paint Condition" to "paint_condition",
+        "Select Option Type" to "specs",
+        "Select Specification" to "option_type"
     )
 
 
@@ -283,7 +284,7 @@ fun saveAndLogFormData(
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CarSellScreen(navController: NavController) {
+fun GuestSellScreen(navController: NavController) {
     // State variables
     val selectedImages = remember { mutableStateListOf<String>() }
     var description by remember { mutableStateOf("") }
@@ -316,7 +317,7 @@ fun CarSellScreen(navController: NavController) {
 
     // Dialog for back press confirmation
     if (showDialog) {
-        CustomAlertDialog(
+        CustomAlertDialogG(
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false
@@ -412,7 +413,7 @@ fun CarSellScreen(navController: NavController) {
                         Text(
                             "Book Free Appointments Now!",
                             color = Color.White,
-                            fontWeight = FontWeight.SemiBold,
+                            fontWeight = FontWeight.Normal,
                             fontFamily = lexendFont,
                             modifier = Modifier.padding(top = 8.dp)
                         )
@@ -441,7 +442,7 @@ fun CarSellScreen(navController: NavController) {
                         .fillMaxWidth()
                         .background(Color.White)
                 ) {
-                    StepProgressIndicatorss(
+                    StepProgressIndicatorssG(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 7.dp, end = 7.dp, top = 32.dp, bottom = 4.dp),
@@ -472,7 +473,7 @@ fun CarSellScreen(navController: NavController) {
 //                        showError = imagesError.value,
 //                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
 //                    )
-                    Inspectiodseller(
+                    InspectiodsellerG(
                         selectedImages = selectedImagesCard1,
                         showError = imagesError.value,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -481,28 +482,28 @@ fun CarSellScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Radio button selection card
-                    RadioButtonSelectionCard(
+                    RadioButtonSelectionCardG(
                         selectedOption = selectedOption,
                         onOptionSelected = { selectedOption = it }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
                     // Company details card (new)
-                    CompanyDetailsCard(
+                    CompanyDetailsCardG(
                         inputFields = inputFields,
                         iconMapping = iconMapping,
                         dropdownOptions = dropdownOptions,
                         companyToCarNames = carNamesMap
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    CarDetailsCard(
+                    CarDetailsCardG(
                         inputFields = inputFields,
                         iconMapping = iconMapping,
                         dropdownOptions = dropdownOptions
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    CarTechnicalDetailsCard(
+                    CarTechnicalDetailsCardG(
                         inputFields = inputFields,
                         iconMapping = iconMapping,
                         dropdownOptions = dropdownOptions
@@ -518,7 +519,7 @@ fun CarSellScreen(navController: NavController) {
                                 }
                             }
                     ) {
-                        ProfessionalInputFields(
+                        ProfessionalInputFieldsG(
                             inputFields = inputFields.filterKeys {
                                 it !in listOf("Company",
                                     "Car Name",
@@ -778,7 +779,7 @@ fun CarSellScreen(navController: NavController) {
 
                                                     Log.d("IMAGE_URLS", "Successfully uploaded URLs: $imageUrls")
 
-                                                    saveAndLogFormData(
+                                                    saveAndLogFormDataG(
                                                         selectedOption = selectedOption,
                                                         inputFields = inputFields,
                                                         context = context,
@@ -794,7 +795,7 @@ fun CarSellScreen(navController: NavController) {
                                                     ).show()
 
                                                     isLoading = false
-                                                    navController.navigate("info") {
+                                                    navController.navigate("Guestinfo") {
                                                         popUpTo(navController.graph.startDestinationId) {
                                                             saveState = true
                                                         }
@@ -848,7 +849,7 @@ fun CarSellScreen(navController: NavController) {
 
 
 @Composable
-fun ProfessionalInputFields(
+fun ProfessionalInputFieldsG(
     inputFields: Map<String, FieldState>,
     iconMapping: Map<String, Int>,
     dropdownOptions: Map<String, DropdownConfig>
@@ -980,7 +981,7 @@ fun ProfessionalInputFields(
                     )
                     if (fieldName == "Company") {
                         Spacer(modifier = Modifier.height(16.dp))
-                        CompanyIconSelector(
+                        CompanyIconSelectorG(
                             selectedCompany = textFieldValue,
                             onCompanySelected = { company ->
                                 fieldState.value.value = company
@@ -1180,7 +1181,7 @@ fun ProfessionalInputFields(
 */
 
 @Composable
-fun InputFieldWithDropdown(
+fun InputFieldWithDropdownG(
     label: String,
     icon: Int,
     dropdownItems: List<String>,
@@ -1298,7 +1299,7 @@ fun InputFieldWithDropdown(
 
 // ALL PERFECT THIS BELOW
 @Composable
-fun CompanyDetailsCard(
+fun CompanyDetailsCardG(
     inputFields: Map<String, FieldState>,
     iconMapping: Map<String, Int>,
     dropdownOptions: Map<String, DropdownConfig>,
@@ -1368,114 +1369,114 @@ fun CompanyDetailsCard(
                     var companyExpanded by remember { mutableStateOf(false) }
                     val showCompanyError = companyField.error.value
 
-                  /*  CompanyIconSelector(
-                        selectedCompany = companyField.value.value,
-                        onCompanySelected = { company ->
-                            companyField.value.value = company
-                            companyField.error.value = false
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        // Label row
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "Others",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = if (showCompanyError) MaterialTheme.colorScheme.error else Color.Gray,
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            if (companyConfig.isRequired) {
-                                Text(
-                                    text = " *",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.error,
-                                    modifier = Modifier.padding(bottom = 4.dp)
-                                )
-                            }
-                        }
+                    /*  CompanyIconSelector(
+                          selectedCompany = companyField.value.value,
+                          onCompanySelected = { company ->
+                              companyField.value.value = company
+                              companyField.error.value = false
+                          },
+                          modifier = Modifier.fillMaxWidth()
+                      )
+                      Spacer(modifier = Modifier.height(16.dp))
+                      Column(modifier = Modifier.fillMaxWidth()) {
+                          // Label row
+                          Row(verticalAlignment = Alignment.CenterVertically) {
+                              Text(
+                                  text = "Others",
+                                  fontSize = 14.sp,
+                                  fontWeight = FontWeight.Medium,
+                                  color = if (showCompanyError) MaterialTheme.colorScheme.error else Color.Gray,
+                                  modifier = Modifier.padding(bottom = 4.dp)
+                              )
+                              if (companyConfig.isRequired) {
+                                  Text(
+                                      text = " *",
+                                      fontSize = 14.sp,
+                                      fontWeight = FontWeight.Medium,
+                                      color = MaterialTheme.colorScheme.error,
+                                      modifier = Modifier.padding(bottom = 4.dp)
+                                  )
+                              }
+                          }
 
-                        // Text field with dropdown
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            OutlinedTextField(
-                                value = companyField.value.value,
-                                onValueChange = { },
-                                placeholder = { Text("Select company") },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { companyExpanded = true },
-                                shape = RoundedCornerShape(8.dp),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error
-                                    else Color(0xFF1976D2),
-                                    unfocusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error
-                                    else Color.Gray,
-                                    errorBorderColor = MaterialTheme.colorScheme.error
-                                ),
-                                isError = showCompanyError,
-                                supportingText = {
-                                    if (showCompanyError) {
-                                        Text(
-                                            text = companyField.errorMessage.value.ifEmpty { "This field is required" },
-                                            color = MaterialTheme.colorScheme.error
-                                        )
-                                    }
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        painter = painterResource(
-                                            id = iconMapping["Company"] ?: R.drawable.company
-                                        ),
-                                        contentDescription = "Company",
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                },
-                                trailingIcon = {
-                                    Icon(
-                                        imageVector = if (companyExpanded) Icons.Default.KeyboardArrowUp
-                                        else Icons.Default.ArrowDropDown,
-                                        contentDescription = if (companyExpanded) "Collapse" else "Expand",
-                                        modifier = Modifier.clickable { companyExpanded = !companyExpanded }
-                                    )
-                                },
-                                readOnly = true
-                            )
+                          // Text field with dropdown
+                          Box(modifier = Modifier.fillMaxWidth()) {
+                              OutlinedTextField(
+                                  value = companyField.value.value,
+                                  onValueChange = { },
+                                  placeholder = { Text("Select company") },
+                                  modifier = Modifier
+                                      .fillMaxWidth()
+                                      .clickable { companyExpanded = true },
+                                  shape = RoundedCornerShape(8.dp),
+                                  colors = OutlinedTextFieldDefaults.colors(
+                                      focusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error
+                                      else Color(0xFF1976D2),
+                                      unfocusedBorderColor = if (showCompanyError) MaterialTheme.colorScheme.error
+                                      else Color.Gray,
+                                      errorBorderColor = MaterialTheme.colorScheme.error
+                                  ),
+                                  isError = showCompanyError,
+                                  supportingText = {
+                                      if (showCompanyError) {
+                                          Text(
+                                              text = companyField.errorMessage.value.ifEmpty { "This field is required" },
+                                              color = MaterialTheme.colorScheme.error
+                                          )
+                                      }
+                                  },
+                                  leadingIcon = {
+                                      Icon(
+                                          painter = painterResource(
+                                              id = iconMapping["Company"] ?: R.drawable.company
+                                          ),
+                                          contentDescription = "Company",
+                                          modifier = Modifier.size(20.dp)
+                                      )
+                                  },
+                                  trailingIcon = {
+                                      Icon(
+                                          imageVector = if (companyExpanded) Icons.Default.KeyboardArrowUp
+                                          else Icons.Default.ArrowDropDown,
+                                          contentDescription = if (companyExpanded) "Collapse" else "Expand",
+                                          modifier = Modifier.clickable { companyExpanded = !companyExpanded }
+                                      )
+                                  },
+                                  readOnly = true
+                              )
 
-                            DropdownMenu(
-                                expanded = companyExpanded,
-                                onDismissRequest = { companyExpanded = false },
-                                modifier = Modifier.width(dropdownWidth)
-                            ) {
-                                companyConfig.options.forEachIndexed { index, item ->
-                                    Column(modifier = Modifier.fillMaxWidth()) {
-                                        DropdownMenuItem(
-                                            text = { Text(item) },
-                                            onClick = {
-                                                companyField.value.value = item
-                                                companyExpanded = false
-                                                companyField.error.value = false
-                                            },
-                                            modifier = Modifier.width(dropdownWidth)
-                                        )
-                                        if (index < companyConfig.options.size - 1) {
-                                            Divider(
-                                                modifier = Modifier.padding(horizontal = 8.dp),
-                                                thickness = 0.5.dp,
-                                                color = Color.LightGray
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        // Inside the Column for "Company"
+                              DropdownMenu(
+                                  expanded = companyExpanded,
+                                  onDismissRequest = { companyExpanded = false },
+                                  modifier = Modifier.width(dropdownWidth)
+                              ) {
+                                  companyConfig.options.forEachIndexed { index, item ->
+                                      Column(modifier = Modifier.fillMaxWidth()) {
+                                          DropdownMenuItem(
+                                              text = { Text(item) },
+                                              onClick = {
+                                                  companyField.value.value = item
+                                                  companyExpanded = false
+                                                  companyField.error.value = false
+                                              },
+                                              modifier = Modifier.width(dropdownWidth)
+                                          )
+                                          if (index < companyConfig.options.size - 1) {
+                                              Divider(
+                                                  modifier = Modifier.padding(horizontal = 8.dp),
+                                                  thickness = 0.5.dp,
+                                                  color = Color.LightGray
+                                              )
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          // Inside the Column for "Company"
 
-                    }*/
+                      }*/
 
-                    CompanyIconSelector(
+                    CompanyIconSelectorG(
                         selectedCompany = companyField.value.value,
                         onCompanySelected = { company ->
                             companyField.value.value = company
@@ -1925,7 +1926,7 @@ fun CompanyDetailsCard(
 
 // BELOW IS COMPLETED AS PER REQ
 @Composable
-fun CarDetailsCard(
+fun CarDetailsCardG(
     inputFields: Map<String, FieldState>,
     iconMapping: Map<String, Int>,
     dropdownOptions: Map<String, DropdownConfig>,
@@ -1963,7 +1964,7 @@ fun CarDetailsCard(
                     fontSize = 16.sp,
                     fontFamily = lexendFont,
 
-                )
+                    )
                 Icon(
                     imageVector = if (expanded) Icons.Default.KeyboardArrowUp
                     else Icons.Default.KeyboardArrowDown,
@@ -2021,84 +2022,84 @@ fun CarDetailsCard(
                                 }
                             }
 
-                           /* OutlinedTextField(
-                                value = fieldState.value.value,
-                                onValueChange = { newValue ->
-                                    if (fieldConfig.inputType == InputType.Number) {
-                                        if (newValue.matches(Regex("^[0-9]*$"))) {
-                                            fieldState.value.value = newValue
-                                            fieldState.error.value = false
-                                        }
-                                    } else {
-                                        fieldState.value.value = newValue
-                                        fieldState.error.value = false
-                                    }
-                                },
-                                placeholder = { Text("Select $fieldName") },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { fieldExpanded = fieldConfig.inputType == InputType.Dropdown },
-                                shape = RoundedCornerShape(8.dp),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = if (showFieldError) MaterialTheme.colorScheme.error
-                                    else Color(0xFF1976D2),
-                                    unfocusedBorderColor = if (showFieldError) MaterialTheme.colorScheme.error
-                                    else Color.Gray,
-                                    errorBorderColor = MaterialTheme.colorScheme.error
-                                ),
-                                isError = showFieldError,
-                                supportingText = {
-                                    if (showFieldError) {
-                                        Text(
-                                            text = fieldState.errorMessage.value.ifEmpty { "This field is required" },
-                                            color = MaterialTheme.colorScheme.error
-                                        )
-                                    }
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        painter = painterResource(id = iconMapping[fieldName] ?: R.drawable.male_icon),
-                                        contentDescription = fieldName,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                },
-                                trailingIcon = {
-                                    if (fieldConfig.inputType == InputType.Dropdown) {
-                                        IconButton(onClick = { fieldExpanded = !fieldExpanded }) {
-                                            Icon(
-                                                imageVector = if (fieldExpanded) Icons.Default.KeyboardArrowUp
-                                                else Icons.Default.ArrowDropDown,
-                                                contentDescription = if (fieldExpanded) "Collapse" else "Expand"
-                                            )
-                                        }
-                                    }
-                                },
-                                readOnly = fieldConfig.inputType == InputType.Dropdown,
-                                keyboardOptions = if (fieldConfig.inputType == InputType.Number) {
-                                    KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-                                } else {
-                                    KeyboardOptions.Default
-                                }
-                            )
+                            /* OutlinedTextField(
+                                 value = fieldState.value.value,
+                                 onValueChange = { newValue ->
+                                     if (fieldConfig.inputType == InputType.Number) {
+                                         if (newValue.matches(Regex("^[0-9]*$"))) {
+                                             fieldState.value.value = newValue
+                                             fieldState.error.value = false
+                                         }
+                                     } else {
+                                         fieldState.value.value = newValue
+                                         fieldState.error.value = false
+                                     }
+                                 },
+                                 placeholder = { Text("Select $fieldName") },
+                                 modifier = Modifier
+                                     .fillMaxWidth()
+                                     .clickable { fieldExpanded = fieldConfig.inputType == InputType.Dropdown },
+                                 shape = RoundedCornerShape(8.dp),
+                                 colors = OutlinedTextFieldDefaults.colors(
+                                     focusedBorderColor = if (showFieldError) MaterialTheme.colorScheme.error
+                                     else Color(0xFF1976D2),
+                                     unfocusedBorderColor = if (showFieldError) MaterialTheme.colorScheme.error
+                                     else Color.Gray,
+                                     errorBorderColor = MaterialTheme.colorScheme.error
+                                 ),
+                                 isError = showFieldError,
+                                 supportingText = {
+                                     if (showFieldError) {
+                                         Text(
+                                             text = fieldState.errorMessage.value.ifEmpty { "This field is required" },
+                                             color = MaterialTheme.colorScheme.error
+                                         )
+                                     }
+                                 },
+                                 leadingIcon = {
+                                     Icon(
+                                         painter = painterResource(id = iconMapping[fieldName] ?: R.drawable.male_icon),
+                                         contentDescription = fieldName,
+                                         modifier = Modifier.size(20.dp)
+                                     )
+                                 },
+                                 trailingIcon = {
+                                     if (fieldConfig.inputType == InputType.Dropdown) {
+                                         IconButton(onClick = { fieldExpanded = !fieldExpanded }) {
+                                             Icon(
+                                                 imageVector = if (fieldExpanded) Icons.Default.KeyboardArrowUp
+                                                 else Icons.Default.ArrowDropDown,
+                                                 contentDescription = if (fieldExpanded) "Collapse" else "Expand"
+                                             )
+                                         }
+                                     }
+                                 },
+                                 readOnly = fieldConfig.inputType == InputType.Dropdown,
+                                 keyboardOptions = if (fieldConfig.inputType == InputType.Number) {
+                                     KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                                 } else {
+                                     KeyboardOptions.Default
+                                 }
+                             )
 
-                            if (fieldConfig.inputType == InputType.Dropdown) {
-                                DropdownMenu(
-                                    expanded = fieldExpanded,
-                                    onDismissRequest = { fieldExpanded = false },
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    fieldConfig.options.forEach { item ->
-                                        DropdownMenuItem(
-                                            text = { Text(item) },
-                                            onClick = {
-                                                fieldState.value.value = item
-                                                fieldExpanded = false
-                                                fieldState.error.value = false
-                                            }
-                                        )
-                                    }
-                                }
-                            }*/
+                             if (fieldConfig.inputType == InputType.Dropdown) {
+                                 DropdownMenu(
+                                     expanded = fieldExpanded,
+                                     onDismissRequest = { fieldExpanded = false },
+                                     modifier = Modifier.fillMaxWidth()
+                                 ) {
+                                     fieldConfig.options.forEach { item ->
+                                         DropdownMenuItem(
+                                             text = { Text(item) },
+                                             onClick = {
+                                                 fieldState.value.value = item
+                                                 fieldExpanded = false
+                                                 fieldState.error.value = false
+                                             }
+                                         )
+                                     }
+                                 }
+                             }*/
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
 
@@ -2182,7 +2183,7 @@ fun CarDetailsCard(
 
 
 @Composable
-fun CarTechnicalDetailsCard(
+fun CarTechnicalDetailsCardG(
     inputFields: Map<String, FieldState>,
     iconMapping: Map<String, Int>,
     dropdownOptions: Map<String, DropdownConfig>,
@@ -2483,7 +2484,7 @@ fun CarTechnicalDetailsCard(
 }
 
 @Composable
-fun CompanyIconSelector(
+fun CompanyIconSelectorG(
     selectedCompany: String,
     onCompanySelected: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -2513,7 +2514,7 @@ fun CompanyIconSelector(
             modifier = Modifier.fillMaxWidth()
         ) {
             companies.take(3).forEach { (company, iconRes) ->
-                BrandCard(
+                BrandCardG(
                     company = company,
                     iconRes = iconRes,
                     isSelected = selectedCompany.equals(company, ignoreCase = true),
@@ -2531,7 +2532,7 @@ fun CompanyIconSelector(
             modifier = Modifier.fillMaxWidth()
         ) {
             companies.drop(3).take(3).forEach { (company, iconRes) ->
-                BrandCard(
+                BrandCardG(
                     company = company,
                     iconRes = iconRes,
                     isSelected = selectedCompany.equals(company, ignoreCase = true),
@@ -2544,7 +2545,7 @@ fun CompanyIconSelector(
 }
 
 @Composable
-fun ImageSliderCard(
+fun ImageSliderCardG(
     selectedImages: MutableList<String>,
     showError: Boolean,
     modifier: Modifier = Modifier
@@ -2605,9 +2606,9 @@ fun ImageSliderCard(
                     }
 
                     if (selectedImages.isEmpty()) {
-                        AddImage(selectedImages)
+                        AddImageG(selectedImages)
                     } else {
-                        PageSlider(selectedImages, selectedImages)
+                        PageSliderG(selectedImages, selectedImages)
                     }
                 }
             }
@@ -2615,7 +2616,7 @@ fun ImageSliderCard(
     }
 }
 @Composable
-fun BrandCard(
+fun BrandCardG(
     company: String,
     iconRes: Int,
     isSelected: Boolean,
@@ -2666,7 +2667,7 @@ fun BrandCard(
 }
 
 @Composable
-fun PageSlider(
+fun PageSliderG(
     pages: MutableList<String>,
     sliderList: MutableList<String>
 ) {
@@ -2719,7 +2720,7 @@ fun PageSlider(
                         )
                     }
                 } else {
-                    AddImage(sliderList)
+                    AddImageG(sliderList)
                 }
             }
         }
@@ -2763,7 +2764,7 @@ fun PageSlider(
 }
 
 @Composable
-fun AddImage(sliderList: MutableList<String>) {
+fun AddImageG(sliderList: MutableList<String>) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -2809,7 +2810,7 @@ fun AddImage(sliderList: MutableList<String>) {
     }
 }
 
-fun prepareRequestBodySeparate(
+fun prepareRequestBodySeparateG(
     context: Context,
     selectedImages: List<String>,
     inputFields: Map<String, MutableState<String>>,
@@ -2868,7 +2869,7 @@ fun prepareRequestBodySeparate(
     return jsonObject
 }
 
-fun sendPostRequest(context: Context, requestBody: JSONObject,navController: NavController) {
+fun sendPostRequestG(context: Context, requestBody: JSONObject,navController: NavController) {
     val client = OkHttpClient()
 
     val mediaType = "application/json; charset=utf-8".toMediaType()
@@ -2899,7 +2900,7 @@ fun sendPostRequest(context: Context, requestBody: JSONObject,navController: Nav
                 try {
                     val jsonResponse = JSONObject(responseString)
                     val salerCarId = jsonResponse.optInt("saler_car_id", -1)
-                    saveSalerCarId(context, salerCarId)
+                    saveSalerCarIdG(context, salerCarId)
 
                     (context as? Activity)?.runOnUiThread {
                         navController.navigate("info")
@@ -2914,7 +2915,7 @@ fun sendPostRequest(context: Context, requestBody: JSONObject,navController: Nav
     })
 }
 
-fun convertImageToBase64(context: Context, imageUri: Uri): String {
+fun convertImageToBase64G(context: Context, imageUri: Uri): String {
     val inputStream = context.contentResolver.openInputStream(imageUri)
     val byteArray = inputStream?.readBytes()
     inputStream?.close()
@@ -2927,19 +2928,19 @@ fun convertImageToBase64(context: Context, imageUri: Uri): String {
 
 
 
-fun saveSalerCarId(context: Context, salerCarId: Int) {
+fun saveSalerCarIdG(context: Context, salerCarId: Int) {
     val prefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
     prefs.edit().putInt("saler_car_id", salerCarId).apply()
     Log.d("Saler id", "IDDD$salerCarId")
 }
 
-fun getSalerCarId(context: Context): Int {
+fun getSalerCarIdG(context: Context): Int {
     val prefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
     return prefs.getInt("saler_car_id", 0)
 }
 
 @Composable
-fun CustomAlertDialog(
+fun CustomAlertDialogG(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier
@@ -3029,7 +3030,7 @@ fun CustomAlertDialog(
 
 
 @Composable
-fun StepProgressIndicatorss(
+fun StepProgressIndicatorssG(
     modifier: Modifier = Modifier,
     stepCount: Int,
     currentStep: Int,
@@ -3092,7 +3093,7 @@ fun StepProgressIndicatorss(
 
 
 @Composable
-fun RadioButtonSelectionCard(
+fun RadioButtonSelectionCardG(
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -3174,13 +3175,6 @@ fun RadioButtonSelectionCard(
             }
         }
     }
-}
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true, widthDp = 309, heightDp = 675)
-@Composable
-fun SliderPreview() {
-    val navController = rememberNavController()
-    CarSellScreen(navController = navController)
 }
 
 
@@ -3344,7 +3338,7 @@ fun RetrieveSavedDataScreen() {
 }
 
 @Composable
-fun Inspectiodseller(
+fun InspectiodsellerG(
     selectedImages: MutableList<String>,
     showError: Boolean,
     modifier: Modifier = Modifier,
@@ -3406,9 +3400,9 @@ fun Inspectiodseller(
                     }
 
                     if (selectedImages.isEmpty()) {
-                        Inspectieseller(selectedImages, cardName)
+                        InspectiesellerG(selectedImages, cardName)
                     } else {
-                        Inspectirseller(selectedImages, selectedImages, cardName)
+                        InspectirsellerG(selectedImages, selectedImages, cardName)
                     }
                 }
             }
@@ -3418,7 +3412,7 @@ fun Inspectiodseller(
 
 
 @Composable
-fun Inspectieseller(
+fun InspectiesellerG(
     sliderList: MutableList<String>,
     cardName: String
 ) {
@@ -3429,7 +3423,7 @@ fun Inspectieseller(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            launchCamera(context, sliderList) { uri ->
+            launchCameraG(context, sliderList) { uri ->
                 tempImageUri = uri
             }
         } else {
@@ -3473,7 +3467,7 @@ fun Inspectieseller(
     fun handleCameraClick() {
         when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) -> {
-                launchCamera(context, sliderList) { uri ->
+                launchCameraG(context, sliderList) { uri ->
                     tempImageUri = uri
                     launcherCamera.launch(uri)
                 }
@@ -3519,7 +3513,7 @@ fun Inspectieseller(
     }
 }
 
-fun launchCamera(
+fun launchCameraG(
     context: Context,
     sliderList: MutableList<String>,
     onUriReady: (Uri) -> Unit
@@ -3536,7 +3530,7 @@ fun launchCamera(
     onUriReady(uri)
 }
 
-fun showImagePickerDialogs(
+fun showImagePickerDialogsG(
     context: Context,
     galleryLauncher: ManagedActivityResultLauncher<String, Uri?>,
     onCamera: () -> Unit
@@ -3554,7 +3548,7 @@ fun showImagePickerDialogs(
 }
 
 @Composable
-fun Inspectirseller(
+fun InspectirsellerG(
     pages: MutableList<String>,
     sliderList: MutableList<String>,
     cardName: String
@@ -3677,7 +3671,7 @@ fun Inspectirseller(
                             .fillMaxWidth()
                             .height(200.dp)
                             .clickable {
-                                showImagePickerDialogs(context, launcherGallery, ::handleCameraClick)
+                                showImagePickerDialogsG(context, launcherGallery, ::handleCameraClick)
                             },
                         shape = RoundedCornerShape(12.dp),
                         border = BorderStroke(2.dp, Color.Gray),

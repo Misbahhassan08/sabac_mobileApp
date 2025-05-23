@@ -126,7 +126,9 @@ import coil3.request.crossfade
 import coil3.request.error
 import coil3.request.placeholder
 import com.example.carapp.assets.redcolor
+import com.example.carapp.assets.seller_Color
 import com.example.carapp.models.NotificationItem
+import com.example.carapp.ui.theme.lexendFont
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -231,10 +233,11 @@ fun CarListScreen(
             radius = 40.dp
         )
     } else {
-        ModalNavigationDrawer(
+        /*ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
-                ModalDrawerSheet(
+                */
+        /*ModalDrawerSheet(
                     modifier = Modifier
                         .width(260.dp)
                         .background(Color.Transparent),
@@ -244,7 +247,7 @@ fun CarListScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(
-                                redcolor
+                                seller_Color
 //                                brush = Brush.verticalGradient(
 //                                    colors = listOf(
 //                                        Color(0xFF0D47A1),
@@ -323,9 +326,10 @@ fun CarListScreen(
                             }
                         }
                     }
-                }
+                }*//*
             }
-        ) {
+        )
+        {*/
             Scaffold(
                 topBar = {
                     TopAppBar(
@@ -347,14 +351,14 @@ fun CarListScreen(
                             .background(
                                 brush = Brush.linearGradient(
                                     colors = listOf(
-                                        redcolor,
-                                        redcolor,
-                                        redcolor,
+                                        seller_Color,
+                                        seller_Color,
+                                        seller_Color,
                                     )
                                 )
                             )
                     ) {
-                        IconButton(onClick = {
+                       /* IconButton(onClick = {
                             scope.launch {
                                 drawerState.apply {
                                     if (isClosed) open() else close()
@@ -365,84 +369,45 @@ fun CarListScreen(
                                 contentDescription = "Menu",
                                 tint = Color.White,
                             )
-                        }
-                        Spacer(modifier = Modifier.width(14.dp))
-                        Text(text = "Listing", fontWeight = FontWeight.Bold, fontSize = 24.sp, color = Color.White)
+                        }*/
+                        Spacer(modifier = Modifier.width(28.dp))
+                        Text(text = "Listing", fontWeight = FontWeight.Bold, fontSize = 24.sp, color = Color.White,fontFamily = lexendFont,)
                     }
                 },
                 floatingActionButton = {
-                    Box(
+                    Row(
                         modifier = Modifier
-                            .size(56.dp)
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        redcolor,
-                                        redcolor,
-                                        redcolor
-                                    )
-                                ),
-                                shape = CircleShape
-                            ),
-                        contentAlignment = Alignment.Center
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        // Left FAB
                         FloatingActionButton(
-                         /*   onClick = { navController.navigate("postcar") },
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .shadow(
-                                    elevation = 8.dp,
-                                    shape = CircleShape,
-                                    spotColor = Color.Black.copy(alpha = 0.3f)
-                                ),
-                            containerColor = redcolor,
-                            contentColor = Color.White,
-                            shape = CircleShape,  // More modern than rounded corner
-                            elevation = FloatingActionButtonDefaults.elevation(
-                                defaultElevation = 4.dp,
-                                pressedElevation = 8.dp,
-                                hoveredElevation = 6.dp,
-                                focusedElevation = 6.dp
-                            )
-                        ) {
-//                            Row(
-//                                verticalAlignment = Alignment.CenterVertically,
-//                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-//                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "Add",
-                                    tint = Color.White
-                                )
-                                Text(
-                                    text = "Book Inspection",
-                                    color = Color.White,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-//                            }*/
-                            onClick = { navController.navigate("postcar") },
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .shadow(
-                                    elevation = 8.dp,
-                                    shape = CircleShape,
-                                    spotColor = Color.Black.copy(alpha = 0.3f)
-                                ),
-                            containerColor = redcolor,
+                            onClick = { performLogout(navController, context) },
+                            modifier = Modifier.padding(start = 32.dp),
+                            containerColor = seller_Color,
                             contentColor = Color.White,
                             shape = CircleShape,
-                            elevation = FloatingActionButtonDefaults.elevation(
-                                defaultElevation = 4.dp,
-                                pressedElevation = 8.dp,
-                                hoveredElevation = 6.dp,
-                                focusedElevation = 6.dp
+                            elevation = FloatingActionButtonDefaults.elevation(4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ExitToApp,
+                                contentDescription = "Left FAB"
                             )
+                        }
+
+                        // Right FAB
+                        FloatingActionButton(
+                            onClick = { navController.navigate("postcar") },
+                            containerColor = seller_Color,
+                            contentColor = Color.White,
+                            shape = CircleShape,
+                            elevation = FloatingActionButtonDefaults.elevation(4.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
-                                contentDescription = "Add",
-                                tint = Color.White
+                                contentDescription = "Add FAB"
                             )
                         }
                     }
@@ -474,7 +439,7 @@ fun CarListScreen(
                     }
                 }
             }
-        }
+//        }
     }
 }
 

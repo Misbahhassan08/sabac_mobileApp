@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.carapp.R
+import com.example.carapp.assets.inspector_color
 import com.example.carapp.assets.redcolor
 import com.example.carapp.screens.Checkout
 
@@ -53,7 +54,7 @@ fun HeaderSection(title: String) {
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
-            .background(Brush.verticalGradient(listOf(redcolor, redcolor)))
+            .background(Brush.verticalGradient(listOf(inspector_color, inspector_color)))
             .padding(16.dp),
         contentAlignment = Alignment.CenterStart
     ) {
@@ -147,7 +148,7 @@ fun PayButto(navController: NavController) {
             .fillMaxWidth()
             .height(50.dp),
         shape = RoundedCornerShape(25.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = redcolor)
+        colors = ButtonDefaults.buttonColors(containerColor = inspector_color)
     ) {
         Text("Done", color = Color.White, fontSize = 16.sp)
     }

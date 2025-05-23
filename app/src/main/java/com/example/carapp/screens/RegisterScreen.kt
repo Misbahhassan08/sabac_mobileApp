@@ -73,12 +73,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
+import com.example.carapp.assets.redcolor
 import com.example.carapp.models.CarListViewModel
 import com.example.carapp.models.SignUpViewModel
 import com.example.carapp.screens.Admin.EnhancedTextField
 import com.example.carapp.screens.Admin.isValidEmail
 import com.example.carapp.screens.Admin.isValidPhoneNumber
 import com.example.carapp.screens.Admin.registerUserA
+import com.example.carapp.ui.theme.lexendFont
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -331,167 +333,177 @@ fun RegisterScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF8F9FA))
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState())
+    Box(
+        modifier = Modifier.background(redcolor)
     ) {
-        // Header Section
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Image(
-                painter = painterResource(id = R.drawable.car1),
-                contentDescription = "Logo",
-                modifier = Modifier.size(120.dp),
-                contentScale = ContentScale.Fit
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = "Create Your Account",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color(0xFF2C3E50),
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        // Form Section
+        Image(
+            painter = painterResource(id = R.drawable.skew),
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp) // Fixed spacing
+                .fillMaxSize()
+                .background(Color.Transparent)
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            // Name Row
-            Row(
+            // Header Section
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                EnhancedTextFieldS(
-                    label = "First Name *",
-                    value = firstname,
-                    onValueChange = {
-                        firstname = it
-                        firstNameError = it.isBlank()
-                    },
-                    modifier = Modifier.weight(1f),
-                    leadingIcon = Icons.Default.Person,
-                    isError = firstNameError,
-                    errorMessage = if (firstNameError) "First name is required" else null
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Image(
+                    painter = painterResource(id = R.drawable.user),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(120.dp),
+                    contentScale = ContentScale.Fit,
                 )
 
-                EnhancedTextFieldS(
-                    label = "Last Name *",
-                    value = lastname,
-                    onValueChange = {
-                        lastname = it
-                        lastNameError = it.isBlank()
-                    },
-                    modifier = Modifier.weight(1f),
-                    leadingIcon = Icons.Default.Person,
-                    isError = lastNameError,
-                    errorMessage = if (lastNameError) "Last name is required" else null
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "Create Your Account",
+                    style = MaterialTheme.typography.headlineMedium,
+//                color = Color(0xFF2C3E50),
+                    color = Color.White,
+                    fontFamily = lexendFont,
+                    fontWeight = FontWeight.Bold
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
-            EnhancedTextFieldS(
-                label = "Username *",
-                value = username,
-                onValueChange = {
-                    username = it
-                    usernameError = it.isBlank()
-                },
-                leadingIcon = Icons.Default.AccountCircle,
-                isError = usernameError,
-                errorMessage = if (usernameError) "Username is required" else null
-            )
+            // Form Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp) // Fixed spacing
+            ) {
+                // Name Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    EnhancedTextFieldS(
+                        label = "First Name *",
+                        value = firstname,
+                        onValueChange = {
+                            firstname = it
+                            firstNameError = it.isBlank()
+                        },
+                        modifier = Modifier.weight(1f),
+                        leadingIcon = Icons.Default.Person,
+                        isError = firstNameError,
+                        errorMessage = if (firstNameError) "First name is required" else null
+                    )
 
-            EnhancedTextFieldS(
-                label = "Email *",
-                value = email,
-                onValueChange = {
-                    email = it
-                    emailError = it.isBlank()
-                    emailFormatError = it.isNotBlank() && !isValidEmail(it)
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                leadingIcon = Icons.Default.Email,
-                isError = emailError || emailFormatError,
-                errorMessage = when {
-                    emailError -> "Email is required"
-                    emailFormatError -> "Please enter a valid email"
-                    else -> null
+                    EnhancedTextFieldS(
+                        label = "Last Name *",
+                        value = lastname,
+                        onValueChange = {
+                            lastname = it
+                            lastNameError = it.isBlank()
+                        },
+                        modifier = Modifier.weight(1f),
+                        leadingIcon = Icons.Default.Person,
+                        isError = lastNameError,
+                        errorMessage = if (lastNameError) "Last name is required" else null
+                    )
                 }
-            )
 
-            EnhancedTextFieldS(
-                label = "Password *",
-                value = password,
-                onValueChange = {
-                    password = it
-                    passwordError = it.isBlank()
-                },
-                visualTransformation = if (passwordVisible) {
-                    VisualTransformation.None
-                } else {
-                    PasswordVisualTransformation()
-                },
-                trailingIcon = {
-                    val image = if (passwordVisible) {
-                        Icons.Default.Lock
+                EnhancedTextFieldS(
+                    label = "Username *",
+                    value = username,
+                    onValueChange = {
+                        username = it
+                        usernameError = it.isBlank()
+                    },
+                    leadingIcon = Icons.Default.AccountCircle,
+                    isError = usernameError,
+                    errorMessage = if (usernameError) "Username is required" else null
+                )
+
+                EnhancedTextFieldS(
+                    label = "Email *",
+                    value = email,
+                    onValueChange = {
+                        email = it
+                        emailError = it.isBlank()
+                        emailFormatError = it.isNotBlank() && !isValidEmail(it)
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    leadingIcon = Icons.Default.Email,
+                    isError = emailError || emailFormatError,
+                    errorMessage = when {
+                        emailError -> "Email is required"
+                        emailFormatError -> "Please enter a valid email"
+                        else -> null
+                    }
+                )
+
+                EnhancedTextFieldS(
+                    label = "Password *",
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        passwordError = it.isBlank()
+                    },
+                    visualTransformation = if (passwordVisible) {
+                        VisualTransformation.None
                     } else {
-                        Icons.Default.Lock
+                        PasswordVisualTransformation()
+                    },
+                    trailingIcon = {
+                        val image = if (passwordVisible) {
+                            Icons.Default.Lock
+                        } else {
+                            Icons.Default.Lock
+                        }
+                        val description = if (passwordVisible) "Hide password" else "Show password"
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                imageVector = image,
+                                contentDescription = description,
+                                tint = Color(0xFF7F8C8D)
+                            )
+                        }
+                    },
+                    leadingIcon = Icons.Default.Lock,
+                    isError = passwordError,
+                    errorMessage = if (passwordError) "Password is required" else null
+                )
+
+                EnhancedTextFieldS(
+                    label = "Phone Number *",
+                    value = phonenumber,
+                    onValueChange = {
+                        phonenumber = it
+                        phoneNumberError = it.isBlank()
+                        phoneFormatError = it.isNotBlank() && !isValidPhoneNumber(it)
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    leadingIcon = Icons.Default.Phone,
+                    isError = phoneNumberError || phoneFormatError,
+                    errorMessage = when {
+                        phoneNumberError -> "Phone number is required"
+                        phoneFormatError -> "Please enter 10-15 digits"
+                        else -> null
                     }
-                    val description = if (passwordVisible) "Hide password" else "Show password"
+                )
 
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            imageVector = image,
-                            contentDescription = description,
-                            tint = Color(0xFF7F8C8D)
-                        )
-                    }
-                },
-                leadingIcon = Icons.Default.Lock,
-                isError = passwordError,
-                errorMessage = if (passwordError) "Password is required" else null
-            )
+                Spacer(modifier = Modifier.height(8.dp))
 
-            EnhancedTextFieldS(
-                label = "Phone Number *",
-                value = phonenumber,
-                onValueChange = {
-                    phonenumber = it
-                    phoneNumberError = it.isBlank()
-                    phoneFormatError = it.isNotBlank() && !isValidPhoneNumber(it)
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                leadingIcon = Icons.Default.Phone,
-                isError = phoneNumberError || phoneFormatError,
-                errorMessage = when {
-                    phoneNumberError -> "Phone number is required"
-                    phoneFormatError -> "Please enter 10-15 digits"
-                    else -> null
-                }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                onClick = {
+                Button(
+                    onClick = {
 //                    coroutineScope.launch {
 //                        isLoading = true
 //                        val response = registerUser(
@@ -501,36 +513,37 @@ fun RegisterScreen(
 ////                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
 //                    }
 //                },
-                    Log.d("btn","button Clicked.........")
-                    firstNameError = firstname.isBlank()
-                    lastNameError = lastname.isBlank()
-                    usernameError = username.isBlank()
-                    emailError = email.isBlank()
-                    emailFormatError = email.isNotBlank() && !isValidEmail(email)
-                    passwordError = password.isBlank()
-                    phoneNumberError = phonenumber.isBlank()
-                    phoneFormatError = phonenumber.isNotBlank() && !isValidPhoneNumber(phonenumber)
-                    addressError = address.isBlank()
-                    Log.d("btn","button Clicked..2.......")
-                    val isValid = !firstNameError && !lastNameError && !usernameError &&
-                            !emailError && !emailFormatError && !passwordError &&
-                            !phoneNumberError && !phoneFormatError
-                    Log.d("btn","button Clicked....3....")
-                    if (isValid) {
-                        Log.d("btn","button Clicked....4.....")
-                        coroutineScope.launch {
-                            Log.d("btn","button Clicked.....6....")
-                            isLoading = true
-                            val result = registerUser(
-                            context,
-                                navController,
-                                firstname,
-                                lastname,
-                                username,
-                                email,
-                                password,
-                                phonenumber
-                            )
+                        Log.d("btn", "button Clicked.........")
+                        firstNameError = firstname.isBlank()
+                        lastNameError = lastname.isBlank()
+                        usernameError = username.isBlank()
+                        emailError = email.isBlank()
+                        emailFormatError = email.isNotBlank() && !isValidEmail(email)
+                        passwordError = password.isBlank()
+                        phoneNumberError = phonenumber.isBlank()
+                        phoneFormatError =
+                            phonenumber.isNotBlank() && !isValidPhoneNumber(phonenumber)
+                        addressError = address.isBlank()
+                        Log.d("btn", "button Clicked..2.......")
+                        val isValid = !firstNameError && !lastNameError && !usernameError &&
+                                !emailError && !emailFormatError && !passwordError &&
+                                !phoneNumberError && !phoneFormatError
+                        Log.d("btn", "button Clicked....3....")
+                        if (isValid) {
+                            Log.d("btn", "button Clicked....4.....")
+                            coroutineScope.launch {
+                                Log.d("btn", "button Clicked.....6....")
+                                isLoading = true
+                                val result = registerUser(
+                                    context,
+                                    navController,
+                                    firstname,
+                                    lastname,
+                                    username,
+                                    email,
+                                    password,
+                                    phonenumber
+                                )
 //                                .also { response ->
 //                                Log.d("RegisterScreen", "API Response: $response")
 //                                if (response.startsWith("Error:")) {
@@ -539,49 +552,58 @@ fun RegisterScreen(
 //                                    onRegistrationSuccess()
 //                                }
 //                            }
-                            isLoading = false
+                                isLoading = false
+                            }
+                        } else {
+                            apiErrorMessage = "Please fill all required fields"
                         }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    enabled = !isLoading
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.Black,
+                            modifier = Modifier.size(20.dp)
+                        )
                     } else {
-                        apiErrorMessage = "Please fill all required fields"
+                        Text("Sign Up", fontSize = 16.sp)
                     }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(8.dp),
-                enabled = !isLoading
-            ) {
-                if (isLoading) {
-                    CircularProgressIndicator(color = Color.Black, modifier = Modifier.size(20.dp))
-                } else {
-                    Text("Sign Up", fontSize = 16.sp)
                 }
-            }
-            //ERROR MESSAGE TEXT
-            Spacer(modifier = Modifier.height(8.dp))
-//            apiErrorMessage?.let {
-//                Log.d("err","ERROR***** $it")
-                Text(
-                    text = "g", color = Color.Red
-                )
-//            }
+//            //ERROR MESSAGE TEXT
+//            Spacer(modifier = Modifier.height(8.dp))
+////            apiErrorMessage?.let {
+////                Log.d("err","ERROR***** $it")
+//                Text(
+//                    text = "g", color = Color.Red
+//                )
+////            }
 
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(modifier = Modifier.align(Alignment.Start)) {
-                Text(text = "Already a user?", fontSize = 12.sp, fontWeight = FontWeight.Normal, color = Color.White)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Log In",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.White,
-                    textDecoration = TextDecoration.Underline,
-                    modifier = Modifier.clickable { navController.navigate("login") }
-                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(modifier = Modifier.align(Alignment.Start)) {
+                    Text(
+                        text = "Already a user?",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Log In",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White,
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier.clickable { navController.navigate("login") }
+                    )
+                }
             }
         }
     }

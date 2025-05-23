@@ -143,6 +143,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import androidx.compose.material3.FilterChip
+import com.example.carapp.assets.inspector_color
 import com.example.carapp.assets.redcolor
 
 
@@ -352,7 +353,7 @@ fun MakeHorizontalBar(label: String,
             .fillMaxWidth()
             .padding(16.dp)
             .border(1.dp,
-                redcolor,
+                inspector_color,
                 RoundedCornerShape(8.dp))
             .animateContentSize(),
         verticalArrangement = Arrangement.Center,
@@ -362,7 +363,7 @@ fun MakeHorizontalBar(label: String,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    redcolor
+                    inspector_color
 //                    brush = Brush.linearGradient(
 //                        colors = listOf(
 //                            Color(0xFF42A5F5),
@@ -415,7 +416,7 @@ fun AppointmentsBox(navController: NavController, inspectionViewModel: Inspectio
             .fillMaxWidth(0.5f)
             .clip(RoundedCornerShape(16.dp))
             .background(
-                redcolor
+                inspector_color
 //                brush = Brush.verticalGradient(
 //                    colors = listOf(
 //                        Color(0xFF0D47A1),
@@ -493,7 +494,7 @@ fun AppointmentsBox(navController: NavController, inspectionViewModel: Inspectio
                 .fillMaxWidth(0.6f)
                 .clip(RoundedCornerShape(16.dp))
                 .background(
-                    redcolor
+                    inspector_color
 //                    brush = Brush.verticalGradient(
 //                        colors = listOf(
 //                            Color(0xFF0D47A1),
@@ -786,7 +787,7 @@ fun DateWithSlotsItem(
         Text(
             text = "Add Time Slots",
             style = MaterialTheme.typography.titleMedium,
-            color = redcolor,
+            color = inspector_color,
             modifier = Modifier.clickable { onAddTimeSlot() }
         )
 

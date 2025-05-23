@@ -497,196 +497,412 @@ fun Dashboard(
                 }
             }
         ) { paddingValues ->
+           /* Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFFAFAFA))
+            ) {
+
+
+                Column(  modifier = Modifier
+                         .fillMaxSize()) {
+
+                    Column(
+                        modifier = Modifier
+                            .weight(0.8f)
+                            .padding(paddingValues)
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Image(
+                            painter = painterResource(id = R.drawable.top_image),
+                            contentDescription = "Fixed Top Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
+                        )
+
+                        Spacer(modifier = Modifier.height(1.dp))
+
+                        // Slider Section
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(150.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            HorizontalPager(
+                                state = pagerState,
+                                flingBehavior = PagerDefaults.flingBehavior(state = pagerState),
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                pageSpacing = (-28).dp,
+                                contentPadding = PaddingValues(horizontal = 60.dp),
+                                pageSize = PageSize.Fixed(300.dp)
+                            ) { page ->
+                                val pageOffset = (
+                                        (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+                                        ).absoluteValue
+
+                                val scale = lerp(
+                                    start = 0.85f,
+                                    stop = 1f,
+                                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                                )
+                                var alpha = lerp(
+                                    start = 0.7f,
+                                    stop = 1f,
+                                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                                )
+
+                                Box(
+                                    modifier = Modifier
+                                        .graphicsLayer {
+                                            scaleX = scale
+                                            scaleY = scale
+                                            alpha = alpha
+                                        }
+//                                    .fillMaxSize()
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 8.dp)
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = images[page]),
+                                        contentDescription = "Slider Image",
+                                        contentScale = ContentScale.Fit,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                }
+                            }
+                        }
+
+                        Row(
+                            Modifier
+                                .height(16.dp)
+                                .padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            repeat(pagerState.pageCount) { iteration ->
+                                val color =
+                                    if (pagerState.currentPage == iteration) redcolor else Color.LightGray
+                                Box(
+                                    modifier = Modifier
+                                        .padding(2.dp)
+                                        .clip(CircleShape)
+                                        .background(color)
+                                        .size(8.dp)
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        // Title and Description
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        ) {
+                            Text(
+                                text = "Car Fast",
+                                fontSize = 32.sp,
+                                fontFamily = lexendFont,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color(0xFF333333),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+
+                            Text(
+                                text = "Sell Your Car Faster With Our Premium Services.",
+                                fontSize = 18.sp,
+                                fontFamily = lexendFont,
+                                fontWeight = FontWeight.Normal,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                lineHeight = 24.sp,
+                                modifier = Modifier.padding(bottom = 32.dp)
+                            )
+                        }
+
+                    }
+
+
+                    //Button here
+                    //----
+                    Column(
+                        modifier = Modifier
+                            .weight(0.2f)
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        Button(
+                            onClick = { navController.navigate("postcar") },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = redcolor,
+                                contentColor = Color.White
+                            ),
+                            elevation = ButtonDefaults.buttonElevation(
+                                defaultElevation = 4.dp,
+                                pressedElevation = 4.dp
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 32.dp)
+                                .height(56.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(56.dp)
+//                                    .background(redcolor, shape = RoundedCornerShape(8.dp))
+                                        .padding(horizontal = 0.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Sell Now",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .width(30.dp)
+//                                        .background(Color.Red)
+                                            .align(Alignment.CenterStart)
+                                            .offset(x = (-1).dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Add,
+                                            contentDescription = "Add",
+                                            tint = Color.White,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(
+                                    text = "Sell Now",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+
+
+                    }
+
+
+
+                }
+
+
+            }*/
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color(0xFFFAFAFA))
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Column(modifier = Modifier.fillMaxSize()) {
 
-                    Image(
-                        painter = painterResource(id = R.drawable.top_image),
-                        contentDescription = "Fixed Top Image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-                    )
-
-                    Spacer(modifier = Modifier.height(1.dp))
-
-                    // Slider Section
+                    // Top Section - Scrollable content (80%)
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp),
-                        contentAlignment = Alignment.Center
+                            .weight(0.8f)
                     ) {
-                        HorizontalPager(
-                            state = pagerState,
-                            flingBehavior = PagerDefaults.flingBehavior(state = pagerState),
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            pageSpacing = (-28).dp,
-                            contentPadding = PaddingValues(horizontal = 60.dp),
-                            pageSize = PageSize.Fixed(300.dp)
-                        ) { page ->
-                            val pageOffset = (
-                                    (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
-                                    ).absoluteValue
-
-                            val scale = lerp(
-                                start = 0.85f,
-                                stop = 1f,
-                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                            )
-                            var alpha = lerp(
-                                start = 0.7f,
-                                stop = 1f,
-                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .graphicsLayer {
-                                        scaleX = scale
-                                        scaleY = scale
-                                        alpha = alpha
-                                    }
-//                                    .fillMaxSize()
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 8.dp)
-                            ) {
-                                Image(
-                                    painter = painterResource(id = images[page]),
-                                    contentDescription = "Slider Image",
-                                    contentScale = ContentScale.Fit,
-                                    modifier = Modifier.fillMaxSize()
-                                )
-                            }
-                        }
-                    }
-
-                    Row(
-                        Modifier
-                            .height(16.dp)
-                            .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        repeat(pagerState.pageCount) { iteration ->
-                            val color = if (pagerState.currentPage == iteration) redcolor else Color.LightGray
-                            Box(
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .clip(CircleShape)
-                                    .background(color)
-                                    .size(8.dp)
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    // Title and Description
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    ) {
-                        Text(
-                            text = "Car Fast",
-                            fontSize = 32.sp,
-                            fontFamily = lexendFont,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = Color(0xFF333333),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-
-                        Text(
-                            text = "Sell Your Car Faster With Our Premium Services.",
-                            fontSize = 18.sp,
-                            fontFamily = lexendFont,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 24.sp,
-                            modifier = Modifier.padding(bottom = 32.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Button
-                    Button(
-                        onClick = { navController.navigate("postcar") },
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = redcolor,
-                            contentColor = Color.White
-                        ),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 8.dp,
-                            pressedElevation = 4.dp
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 48.dp)
-                            .height(56.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                                .fillMaxSize()
+                                .padding(paddingValues)
+                                .verticalScroll(rememberScrollState()),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            // === TOP IMAGE ===
+                            Image(
+                                painter = painterResource(id = R.drawable.top_image),
+                                contentDescription = "Fixed Top Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                                    .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
+                            )
+
+                            Spacer(modifier = Modifier.height(1.dp))
+
+                            // === SLIDER SECTION ===
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(56.dp)
-//                                    .background(redcolor, shape = RoundedCornerShape(8.dp))
-                                    .padding(horizontal = 0.dp),
+                                    .height(150.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = "Sell Now",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .width(30.dp)
-//                                        .background(Color.Red)
-                                        .align(Alignment.CenterStart)
-                                        .offset(x = (-1).dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = "Add",
-                                        tint = Color.White,
-                                        modifier = Modifier.size(24.dp)
+                                HorizontalPager(
+                                    state = pagerState,
+                                    flingBehavior = PagerDefaults.flingBehavior(state = pagerState),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    pageSpacing = (-28).dp,
+                                    contentPadding = PaddingValues(horizontal = 60.dp),
+                                    pageSize = PageSize.Fixed(300.dp)
+                                ) { page ->
+                                    val pageOffset = (
+                                            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+                                            ).absoluteValue
+
+                                    val scale = lerp(0.85f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+                                    val alpha = lerp(0.7f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+
+                                    Box(
+                                        modifier = Modifier
+                                            .graphicsLayer {
+                                                scaleX = scale
+                                                scaleY = scale
+                                                this.alpha = alpha
+                                            }
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 8.dp)
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = images[page]),
+                                            contentDescription = "Slider Image",
+                                            contentScale = ContentScale.Fit,
+                                            modifier = Modifier.fillMaxSize()
+                                        )
+                                    }
+                                }
+                            }
+
+                            // === INDICATOR ===
+                            Row(
+                                modifier = Modifier
+                                    .height(16.dp)
+                                    .padding(top = 8.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                repeat(pagerState.pageCount) { iteration ->
+                                    val color = if (pagerState.currentPage == iteration) redcolor else Color.LightGray
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(2.dp)
+                                            .clip(CircleShape)
+                                            .background(color)
+                                            .size(8.dp)
                                     )
                                 }
                             }
 
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(
-                                text = "Sell Now",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            // === TITLE + DESCRIPTION ===
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(horizontal = 24.dp)
+                            ) {
+                                Text(
+                                    text = "Car Fast",
+                                    fontSize = 32.sp,
+                                    fontFamily = lexendFont,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color(0xFF333333),
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+
+                                Text(
+                                    text = "Sell Your Car Faster With Our Premium Services.",
+                                    fontSize = 18.sp,
+                                    fontFamily = lexendFont,
+                                    fontWeight = FontWeight.Normal,
+                                    color = Color.Gray,
+                                    textAlign = TextAlign.Center,
+                                    lineHeight = 24.sp,
+                                    modifier = Modifier.padding(bottom = 32.dp)
+                                )
+                            }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    // Bottom Section - Button (20%)
+                    Column(
+                        modifier = Modifier
+                            .weight(0.2f)
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        Button(
+                            onClick = { navController.navigate("postcarGuest") },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = redcolor,
+                                contentColor = Color.White
+                            ),
+                            elevation = ButtonDefaults.buttonElevation(4.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 32.dp)
+                                .height(56.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(56.dp)
+                                        .padding(horizontal = 0.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Sell Now",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontFamily = lexendFont,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .width(30.dp)
+                                            .align(Alignment.CenterStart)
+                                            .offset(x = (-1).dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Add,
+                                            contentDescription = "Add",
+                                            tint = Color.White,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(
+                                    text = "Sell Now",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp)) // Optional
+                    }
                 }
             }
         }

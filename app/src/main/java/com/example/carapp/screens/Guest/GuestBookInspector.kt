@@ -1,40 +1,8 @@
-package com.example.carapp.screens
+package com.example.carapp.screens.Guest
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -45,30 +13,63 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import com.example.carapp.Apis.ApiCallback
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
-import com.example.carapp.assets.AssetHelper
-import com.example.carapp.assets.redcolor
 import com.example.carapp.assets.seller_Color
-import com.example.carapp.screens.Guest.postExpertSelection
+import com.example.carapp.screens.CustomAlertDialog
+import com.example.carapp.screens.Expert
+import com.example.carapp.screens.getSalerCarId
+import com.example.carapp.screens.getToken
+import com.example.carapp.screens.saveAndLogFormData
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
@@ -89,68 +90,15 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 
-/*
-
-@Composable
-fun BookExpertVisit(navController: NavController, list: List<Expert>) {
-
-    val systemUiController = rememberSystemUiController()
-    var expertList by remember { mutableStateOf<List<Expert>>(emptyList()) }
-    val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        fetchExperts(TestApi.Get_Inspector) { experts ->
-            expertList = experts
-        }
-    }
-
-    systemUiController.isStatusBarVisible = false
-    var showDialog by rememberSaveable { mutableStateOf(false) }
-
-    // Handle back press
-    val backCallback = remember {
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                showDialog = true
-            }
-        }
-    }
-
-    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-
-    LaunchedEffect(Unit) {
-        backDispatcher?.addCallback(backCallback)
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(seller_Color)
-    ) {
-        HeaderSectionExpertVisit()
-        ExpertVisitForm(navController,list)
-    }
-    if (showDialog) {
-        CustomAlertDialog(
-            onDismiss = { showDialog = false },
-            onConfirm = {
-                showDialog = false
-                navController.navigate("dash") { popUpTo("basicInfoScreen") { inclusive = true } }
-            }
-        )
-    }
-}
-*/
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookExpertVisit(navController: NavController, list: List<Expert>) {
+fun GuestBookExpertVisit(navController: NavController, list: List<Expert>) {
     val systemUiController = rememberSystemUiController()
     var expertList by remember { mutableStateOf<List<Expert>>(emptyList()) }
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        fetchExperts(TestApi.Get_Inspector) { experts ->
+        fetchExpertsG(TestApi.Get_Inspector) { experts ->
             expertList = experts
         }
     }
@@ -206,7 +154,7 @@ fun BookExpertVisit(navController: NavController, list: List<Expert>) {
                     .fillMaxWidth()
                     .background(Color.White)
             ) {
-                StepProgressIndicatorsss(
+                StepProgressIndicatorsssG(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp, top = 32.dp, bottom = 4.dp),
@@ -227,7 +175,7 @@ fun BookExpertVisit(navController: NavController, list: List<Expert>) {
                 )
             }
 
-            ExpertVisitForm(navController, list)
+            ExpertVisitFormG(navController, list)
         }
     }
 
@@ -243,55 +191,16 @@ fun BookExpertVisit(navController: NavController, list: List<Expert>) {
         )
     }
 }
-@Composable
-fun HeaderSectionExpertVisit() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(260.dp)
-            .background(
-                seller_Color
-//                Brush.verticalGradient(listOf(Color(0xFF1E4DB7), Color(0xFF1C72E8)))
-            )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, top = 32.dp, end = 16.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-//                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
-//                Spacer(modifier = Modifier.width(8.dp))
-                Text("Expert Visit", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
-            StepProgressIndicatorsss(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp),
-                stepCount = 3,
-                currentStep = 1, // Change this based on your actual step
-                titles = listOf("Car Detail", "User Detail", "Book Inspection"),
-                onStepClicked = { /* Handle step click if needed */ }
-            )
-
-//            StepProgressIndicatorExpertVisit()
-//            Spacer(modifier = Modifier.height(34.dp))
-//            Text("Book a free car inspection now!", color = Color.White, fontSize = 38.sp, fontWeight = FontWeight.Bold)
-//            Spacer(modifier = Modifier.height(25.dp))
-        }
-    }
-}
 
 @Composable
-fun StepProgressIndicatorsss(
+fun StepProgressIndicatorsssG(
     modifier: Modifier = Modifier,
     stepCount: Int,
     currentStep: Int,
     titles: List<String>,
     onStepClicked: (Int) -> Unit
-) {
+/*) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -327,6 +236,20 @@ fun StepProgressIndicatorsss(
                     fontSize = 15.sp,
                     modifier = Modifier.padding(top = 4.dp,start = 8.dp, end = 8.dp)
                 )
+                // Connector line
+                if (index < stepCount - 1) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(2.dp)
+                            .offset(y = (-13).dp)
+                            .width(90.dp)
+                            .background(
+                                color = if (index < 1) seller_Color// Line from Step 1 to Step 2 is blue
+                                else seller_Color // Other lines remain gray
+                            )
+                    )
+                }
             }
 
             if (index < stepCount - 1) {
@@ -344,11 +267,67 @@ fun StepProgressIndicatorsss(
             }
         }
     }
+}*/
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(stepCount) { index ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.clickable { onStepClicked(index) }
+            ) {
+                // Step circle
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(
+                            color = if (index <= 1) seller_Color
+                            else seller_Color, // Other steps are gray
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = (index + 1).toString(),
+                        color = Color.White, // Text stays white for all steps
+                        fontSize = 14.sp
+                    )
+                }
+
+                // Step title
+                Text(
+                    text = titles.getOrElse(index) { "Step ${index + 1}" },
+                    color = Color.DarkGray,
+                    fontSize = 15.sp,
+                    modifier = Modifier.padding(top = 4.dp,start = 8.dp, end = 8.dp)
+                )
+            }
+
+            // Connector line
+            if (index < stepCount - 1) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(2.dp)
+                        .offset(y = (-13).dp)
+                        .width(90.dp)
+                        .background(
+                            color = if (index < 1) seller_Color// Line from Step 1 to Step 2 is blue
+                            else seller_Color // Other lines remain gray
+                        )
+                )
+            }
+        }
+    }
 }
 
 
 @Composable
-fun ExpertVisitForm(navController: NavController, list: List<Expert>) {
+fun ExpertVisitFormG(navController: NavController, list: List<Expert>) {
     var selectedExpertId by remember { mutableStateOf<Int?>(null) }
     val context = LocalContext.current
 
@@ -361,7 +340,7 @@ fun ExpertVisitForm(navController: NavController, list: List<Expert>) {
     ) {
         LazyColumn {
             items(list) { item ->
-                ExpertItem(
+                ExpertItemG(
                     expert = item,
                     isSelected = selectedExpertId == item.id,
                     onClick = {
@@ -375,7 +354,7 @@ fun ExpertVisitForm(navController: NavController, list: List<Expert>) {
     }
 }
 @Composable
-fun ExpertItem(
+fun ExpertItemG(
     expert: Expert,
     isSelected: Boolean,
     onClick: () -> Unit,
@@ -391,7 +370,7 @@ fun ExpertItem(
     var isLoading by remember { mutableStateOf(false) }
 
     var freeSchedule by remember { mutableStateOf<List<ScheduleItem>>(emptyList()) }
-    var reservedSchedule by remember { mutableStateOf<List<ReservedScheduleItem>>(emptyList()) }
+    var reservedSchedule by remember { mutableStateOf<List<ReservedScheduleItemG>>(emptyList()) }
     var isSlotSelected by remember { mutableStateOf(false) }
     var isBookingInProgress by remember { mutableStateOf(false) }
     var selectedSlot by remember { mutableStateOf<ScheduleItem?>(null) }
@@ -443,7 +422,7 @@ fun ExpertItem(
                             if (carId != -1) {
                                 postExpertSelection(context, expert.id, carId) { success ->
                                     if (success) {
-                                        onClickWhatsApp(
+                                        onClickWhatsAppG(
                                             context = context,
                                             mobileNumber = expert.phone_number,
                                             message = "Hello, I need assistance!"
@@ -461,9 +440,9 @@ fun ExpertItem(
                     Button(
                         onClick = {
                             isLoading = true
-                            fetchSchedule(expert.id) { freeSlots, reservedSlots ->
-                                freeSchedule = freeSlots
-                                reservedSchedule = reservedSlots
+                            fetchScheduleG(expert.id) { freeSlotsG, reservedSlotsG ->
+                                freeSchedule = freeSlotsG
+                                reservedSchedule = reservedSlotsG
                                 showSchedule = true
                                 isLoading = false
                             }
@@ -480,66 +459,27 @@ fun ExpertItem(
                         }
                     }
                 }
-                /*if (showSchedule) {
-                    ScheduleList(
-                        freeSlots = freeSchedule,
-                        reservedSlots = reservedSchedule,
-                        onSlotSelected = { selectedSlot ->
-
-                            // Save data using the enhanced saveAndLogFormData function
-                            saveAndLogFormData(
-                                selectedOption = "slot_selected",
-                                inputFields = emptyMap(),
-                                context = context,
-                                date = selectedSlot.date,
-                                timeSlot = selectedSlot.timeSlot
-                            )
-
-                            Toast.makeText(context, "Slot saved locally", Toast.LENGTH_SHORT).show()
-                        }
-                    )
-                }*/
-
 
 // Modify your ScheduleList to update this state
                 if (showSchedule) {
-                    /*ScheduleList(
-                        freeSlots = freeSchedule,
-                        reservedSlots = reservedSchedule,
-                        onSlotSelected = { selectedSlot ->
-                            // Save data using the enhanced saveAndLogFormData function
-                            saveAndLogFormData(
-                                selectedOption = "slot_selected",
-                                inputFields = emptyMap(),
-                                context = context,
-                                date = selectedSlot.date,
-                                timeSlot = selectedSlot.timeSlot
-                            )
 
-                            // Update the slot selected state
-                            isSlotSelected = true
-
-                            Toast.makeText(context, "Slot saved locally", Toast.LENGTH_SHORT).show()
-                        }
-                    )*/
-                    // Add this state variable to track the selected slot
                     var selectedSlot by remember { mutableStateOf<ScheduleItem?>(null) }
 
-                    ScheduleList(
+                    ScheduleListG(
                         freeSlots = freeSchedule,
                         reservedSlots = reservedSchedule,
-                        onSlotSelected = { selectedSlotItem ->
+                        onSlotSelected = { selectedSlotItemG ->
                             // Save data using the enhanced saveAndLogFormData function
-                            saveAndLogFormData(
+                            saveAndLogFormDataG(
                                 selectedOption = "slot_selected",
                                 inputFields = emptyMap(),
                                 context = context,
-                                date = selectedSlotItem.date,
-                                timeSlot = selectedSlotItem.timeSlot
+                                date = selectedSlotItemG.date,
+                                timeSlot = selectedSlotItemG.timeSlot
                             )
 
                             // Update the selected slot
-                            selectedSlot = selectedSlotItem
+                            selectedSlot = selectedSlotItemG
                             isSlotSelected = true
 
                             Toast.makeText(context, "Slot saved locally", Toast.LENGTH_SHORT).show()
@@ -567,9 +507,9 @@ fun ExpertItem(
                     put("engine_size", jsonElement["engine_size"]?.jsonPrimitive?.contentOrNull ?: "")
                     put("milage", jsonElement["milage"]?.jsonPrimitive?.contentOrNull ?: "")
 
-                    put("option_type", mapOptionType(jsonElement["option_type"]?.jsonPrimitive?.contentOrNull))
-                    put("paint_condition", mapPaintCondition(jsonElement["paint_condition"]?.jsonPrimitive?.contentOrNull))
-                    put("specs", mapSpecs(jsonElement["specs"]?.jsonPrimitive?.contentOrNull))
+                    put("option_type", mapOptionTypeG(jsonElement["option_type"]?.jsonPrimitive?.contentOrNull))
+                    put("paint_condition", mapPaintConditionG(jsonElement["paint_condition"]?.jsonPrimitive?.contentOrNull))
+                    put("specs", mapSpecsG(jsonElement["specs"]?.jsonPrimitive?.contentOrNull))
 
                     put("primary_phone_number", jsonElement["primaryPhone"]?.jsonPrimitive?.contentOrNull ?: "")
                     put("secondary_phone_number", jsonElement["secondaryPhone"]?.jsonPrimitive?.contentOrNull ?: "")
@@ -614,7 +554,7 @@ fun ExpertItem(
                         (context as? Activity)?.runOnUiThread {
                             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                             if (isSuccess) {
-                                navController.navigate("check")
+                                navController.navigate("dash")
                             }
                         }
                         Log.d("API_RESPONSE", "Status: ${response.code}\nBody: ${response.body?.string()}")
@@ -654,7 +594,7 @@ fun ExpertItem(
 
 }
 
-fun mapOptionType(value: String?): String {
+fun mapOptionTypeG(value: String?): String {
     return when (value?.trim()?.lowercase()) {
         "full option" -> "full_option"
         "mid option" -> "mid_option"
@@ -664,7 +604,7 @@ fun mapOptionType(value: String?): String {
     }
 }
 
-fun mapSpecs(value: String?): String {
+fun mapSpecsG(value: String?): String {
     return when (value?.trim()?.lowercase()) {
         "gcc specs" -> "gcc_specs"
         "non specs" -> "non_specs"
@@ -673,7 +613,7 @@ fun mapSpecs(value: String?): String {
     }
 }
 
-fun mapPaintCondition(value: String?): String {
+fun mapPaintConditionG(value: String?): String {
     return when (value?.trim()?.lowercase()) {
         "original paint" -> "original_paint"
         "partial repaint" -> "partial_repaint"
@@ -684,52 +624,11 @@ fun mapPaintCondition(value: String?): String {
 }
 
 
-/*
-@Composable
-fun ScheduleList(
-    freeSlots: List<ScheduleItem>,
-    reservedSlots: List<ReservedScheduleItem>,
-    onSlotSelected: (ScheduleItem) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp)
-    ) {
-        Text(
-            text = "Available Slots:",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        if (freeSlots.isEmpty()) {
-            Text("No available slots")
-        } else {
-            freeSlots.groupBy { it.date }.forEach { (date, slots) ->
-                Text(
-                    text = date,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
-                )
-                LazyRow {
-                    items(slots) { slot ->
-                        SlotChip(
-                            time = slot.timeSlot,
-                            isAvailable = true,
-                            onClick = { onSlotSelected(slot) }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-*/
 
 @Composable
-fun ScheduleList(
+fun ScheduleListG(
     freeSlots: List<ScheduleItem>,
-    reservedSlots: List<ReservedScheduleItem>,
+    reservedSlots: List<ReservedScheduleItemG>,
     onSlotSelected: (ScheduleItem) -> Unit,
     selectedSlot: ScheduleItem? = null // Add selected slot parameter
 ) {
@@ -755,7 +654,7 @@ fun ScheduleList(
                 )
                 LazyRow {
                     items(slots) { slot ->
-                        SlotChip(
+                        SlotChipG(
                             time = slot.timeSlot,
                             isAvailable = true,
                             isSelected = selectedSlot?.timeSlot == slot.timeSlot && selectedSlot.date == slot.date,
@@ -768,31 +667,8 @@ fun ScheduleList(
     }
 }
 
-/*@Composable
-fun SlotChip(
-    time: String,
-    isAvailable: Boolean,
-    onClick: () -> Unit
-) {
-    val backgroundColor = if (isAvailable) Color(0xFF4CAF50) else Color.LightGray
-    val contentColor = if (isAvailable) Color.White else Color.DarkGray
-
-    Surface(
-        modifier = Modifier
-            .padding(end = 8.dp)
-            .clickable(enabled = isAvailable, onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        color = backgroundColor.copy(alpha = if (isAvailable) 1f else 0.5f)
-    ) {
-        Text(
-            text = time,
-            color = contentColor,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-        )
-    }
-}*/
 @Composable
-fun SlotChip(
+fun SlotChipG(
     time: String,
     isAvailable: Boolean,
     isSelected: Boolean, // Add selected state
@@ -821,82 +697,10 @@ fun SlotChip(
     }
 }
 
-/*
 
-fun fetchSchedule(expertId: Int, onResult: (List<ScheduleItem>, List<ScheduleItem>) -> Unit) {
-    val client = OkHttpClient()
-    val url = "${TestApi.Get_Inspector_slots}?inspector=$expertId"
-
-    Log.d("API_CALL", "Requesting URL: $url")
-
-    val request = Request.Builder()
-        .url(url)
-        .get()
-        .build()
-
-    client.newCall(request).enqueue(object : Callback {
-        override fun onFailure(call: Call, e: IOException) {
-            Log.e("API_ERROR", "Failed to fetch schedule", e)
-            Handler(Looper.getMainLooper()).post {
-                onResult(emptyList(), emptyList())
-            }
-        }
-
-        override fun onResponse(call: Call, response: Response) {
-            val responseBody = response.body?.string()
-            Log.d("API_RESPONSE", "Full response: $responseBody")
-            if (responseBody != null) {
-                try {
-                    val jsonObject = JSONObject(responseBody)
-                    val freeSlotsArray = jsonObject.getJSONArray("free_slots")
-                    val reservedSlotsArray = jsonObject.getJSONArray("reserved_slots")
-
-                    val freeScheduleList = mutableListOf<ScheduleItem>()
-                    val reservedScheduleList = mutableListOf<ScheduleItem>()
-
-                    // Parse free slots using "availability_id"
-                    for (i in 0 until freeSlotsArray.length()) {
-                        val slot = freeSlotsArray.getJSONObject(i)
-                        val availabilityId = slot.getInt("availability_id")
-                        val date = slot.getString("date")
-                        val timeSlot = slot.getString("time_slot")
-                        freeScheduleList.add(ScheduleItem(availabilityId, date, timeSlot))
-                    }
-
-                    // Parse reserved slots using "slot_id" instead of "availability_id"
-                    for (i in 0 until reservedSlotsArray.length()) {
-                        val slot = reservedSlotsArray.getJSONObject(i)
-                        val slotId = slot.getInt("slot_id")
-                        val date = slot.getString("date")
-                        val timeSlot = slot.getString("time_slot")
-                        reservedScheduleList.add(ScheduleItem(slotId, date, timeSlot))
-                    }
-
-                    Log.d("ScheduleData", "Fetched ${freeScheduleList.size} free slots, ${reservedScheduleList.size} reserved slots")
-
-                    Handler(Looper.getMainLooper()).post {
-                        onResult(freeScheduleList, reservedScheduleList)
-                    }
-                } catch (e: Exception) {
-                    Log.e("API_ERROR", "Error parsing schedule: ${e.message}")
-                    Handler(Looper.getMainLooper()).post {
-                        onResult(emptyList(), emptyList())
-                    }
-                }
-            } else {
-                Log.e("API_ERROR", "Response body is null")
-                Handler(Looper.getMainLooper()).post {
-                    onResult(emptyList(), emptyList())
-                }
-            }
-        }
-    })
-}
-*/
-
-fun fetchSchedule(
+fun fetchScheduleG(
     expertId: Int,
-    onResult: (List<ScheduleItem>, List<ReservedScheduleItem>) -> Unit
+    onResult: (List<ScheduleItem>, List<ReservedScheduleItemG>) -> Unit
 ) {
     val client = OkHttpClient()
     val url = "${TestApi.Get_Inspector_slots}?inspector=$expertId"
@@ -926,7 +730,7 @@ fun fetchSchedule(
                     val reservedSlotsArray = jsonObject.getJSONArray("reserved_slots")
 
                     val freeScheduleList = mutableListOf<ScheduleItem>()
-                    val reservedScheduleList = mutableListOf<ReservedScheduleItem>()
+                    val reservedScheduleList = mutableListOf<ReservedScheduleItemG>()
 
                     // Parse free slots
                     for (i in 0 until freeSlotsArray.length()) {
@@ -943,7 +747,7 @@ fun fetchSchedule(
                         val slotId = slot.getString("slot_id")
                         val date = slot.getString("date")
                         val timeSlot = slot.getString("time_slot")
-                        reservedScheduleList.add(ReservedScheduleItem(slotId, date, timeSlot))
+                        reservedScheduleList.add(ReservedScheduleItemG(slotId, date, timeSlot))
                     }
 
                     Log.d("ScheduleData", "Fetched ${freeScheduleList.size} free slots, ${reservedScheduleList.size} reserved slots")
@@ -967,18 +771,18 @@ fun fetchSchedule(
     })
 }
 
-data class ScheduleItem(
+data class ScheduleItemG(
     val availabilityId: Int,
     val date: String,
     val timeSlot: String
 )
-data class ReservedScheduleItem(
+data class ReservedScheduleItemG(
     val slotId: String,
     val date: String,
     val timeSlot: String
 )
 
-fun onClickWhatsApp(
+fun onClickWhatsAppG(
     context: Context,
     mobileNumber: String,
     message: String
@@ -998,7 +802,7 @@ fun onClickWhatsApp(
 
 }
 
-fun fetchExperts(url: String, onResult: (List<Expert>) -> Unit) {
+fun fetchExpertsG(url: String, onResult: (List<Expert>) -> Unit) {
     val client = OkHttpClient()
     val request = Request.Builder()
         .url(url)
@@ -1050,19 +854,3 @@ fun fetchExperts(url: String, onResult: (List<Expert>) -> Unit) {
     })
 }
 
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewScre() {
-//    val navController = rememberNavController()  // Create a mock NavController
-//    val sampleExpert = listOf(
-//        Experts("John Doe", "AI Specialist"),
-//        Experts("Jane Smith", "Data Scientist")
-//    )
-//
-//    BookExpertVisit(navController, sampleExpert)
-//}
-//data class Experts(
-//    val name: String,
-//    val specialization: String
-//)

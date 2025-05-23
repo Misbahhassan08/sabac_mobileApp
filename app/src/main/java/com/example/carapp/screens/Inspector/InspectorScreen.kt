@@ -101,6 +101,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
+import com.example.carapp.assets.inspector_color
 import com.example.carapp.assets.redcolor
 import com.example.carapp.models.AssignedSlot
 import com.example.carapp.models.CarI
@@ -232,9 +233,9 @@ fun InspectorListScree(
                             .background(
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
-                                        redcolor,
-                                        redcolor,
-                                        redcolor
+                                        inspector_color,
+                                        inspector_color,
+                                        inspector_color
                                     )
                                 )
                             )
@@ -336,9 +337,9 @@ fun InspectorListScree(
                             .background(
                                 brush = Brush.linearGradient(
                                     colors = listOf(
-                                        redcolor,
-                                        redcolor,
-                                        redcolor,
+                                        inspector_color,
+                                        inspector_color,
+                                        inspector_color,
                                     )
                                 )
                             )

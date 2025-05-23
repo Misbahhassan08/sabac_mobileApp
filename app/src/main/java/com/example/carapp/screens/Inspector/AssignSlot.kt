@@ -50,6 +50,7 @@ import androidx.navigation.NavController
 import com.example.carapp.Apis.ApiCallback
 import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
+import com.example.carapp.assets.inspector_color
 import com.example.carapp.assets.redcolor
 import com.example.carapp.screens.getSalerCarId
 import com.example.carapp.screens.getToken
@@ -82,7 +83,7 @@ fun AssignSlotScreen(navController: NavController, scheduleData: String, carId: 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background( redcolor)
+            .background( inspector_color)
     ) {
         Sectio()
 //        UserInfo(navController)
@@ -97,7 +98,7 @@ fun Sectio() {
             .fillMaxWidth()
             .height(200.dp)
             .background(
-                redcolor
+                inspector_color
             )
     ) {
         Column(

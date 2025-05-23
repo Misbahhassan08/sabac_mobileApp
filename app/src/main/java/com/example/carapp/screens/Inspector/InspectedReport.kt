@@ -99,6 +99,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import com.example.carapp.assets.inspector_color
 import com.example.carapp.assets.redcolor
 
 import com.example.carapp.models.ViewReportModel
@@ -195,7 +196,7 @@ Log.d("ViewReportScreen"," reported Screen $salerCarId")
         topBar = {
             TopAppBar(
                 title = { Text("Inspection Report", color = Color.White, fontWeight = FontWeight.SemiBold) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = redcolor),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = inspector_color),
             )
         },
     ) { padding ->
@@ -223,7 +224,7 @@ Log.d("ViewReportScreen"," reported Screen $salerCarId")
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(0.dp),
                             elevation = CardDefaults.cardElevation(4.dp),
-                            colors = CardDefaults.cardColors(containerColor = redcolor)
+                            colors = CardDefaults.cardColors(containerColor = inspector_color)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(

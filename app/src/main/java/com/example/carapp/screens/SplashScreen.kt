@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.carapp.R
 import com.example.carapp.assets.redcolor
+import com.example.carapp.ui.theme.lexendFont
 
 
 @Composable
@@ -52,21 +53,25 @@ fun SplashScreen(onClick: () -> Unit) {
                 contentDescription = "car",
                 modifier = Modifier.size(280.dp)
             )
-            Text(text = "Premium Cars.", color = txtColor, fontSize = 28.sp, fontWeight = FontWeight.Bold )
-            Text(text = "Enjoy the luxury", color = txtColor, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Premium Cars.", color = txtColor, fontSize = 28.sp, fontWeight = FontWeight.Bold,fontFamily = lexendFont, )
+            Text(text = "Enjoy the luxury", color = txtColor, fontSize = 28.sp, fontWeight = FontWeight.Bold, fontFamily = lexendFont,)
             Spacer(modifier = Modifier.height(24.dp))
-            Text(text = "Premium and prestige car daily rental", color = txtColor, fontSize = 14.sp)
+            Text(text = "Premium and prestige car daily rental", color = txtColor, fontSize = 14.sp,fontFamily = lexendFont,)
             Spacer(modifier = Modifier.height(3.dp))
-            Text(text = "Experience the thrill at a lower price", color = txtColor, fontSize = 14.sp)
+            Text(text = "Experience the thrill at a lower price", color = txtColor, fontSize = 14.sp,fontFamily = lexendFont,)
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = { onClick() },
-                modifier = Modifier.fillMaxWidth(),
+                elevation = ButtonDefaults.buttonElevation(4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .height(56.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black
                 )
             ) {
-                Text(text = "Let's Go", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(text = "Let's Go", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp,fontFamily = lexendFont,)
             }
         }
 

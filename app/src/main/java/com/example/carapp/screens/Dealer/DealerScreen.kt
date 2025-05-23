@@ -107,6 +107,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.carapp.R
+import com.example.carapp.assets.dealer_color1
+import com.example.carapp.assets.dealer_color2
 import com.example.carapp.assets.redcolor
 import com.example.carapp.models.AssignedSlot
 import com.example.carapp.models.CarI
@@ -206,7 +208,7 @@ fun DealerListScreen(
                 Text("Dealer List", color = Color.White, fontWeight = FontWeight.SemiBold)
             },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = redcolor
+                    containerColor = dealer_color1
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -223,7 +225,7 @@ fun DealerListScreen(
             TabRow(
                 selectedTabIndex = selectedTab,
                 modifier = Modifier.fillMaxWidth(),
-                containerColor = Color(0xFFF84444)
+                containerColor = dealer_color2
             ) {
                 tabs.forEachIndexed { index, title ->
                     Tab(

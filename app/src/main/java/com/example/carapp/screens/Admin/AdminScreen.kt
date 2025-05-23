@@ -51,6 +51,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.carapp.R
+import com.example.carapp.assets.admin_color1
+import com.example.carapp.assets.admin_color2
 import com.example.carapp.assets.redcolor
 import com.example.carapp.models.DealerList
 import com.example.carapp.screens.Inspector.CustomAnimatedLoade
@@ -156,9 +158,9 @@ fun AdminScreen(
                             .background(
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
-                                        redcolor,
-                                        redcolor,
-                                        redcolor
+                                        admin_color1,
+                                        admin_color1,
+                                        admin_color1
                                     )
                                 )
                             )
@@ -270,9 +272,9 @@ fun AdminScreen(
                             .background(
                                 brush = Brush.linearGradient(
                                     colors = listOf(
-                                        redcolor,
-                                        redcolor,
-                                        redcolor,
+                                        admin_color1,
+                                        admin_color1,
+                                        admin_color1,
                                     )
                                 )
                             )
@@ -309,7 +311,8 @@ fun AdminScreen(
                             androidx.compose.material3.TabRow(
                                 selectedTabIndex = selectedTabIndex,
                                 modifier = Modifier.fillMaxWidth(),
-                                containerColor = Color(0xFFF84444)
+//                                containerColor = Color(0xFFF84444)
+                                containerColor = admin_color2
                             ) {
                                 tabTitles.forEachIndexed { index, title ->
                                     androidx.compose.material3.Tab(
@@ -344,7 +347,8 @@ fun AdminScreen(
                             androidx.compose.material3.TabRow(
                                 selectedTabIndex = selectedTabIndex,
                                 modifier = Modifier.fillMaxWidth(),
-                                containerColor = Color(0xFFF84444)
+//                                containerColor = Color(0xFFF84444)
+                                containerColor = admin_color2
                             ) {
                                 tabTitles.forEachIndexed { index, title ->
                                     androidx.compose.material3.Tab(
@@ -379,7 +383,8 @@ fun AdminScreen(
                             androidx.compose.material3.TabRow(
                                 selectedTabIndex = selectedTabIndex,
                                 modifier = Modifier.fillMaxWidth(),
-                                containerColor = Color(0xFFF84444)
+//                                containerColor = Color(0xFFF84444)
+                                containerColor = admin_color2
                             ) {
                                 tabTitles.forEachIndexed { index, title ->
                                     androidx.compose.material3.Tab(
@@ -415,7 +420,8 @@ fun AdminScreen(
                             androidx.compose.material3.TabRow(
                                 selectedTabIndex = selectedTabIndex,
                                 modifier = Modifier.fillMaxWidth(),
-                                containerColor = Color(0xFFF84444)
+//                                containerColor = Color(0xFFF84444)
+                                containerColor = admin_color2
                             ) {
                                 tabTitles.forEachIndexed { index, title ->
                                     androidx.compose.material3.Tab(

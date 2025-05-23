@@ -18,6 +18,7 @@ import com.example.carapp.screens.Admin.AdminReport
 import com.example.carapp.screens.Admin.AdminScreen
 import com.example.carapp.screens.Admin.InspectorListScreen
 import com.example.carapp.screens.BasicInfoScreen
+import com.example.carapp.screens.Guest.GuestSellScreen
 import com.example.carapp.screens.BasicScreen
 import com.example.carapp.screens.BookExpertVisit
 import com.example.carapp.screens.CalenderDate
@@ -30,6 +31,8 @@ import com.example.carapp.screens.Dealer.DealerListScreen
 import com.example.carapp.screens.Dealer.ViewDealerReports
 import com.example.carapp.screens.Expert
 import com.example.carapp.screens.Guest.CallExpert
+import com.example.carapp.screens.Guest.GuestBasicInfoScreen
+import com.example.carapp.screens.Guest.GuestBookExpertVisit
 import com.example.carapp.screens.Guest.GuestScreen
 import com.example.carapp.screens.Guest.PostDetail
 import com.example.carapp.screens.Inspector.AddTimeSlotScreen
@@ -77,6 +80,7 @@ fun App() {
             }
         }
 
+
         composable(route = "login") {
             LoginScreen(navController)
         }
@@ -109,6 +113,9 @@ fun App() {
         composable(route = "postcar") {
             CarSellScreen(navController)
         }
+        composable(route = "postcarGuest") {
+            GuestSellScreen(navController)
+        }
         composable("date") {
             CalenderDate()
         }
@@ -131,6 +138,9 @@ fun App() {
         composable("info") {
             BasicInfoScreen(navController)
         }
+        composable("Guestinfo") {
+            GuestBasicInfoScreen(navController)
+        }
         composable("check") {
             Checkout(navController)
         }
@@ -151,6 +161,13 @@ fun App() {
             val jsonData = backStackEntry.arguments?.getString("data") ?: "[]"
             val list: List<Expert> = Gson().fromJson(jsonData, object : TypeToken<List<Expert>>() {}.type)
             BookExpertVisit(navController, list)
+        }
+        composable("Guestbookexpertvisit/{data}",
+            arguments = listOf(navArgument("data") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val jsonData = backStackEntry.arguments?.getString("data") ?: "[]"
+            val list: List<Expert> = Gson().fromJson(jsonData, object : TypeToken<List<Expert>>() {}.type)
+            GuestBookExpertVisit(navController, list)
         }
 
         composable("viewReport/{salerCarId}") { backStackEntry ->

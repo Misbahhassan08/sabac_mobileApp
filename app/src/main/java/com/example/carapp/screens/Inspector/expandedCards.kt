@@ -122,6 +122,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.carapp.assets.cardColor
+import com.example.carapp.assets.inspector_color
 import com.example.carapp.assets.redcolor
 
 
@@ -1159,7 +1160,7 @@ fun TestCase(navController: NavController) {
                 .fillMaxWidth()
                 .padding(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = redcolor,
+                containerColor = inspector_color,
                 contentColor = Color.White
             ),
             shape = RoundedCornerShape(8.dp)

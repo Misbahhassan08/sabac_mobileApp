@@ -66,6 +66,7 @@ import com.example.carapp.Apis.TestApi
 import com.example.carapp.R
 import com.example.carapp.assets.redcolor
 import com.example.carapp.models.AuthState
+import com.example.carapp.ui.theme.lexendFont
 import com.example.carapp.viewmodels.GAuthViewModel
 import com.example.carapp.viewmodels.GoogleViewModel
 import com.example.carapp.viewmodels.LoginViewModel
@@ -332,12 +333,14 @@ fun LoginScreen(navController: NavController) {
             Text(
                 text = "Selling Point",
                 fontWeight = FontWeight.Bold,
+                fontFamily = lexendFont,
                 fontSize = 32.sp,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Travel love a car",
+                fontFamily = lexendFont,
                 color = Color.White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium
@@ -462,7 +465,7 @@ fun LoginScreen(navController: NavController) {
                         modifier = Modifier.size(24.dp)
                     )
                 } else {
-                    Text(text = "LOG IN", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                    Text(text = "LOG IN", fontSize = 18.sp, fontWeight = FontWeight.Medium,fontFamily = lexendFont,)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -504,23 +507,24 @@ fun LoginScreen(navController: NavController) {
                     color = Color(0x80FFFFFF)
                 )
             }
-//            Row {
-//                Text(
-//                    text = "Don't have an account?",
-//                    fontSize = 12.sp,
-//                    fontWeight = FontWeight.Normal,
-//                    color = Color.White
-//                )
-//                Spacer(modifier = Modifier.width(8.dp))
-//                Text(
-//                    text = "Sign Up",
-//                    fontSize = 12.sp,
-//                    fontWeight = FontWeight.Medium,
-//                    color = Color.White,
-//                    textDecoration = TextDecoration.Underline,
-//                    modifier = Modifier.clickable { navController.navigate("registration") }
-//                )
-//            }
+            Row {
+                Text(
+                    text = "Don't have an account?",
+                    fontSize = 12.sp,
+                    fontFamily = lexendFont,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Sign Up",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable { navController.navigate("registration") }
+                )
+            }
             Spacer(modifier = Modifier.height(54.dp))
         }
     }
